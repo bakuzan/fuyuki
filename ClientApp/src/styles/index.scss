@@ -1,0 +1,12 @@
+@import './_variables.scss';
+
+body {
+  font-size: $app--font-size;
+}
+
+main {
+  min-height: calc(100vh - 5px - #{$header--height});
+  padding: 5px {
+    top: $header--height;
+  }
+}

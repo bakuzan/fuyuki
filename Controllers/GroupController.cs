@@ -33,5 +33,12 @@ namespace Fuyuki.Controllers
         {
             return await _groupService.GetGroupById(id);
         }
+
+
+        [HttpPut]
+        public async Task<GroupModel> Put(GroupRequest request)
+        {
+            return await _groupService.SaveGroup(request);
+        }
     }
 }

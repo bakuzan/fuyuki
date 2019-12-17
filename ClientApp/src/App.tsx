@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
-import GroupList from './components/GroupList';
 
-import './index.scss';
+import { useGlobalStyles } from 'meiko/hooks/useGlobalStyles';
+import HeaderBar from './components/HeaderBar';
 
-export default class App extends Component {
-  static displayName = App.name;
+import Home from './pages/Home';
+import GroupList from './pages/GroupList';
 
-  render() {
-    return (
-      <Layout>
+import './styles/index.scss';
+
+function App() {
+  useGlobalStyles();
+
+  return (
+    <div className="theme theme--default">
+      <HeaderBar />
+      <main>
         <Route exact path="/" component={Home} />
-        <Route path="/counter" component={Counter} />
-        <Route path="/fetch-data" component={FetchData} />
         <Route path="/groups" component={GroupList} />
-      </Layout>
-    );
-  }
+      </main>
+    </div>
+  );
 }
+
+export default App;

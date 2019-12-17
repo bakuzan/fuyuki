@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useAsync } from '../hooks/useAsync';
 
-interface Group {
+export interface Group {
   id: number;
   name: string;
 }
 
-interface GroupItemProps {
+export interface GroupItemProps {
   id: number;
   onSubmit: (item: Group) => void;
 }

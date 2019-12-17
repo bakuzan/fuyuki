@@ -1,12 +1,7 @@
 import * as React from 'react';
 
 import { useAsync } from '../hooks/useAsync';
-import GroupItem from './GroupItem';
-
-interface Group {
-  id: number;
-  name: string;
-}
+import GroupItem, { Group } from '../components/GroupItem';
 
 function GroupList() {
   const [refreshKey, setRefreshKey] = React.useState(0);
