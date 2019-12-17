@@ -1,0 +1,25 @@
+$blue: #474d9b;
+$grey: #7d7485;
+$pink: #f79db6;
+$pink-deep: #f36e93;
+$purple: #682860;
+$red: #eb516d;
+$white: #fff;
+$yellow: #f3e29d;
+
+:root {
+  --primary-background: #{$blue};
+  --primary-colour: #{$white};
+}
+
+.theme--alt {
+  --primary-background: #{$purple};
+  --primary-colour: #{$yellow};
+}
+
+.theme {
+  .application-header {
+    background-color: var(--primary-background);
+    color: var(--primary-colour);
+  }
+}

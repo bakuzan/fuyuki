@@ -28,10 +28,13 @@ namespace Fuyuki
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>().AddControllersWithViews();
+            services.AddEntityFrameworkSqlite()
+                .AddDbContext<DatabaseContext>()
+                .AddControllersWithViews();
 
             // Services
-            services.AddScoped<IGroupService, GroupService>().AddScoped<IGroupDataService, GroupDataService>();
+            services.AddScoped<IGroupService, GroupService>()
+                .AddScoped<IGroupDataService, GroupDataService>();
 
             // Mapping
             var mapping = new MapperConfiguration(mc =>
@@ -45,7 +48,7 @@ namespace Fuyuki
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "Fuyuki.Client/build";
             });
         }
 
@@ -78,7 +81,7 @@ namespace Fuyuki
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = "Fuyuki.Client";
 
                 if (env.IsDevelopment())
                 {

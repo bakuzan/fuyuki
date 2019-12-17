@@ -8,7 +8,7 @@ namespace Fuyuki.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=fuyuki.development.db");
+            optionsBuilder.UseSqlite("Filename=../fuyuki.development.db");
         }
     }
 }

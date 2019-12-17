@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import GroupList from './pages/GroupList';
 
 import './styles/index.scss';
+import './styles/themes.scss';
 
 function App() {
   useGlobalStyles();
