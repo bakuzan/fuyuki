@@ -3,4 +3,12 @@
 
   padding: 0 $padding;
   width: calc(100% - #{$padding * 2});
+
+  &__title {
+    margin: 0;
+  }
+
+  &__nav-link {
+    text-decoration: none;
+  }
 }

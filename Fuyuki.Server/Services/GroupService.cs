@@ -29,6 +29,11 @@ namespace Fuyuki.Services
             return _mapper.Map<List<GroupModel>>(groups);
         }
 
+        public Task<GroupModel> CreateGroup(GroupRequest request)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<GroupModel> SaveGroup(GroupRequest request)
         {
             throw new System.NotImplementedException();

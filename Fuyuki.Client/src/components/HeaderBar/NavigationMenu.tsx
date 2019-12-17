@@ -1,16 +1,13 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+
+import HeaderLink from './HeaderLink';
 
 function NavigationMenu() {
   return (
     <React.Fragment>
-      <NavLink
-        className="header__nav-button"
-        to="/groups"
-        aria-label="Manage subreddit groups"
-      >
-        <span aria-hidden={true}>Groups</span>
-      </NavLink>
+      <HeaderLink to="/groups" aria-label="Manage subreddit groups">
+        Groups
+      </HeaderLink>
     </React.Fragment>
   );
 }

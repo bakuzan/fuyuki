@@ -1,0 +1,9 @@
+%anchor-shadow {
+  box-shadow: inset 0 -0.5em 0 var(--anchor-shadow, #eee);
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:focus,
+  &:hover {
+    box-shadow: inset 0 -1.2em 0 var(--anchor-shadow-hover, #ddd);
+  }
+}

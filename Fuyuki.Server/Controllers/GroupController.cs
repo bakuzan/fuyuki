@@ -34,6 +34,11 @@ namespace Fuyuki.Controllers
             return await _groupService.GetGroupById(id);
         }
 
+        [HttpPost]
+        public async Task<GroupModel> Post(GroupRequest request)
+        {
+            return await _groupService.CreateGroup(request);
+        }
 
         [HttpPut]
         public async Task<GroupModel> Put(GroupRequest request)

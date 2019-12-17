@@ -8,6 +8,7 @@ namespace Fuyuki.Services
     {
         Task<List<GroupModel>> GetGroups();
         Task<GroupModel> GetGroupById(int id);
+        Task<GroupModel> CreateGroup(GroupRequest request);
         Task<GroupModel> SaveGroup(GroupRequest request);
     }
 }

@@ -1,3 +1,5 @@
+@import './_extensions.scss';
+
 $blue: #474d9b;
 $grey: #7d7485;
 $pink: #f79db6;
@@ -10,6 +12,7 @@ $yellow: #f3e29d;
 :root {
   --primary-background: #{$blue};
   --primary-colour: #{$white};
+  --primary-colour-hover: #{darken($white, 10%)};
 }
 
 .theme--alt {
@@ -21,5 +24,13 @@ $yellow: #f3e29d;
   .application-header {
     background-color: var(--primary-background);
     color: var(--primary-colour);
+  }
+
+  .application-header__nav-link {
+    --anchor-shadow: var(--primary-background);
+    --anchor-shadow-hover: #{$pink};
+
+    color: var(--primary-colour);
+    @extend %anchor-shadow;
   }
 }
