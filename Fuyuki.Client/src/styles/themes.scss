@@ -10,14 +10,31 @@ $white: #fff;
 $yellow: #f3e29d;
 
 :root {
+  --base-background: #{$white};
+  --base-colour: #000;
+
   --primary-background: #{$blue};
+  --primary-background-hover: #{$white};
+
   --primary-colour: #{$white};
-  --primary-colour-hover: #{darken($white, 10%)};
+  --primary-colour-hover: #{$blue};
+
+  --accent: #{$pink};
+  --highlight: #{$red};
 }
 
 .theme--alt {
+  --base-background: #{$grey};
+  --base-colour: #{$white};
+
   --primary-background: #{$purple};
+  --primary-background-hover: #{$grey};
+
   --primary-colour: #{$yellow};
+  --primary-colour-hover: #{$yellow};
+
+  --accent: #{$pink-deep};
+  --highlight: #{$red};
 }
 
 .theme {
@@ -27,10 +44,23 @@ $yellow: #f3e29d;
   }
 
   .application-header__nav-link {
-    --anchor-shadow: var(--primary-background);
-    --anchor-shadow-hover: #{$pink};
-
     color: var(--primary-colour);
+  }
+
+  .application-header__nav-link:not(.application-header__brand) {
+    &:active,
+    &:focus,
+    &:hover,
+    &.application-header__nav-link--active {
+      background-color: var(--primary-background-hover);
+      color: var(--primary-colour-hover);
+    }
+  }
+
+  .fyk-link,
+  .application-header__brand {
+    --anchor-shadow: var(--primary-background);
+    --anchor-shadow-hover: var(--accent);
     @extend %anchor-shadow;
   }
 }
