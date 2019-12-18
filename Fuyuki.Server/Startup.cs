@@ -1,13 +1,17 @@
+using System;
 using AutoMapper;
 using Fuyuki.Data;
+using Fuyuki.Managers;
 using Fuyuki.Mapping;
 using Fuyuki.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RedditSharp;
 
 namespace Fuyuki
 {
@@ -16,6 +20,7 @@ namespace Fuyuki
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
 
             using (var client = new DatabaseContext())
             {
@@ -32,18 +37,57 @@ namespace Fuyuki
                 .AddDbContext<DatabaseContext>()
                 .AddControllersWithViews();
 
+            // Identity stuff
+            services.AddIdentityCore<ApplicationUser>(opts => opts.SignIn.RequireConfirmedAccount = true);
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 9;
+                options.Password.RequiredUniqueChars = 2;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(60);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
+
             // Services
             services.AddScoped<IGroupService, GroupService>()
-                .AddScoped<IGroupDataService, GroupDataService>();
+                .AddScoped<IGroupDataService, GroupDataService>()
+                .AddScoped<IRedditManager, RedditManager>();
 
             // Mapping
             var mapping = new MapperConfiguration(mc =>
             {
+                mc.AddProfile(new UserProfile());
                 mc.AddProfile(new GroupProfile());
+                mc.AddProfile(new RedditProfile());
             });
 
             IMapper mapper = mapping.CreateMapper();
             services.AddSingleton(mapper);
+
+            // Reddit
+            var webAgentPool = new RefreshTokenWebAgentPool(
+                Configuration["RedditClientID"],
+                Configuration["RedditClientSecret"],
+                Configuration["RedditRedirectURI"])
+            {
+                DefaultRateLimitMode = RateLimitMode.Burst,
+                DefaultUserAgent = Configuration["RedditUserAgent"]
+            };
+
+            services.AddSingleton(webAgentPool);
+            services.AddSingleton(new WebAgentPool<string, BotWebAgent>());
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -66,6 +110,7 @@ namespace Fuyuki
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

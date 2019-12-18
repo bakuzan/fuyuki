@@ -7,6 +7,9 @@ import HeaderLink from './HeaderLink';
 import './HeaderBar.scss';
 
 function HeaderBar() {
+  // TODO
+  // Consider header box shadow on scroll down
+
   return (
     <Header
       id="fuyuki-header"

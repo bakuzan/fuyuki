@@ -4,18 +4,20 @@ using Fuyuki.ViewModels;
 using Fuyuki.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Fuyuki.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class GroupController : ControllerBase
+    public class GroupController : BaseFuyukiController
     {
 
         private readonly ILogger<GroupController> _logger;
         private readonly IGroupService _groupService;
 
-        public GroupController(ILogger<GroupController> logger, IGroupService groupService)
+        public GroupController(ILogger<GroupController> logger, IGroupService groupService) : base()
         {
             _logger = logger;
             _groupService = groupService;
@@ -35,15 +37,21 @@ namespace Fuyuki.Controllers
         }
 
         [HttpPost]
-        public async Task<GroupModel> Post(GroupRequest request)
+        public async Task<GroupResponse> Post(GroupRequest request)
         {
             return await _groupService.CreateGroup(request);
         }
 
         [HttpPut]
-        public async Task<GroupModel> Put(GroupRequest request)
+        public async Task<GroupResponse> Put(GroupRequest request)
         {
-            return await _groupService.SaveGroup(request);
+            return await _groupService.UpdateGroup(request);
+        }
+
+        [HttpDelete]
+        public async Task<GroupResponse> Delete(int id)
+        {
+            return await _groupService.DeleteGroup(id);
         }
     }
 }

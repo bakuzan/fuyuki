@@ -29,14 +29,45 @@ namespace Fuyuki.Services
             return _mapper.Map<List<GroupModel>>(groups);
         }
 
-        public Task<GroupModel> CreateGroup(GroupRequest request)
+        public async Task<GroupResponse> CreateGroup(GroupRequest request)
         {
-            throw new System.NotImplementedException();
+            var group = _mapper.Map<Group>(request);
+
+            _groupDataService.SetToPersist(group);
+
+            await _groupDataService.SaveAsync();
+
+            return new GroupResponse
+            {
+                Data = _mapper.Map<GroupModel>(group)
+            };
         }
 
-        public Task<GroupModel> SaveGroup(GroupRequest request)
+        public async Task<GroupResponse> UpdateGroup(GroupRequest request)
         {
-            throw new System.NotImplementedException();
+            var group = await _groupDataService.GetAsync<Group>(request.Id);
+
+            _mapper.Map(request, group);
+
+            _groupDataService.SetToPersist(group);
+
+            await _groupDataService.SaveAsync();
+
+            return new GroupResponse
+            {
+                Data = _mapper.Map<GroupModel>(group)
+            };
+        }
+
+        public async Task<GroupResponse> DeleteGroup(int id)
+        {
+            var group = await _groupDataService.GetAsync<Group>(id);
+
+            _groupDataService.Delete(group);
+
+            await _groupDataService.SaveAsync();
+
+            return new GroupResponse();
         }
     }
 }

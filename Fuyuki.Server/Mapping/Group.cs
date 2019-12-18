@@ -9,6 +9,7 @@ namespace Fuyuki.Mapping
         public GroupProfile()
         {
             CreateMap<Group, GroupModel>();
+            CreateMap<GroupModel, Group>();
         }
     }
 }
