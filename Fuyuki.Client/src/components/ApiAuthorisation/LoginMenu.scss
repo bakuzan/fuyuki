@@ -1,0 +1,15 @@
+.account-menu {
+  display: flex;
+
+  .dropdown-menu__toggler {
+    height: 100%;
+    width: 35px;
+    flex: unset;
+    padding: 0 5px;
+    margin: 0 -5px 0 0;
+  }
+}
+
+.account-action {
+  justify-content: flex-start;
+}

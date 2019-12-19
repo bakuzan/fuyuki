@@ -1,15 +1,32 @@
-import { UserManager, WebStorageStateStore } from 'oidc-client';
+import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import { ApplicationPaths, ApplicationName } from './ApiAuthorisationConstants';
 
+interface AuthSubscrption {
+  callback: () => void;
+  subscription: number;
+}
+
+export interface AuthState {
+  returnUrl?: string;
+}
+
+export interface AuthSignInOutResponse {
+  status: string;
+  message?: string | Error;
+  state?: AuthState;
+}
+
 export class AuthoriseService {
-  _callbacks = [];
+  _callbacks: AuthSubscrption[] = [];
   _nextSubscriptionId = 0;
-  _user = null;
+  _user: User | null = null;
   _isAuthenticated = false;
 
   // By default pop ups are disabled because they don't work properly on Edge.
   // If you want to enable pop up authentication simply set this flag to false.
   _popUpDisabled = true;
+
+  public userManager: UserManager | null = null;
 
   async isAuthenticated() {
     const user = await this.getUser();
@@ -17,18 +34,24 @@ export class AuthoriseService {
   }
 
   async getUser() {
-    if (this._user && this._user.profile) {
-      return this._user.profile;
+    if (this._user) {
+      const user = this._user as User;
+
+      if (user.profile) {
+        return user.profile;
+      }
     }
 
     await this.ensureUserManagerInitialized();
-    const user = await this.userManager.getUser();
+    const userManager = this.userManager as UserManager;
+    const user = await userManager.getUser();
     return user && user.profile;
   }
 
   async getAccessToken() {
     await this.ensureUserManagerInitialized();
-    const user = await this.userManager.getUser();
+    const userManager = this.userManager as UserManager;
+    const user = await userManager.getUser();
     return user && user.access_token;
   }
 
@@ -40,12 +63,12 @@ export class AuthoriseService {
   //    Pop-Up blocker or the user has disabled PopUps.
   // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
   //    redirect flow.
-  async signIn(state) {
+  async signIn(state: AuthState): Promise<AuthSignInOutResponse> {
     await this.ensureUserManagerInitialized();
+    const userManager = this.userManager as UserManager;
+
     try {
-      const silentUser = await this.userManager.signinSilent(
-        this.createArguments()
-      );
+      const silentUser = await userManager.signinSilent(this.createArguments());
       this.updateState(silentUser);
       return this.success(state);
     } catch (silentError) {
@@ -59,9 +82,7 @@ export class AuthoriseService {
           );
         }
 
-        const popUpUser = await this.userManager.signinPopup(
-          this.createArguments()
-        );
+        const popUpUser = await userManager.signinPopup(this.createArguments());
         this.updateState(popUpUser);
         return this.success(state);
       } catch (popUpError) {
@@ -74,7 +95,7 @@ export class AuthoriseService {
 
         // PopUps might be blocked by the user, fallback to redirect
         try {
-          await this.userManager.signinRedirect(this.createArguments(state));
+          await userManager.signinRedirect(this.createArguments(state));
           return this.redirect();
         } catch (redirectError) {
           console.log('Redirect authentication error: ', redirectError);
@@ -84,10 +105,11 @@ export class AuthoriseService {
     }
   }
 
-  async completeSignIn(url) {
+  async completeSignIn(url: string): Promise<AuthSignInOutResponse> {
     try {
       await this.ensureUserManagerInitialized();
-      const user = await this.userManager.signinCallback(url);
+      const userManager = this.userManager as UserManager;
+      const user = await userManager.signinCallback(url);
       this.updateState(user);
       return this.success(user && user.state);
     } catch (error) {
@@ -101,8 +123,10 @@ export class AuthoriseService {
   //    Pop-Up blocker or the user has disabled PopUps.
   // 2) If the method above fails, we redirect the browser to the IdP to perform a traditional
   //    post logout redirect flow.
-  async signOut(state) {
+  async signOut(state: AuthState): Promise<AuthSignInOutResponse> {
     await this.ensureUserManagerInitialized();
+    const userManager = this.userManager as UserManager;
+
     try {
       if (this._popUpDisabled) {
         throw new Error(
@@ -110,13 +134,13 @@ export class AuthoriseService {
         );
       }
 
-      await this.userManager.signoutPopup(this.createArguments());
-      this.updateState(undefined);
+      await userManager.signoutPopup(this.createArguments());
+      this.updateState(null);
       return this.success(state);
     } catch (popupSignOutError) {
       console.log('Popup signout error: ', popupSignOutError);
       try {
-        await this.userManager.signoutRedirect(this.createArguments(state));
+        await userManager.signoutRedirect(this.createArguments(state));
         return this.redirect();
       } catch (redirectSignOutError) {
         console.log('Redirect signout error: ', redirectSignOutError);
@@ -125,25 +149,26 @@ export class AuthoriseService {
     }
   }
 
-  async completeSignOut(url) {
+  async completeSignOut(url: string): Promise<AuthSignInOutResponse> {
     await this.ensureUserManagerInitialized();
     try {
-      const response = await this.userManager.signoutCallback(url);
+      const userManager = this.userManager as UserManager;
+      const response = await userManager.signoutCallback(url);
       this.updateState(null);
-      return this.success(response && response.data);
+      return this.success(response && (response as any).data);
     } catch (error) {
       console.log(`There was an error trying to log out '${error}'.`);
       return this.error(error);
     }
   }
 
-  updateState(user) {
+  updateState(user: User | null) {
     this._user = user;
     this._isAuthenticated = !!this._user;
     this.notifySubscribers();
   }
 
-  subscribe(callback) {
+  subscribe(callback: () => void) {
     this._callbacks.push({
       callback,
       subscription: this._nextSubscriptionId++
@@ -151,7 +176,7 @@ export class AuthoriseService {
     return this._nextSubscriptionId - 1;
   }
 
-  unsubscribe(subscriptionId) {
+  unsubscribe(subscriptionId: number) {
     const subscriptionIndex = this._callbacks
       .map((element, index) =>
         element.subscription === subscriptionId
@@ -159,13 +184,14 @@ export class AuthoriseService {
           : { found: false }
       )
       .filter((element) => element.found === true);
+
     if (subscriptionIndex.length !== 1) {
       throw new Error(
         `Found an invalid number of subscriptions ${subscriptionIndex.length}`
       );
     }
 
-    this._callbacks.splice(subscriptionIndex[0].index, 1);
+    this._callbacks.splice(subscriptionIndex[0].index as number, 1);
   }
 
   notifySubscribers() {
@@ -175,15 +201,15 @@ export class AuthoriseService {
     }
   }
 
-  createArguments(state) {
+  createArguments(state?: AuthState) {
     return { useReplaceToNavigate: true, data: state };
   }
 
-  error(message) {
+  error(message: Error | string) {
     return { status: AuthenticationResultStatus.Fail, message };
   }
 
-  success(state) {
+  success(state: AuthState) {
     return { status: AuthenticationResultStatus.Success, state };
   }
 
@@ -192,13 +218,14 @@ export class AuthoriseService {
   }
 
   async ensureUserManagerInitialized() {
-    if (this.userManager !== undefined) {
+    if (this.userManager !== null) {
       return;
     }
 
     let response = await fetch(
       ApplicationPaths.ApiAuthorisationClientConfigurationUrl
     );
+
     if (!response.ok) {
       throw new Error(`Could not load settings for '${ApplicationName}'`);
     }
@@ -213,8 +240,9 @@ export class AuthoriseService {
     this.userManager = new UserManager(settings);
 
     this.userManager.events.addUserSignedOut(async () => {
-      await this.userManager.removeUser();
-      this.updateState(undefined);
+      const userManager = this.userManager as UserManager;
+      await userManager.removeUser();
+      this.updateState(null);
     });
   }
 

@@ -19,7 +19,12 @@ $yellow: #f3e29d;
   --primary-colour: #{$white};
   --primary-colour-hover: #{$blue};
 
-  --accent: #{$pink};
+  --accent-background: #{$pink};
+  --accent-background-hover: #{darken($pink, 10%)};
+
+  --accent-colour: #{$blue};
+  --accent-colour-hover: #{$blue};
+
   --highlight: #{$red};
 }
 
@@ -33,7 +38,12 @@ $yellow: #f3e29d;
   --primary-colour: #{$yellow};
   --primary-colour-hover: #{$yellow};
 
-  --accent: #{$pink-deep};
+  --accent-background: #{$pink-deep};
+  --accent-background-hover: #{lighten($pink-deep, 10%)};
+
+  --accent-colour: #{$grey};
+  --accent-colour-hover: #{$grey};
+
   --highlight: #{$red};
 }
 
@@ -60,7 +70,34 @@ $yellow: #f3e29d;
   .fyk-link,
   .application-header__brand {
     --anchor-shadow: var(--primary-background);
-    --anchor-shadow-hover: var(--accent);
-    @extend %anchor-shadow;
+    --anchor-shadow-hover: var(--accent-background);
+
+    &:not(.button) {
+      @extend %anchor-shadow;
+    }
+  }
+
+  .button--primary {
+    background-color: var(--primary-background);
+    color: var(--primary-colour);
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: var(--primary-background-hover);
+      color: var(--primary-colour-hover);
+    }
+  }
+
+  .button--accent {
+    background-color: var(--accent-background);
+    color: var(--accent-colour);
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: var(--accent-background-hover);
+      color: var(--accent-colour-hover);
+    }
   }
 }
