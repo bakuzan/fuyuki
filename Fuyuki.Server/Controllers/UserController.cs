@@ -34,34 +34,5 @@ namespace Fuyuki.Controllers
             return await _userService.GetUserByName(User.Identity.Name);
         }
 
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<UserResponse> Post(UserRequest request)
-        {
-            return await _userService.CreateUser(request);
-        }
-
-        [HttpPut]
-        public async Task<UserResponse> Put(UserRequest request)
-        {
-            return await _userService.UpdateUser(request);
-        }
-
-
-        [HttpPut]
-        [Route("[action]")]
-        public async Task<UserResponse> ChangePassword(ChangePasswordRequest request)
-        {
-            return await _userService.ChangeUserPassword(request);
-        }
-
-
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<UserResponse> SignIn(SignInRequest request)
-        {
-            return await _userService.SignIn(request);
-        }
-
     }
 }
