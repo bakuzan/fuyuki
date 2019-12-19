@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 
 import { useAsync } from '../hooks/useAsync';
+import sendRequest from '../utils/sendRequest';
 
 function Home() {
   const [page, setPage] = useState(0);
 
   const state = useAsync<any[]>(async () => {
-    const response = await fetch(`reddit/getrall/${page}`);
-    const result = await response.json();
-    return result;
+    return await sendRequest(`reddit/getrall/${page}`);
   }, [page]);
 
   console.log('HOME', page, state);

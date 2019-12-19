@@ -234,3 +234,5 @@ _Pvt_Extensions
 
 # Db
 *.db
+*.db-shm
+*.db-wal

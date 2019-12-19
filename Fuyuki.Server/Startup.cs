@@ -4,10 +4,13 @@ using Fuyuki.Data;
 using Fuyuki.Managers;
 using Fuyuki.Mapping;
 using Fuyuki.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,12 +23,6 @@ namespace Fuyuki
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-
-            using (var client = new DatabaseContext())
-            {
-                client.Database.EnsureCreated();
-            }
         }
 
         public IConfiguration Configuration { get; }
@@ -33,12 +30,20 @@ namespace Fuyuki
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkSqlite()
-                .AddDbContext<DatabaseContext>()
-                .AddControllersWithViews();
+            // Db
+            var dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite(dbConnectionString));
 
             // Identity stuff
-            services.AddIdentityCore<ApplicationUser>(opts => opts.SignIn.RequireConfirmedAccount = true);
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<DatabaseContext>();
+
+            services.AddIdentityServer()
+                    .AddApiAuthorization<ApplicationUser, DatabaseContext>();
+
+            services.AddAuthentication()
+                    .AddIdentityServerJwt();
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -60,10 +65,14 @@ namespace Fuyuki
                 options.User.RequireUniqueEmail = false;
             });
 
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.Configure<RazorViewEngineOptions>(o => o.ViewLocationExpanders.Add(new FuyukiViewLocationExpander()));
+
             // Services
             services.AddScoped<IGroupService, GroupService>()
-                .AddScoped<IGroupDataService, GroupDataService>()
-                .AddScoped<IRedditManager, RedditManager>();
+                    .AddScoped<IGroupDataService, GroupDataService>();
+            // .AddScoped<IRedditManager, RedditManager>();
 
             // Mapping
             var mapping = new MapperConfiguration(mc =>
@@ -77,17 +86,17 @@ namespace Fuyuki
             services.AddSingleton(mapper);
 
             // Reddit
-            var webAgentPool = new RefreshTokenWebAgentPool(
-                Configuration["RedditClientID"],
-                Configuration["RedditClientSecret"],
-                Configuration["RedditRedirectURI"])
-            {
-                DefaultRateLimitMode = RateLimitMode.Burst,
-                DefaultUserAgent = Configuration["RedditUserAgent"]
-            };
+            // var webAgentPool = new RefreshTokenWebAgentPool(
+            //     Configuration["RedditClientID"],
+            //     Configuration["RedditClientSecret"],
+            //     Configuration["RedditRedirectURI"])
+            // {
+            //     DefaultRateLimitMode = RateLimitMode.Burst,
+            //     DefaultUserAgent = Configuration["RedditUserAgent"]
+            // };
 
-            services.AddSingleton(webAgentPool);
-            services.AddSingleton(new WebAgentPool<string, BotWebAgent>());
+            // services.AddSingleton(webAgentPool);
+            // services.AddSingleton(new WebAgentPool<string, BotWebAgent>());
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -110,18 +119,21 @@ namespace Fuyuki
                 app.UseHsts();
             }
 
-            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>

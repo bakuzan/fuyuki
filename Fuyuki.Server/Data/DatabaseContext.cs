@@ -1,18 +1,18 @@
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Fuyuki.Data
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DatabaseContext(DbContextOptions options,
+                               IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+        {
+        }
+
         public DbSet<Group> Groups { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // TODO
-            // Make this customisable
-            // Make this switchable based on env
-            optionsBuilder.UseSqlite("Filename=../fuyuki.development.db");
-        }
     }
 }

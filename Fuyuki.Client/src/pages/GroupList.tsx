@@ -2,31 +2,24 @@ import * as React from 'react';
 
 import { useAsync } from '../hooks/useAsync';
 import GroupItem, { Group } from '../components/GroupItem';
+import sendRequest from '../utils/sendRequest';
 
 function GroupList() {
   const [refreshKey, setRefreshKey] = React.useState(0);
   const [id, setId] = React.useState(0);
 
   const state = useAsync<Group[]>(async () => {
-    const response = await fetch('group/getall');
-    const result = await response.json();
-    return result;
+    return await sendRequest('group/getall');
   }, [refreshKey]);
 
   async function onSubmit(item: Group) {
-    try {
-      const response = await fetch('group', {
-        method: 'PUT',
-        body: JSON.stringify(item)
-      });
+    const result = await sendRequest('group', {
+      method: 'PUT',
+      body: JSON.stringify(item)
+    });
 
-      const result = await response.json();
-
-      if (result && result.success) {
-        setRefreshKey((p) => p + 1);
-      }
-    } catch (e) {
-      console.error(e);
+    if (result.success) {
+      setRefreshKey((p) => p + 1);
     }
   }
 

@@ -22,7 +22,7 @@ namespace Fuyuki.Managers
             var webAgent = await _webAgentPool.GetOrCreateWebAgentAsync(username, async (uname, uagent, rlimit) =>
             {
                 var ident = await _userManager.FindByNameAsync(username);
-                return new RedditSharp.RefreshTokenPoolEntry(uname, ident.RefreshToken, rlimit, uagent);
+                return new RedditSharp.RefreshTokenPoolEntry(uname, "TODO", rlimit, uagent);
             });
 
             return new RedditSharp.Reddit(webAgent, true);
