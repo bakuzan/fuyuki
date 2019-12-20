@@ -9,7 +9,6 @@ namespace Fuyuki.Mapping
         public UserProfile()
         {
             CreateMap<ApplicationUser, UserModel>();
-            CreateMap<UserRequest, ApplicationUser>();
         }
     }
 }

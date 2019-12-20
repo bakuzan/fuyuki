@@ -9,7 +9,7 @@ import AuthoriseRoute from './components/ApiAuthorisation/AuthoriseRoute';
 import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisationConstants';
 
 import Home from './pages/Home';
-import GroupList from './pages/GroupList';
+import GroupList from './pages/GroupManagement';
 
 import './styles/index.scss';
 import './styles/themes.scss';

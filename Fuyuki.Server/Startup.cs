@@ -79,6 +79,7 @@ namespace Fuyuki
             {
                 mc.AddProfile(new UserProfile());
                 mc.AddProfile(new GroupProfile());
+                mc.AddProfile(new SubredditProfile());
                 mc.AddProfile(new RedditProfile());
             });
 

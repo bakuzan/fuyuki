@@ -13,6 +13,7 @@ namespace Fuyuki.Data
         }
 
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Subreddit> Subreddits { get; set; }
 
     }
 }
