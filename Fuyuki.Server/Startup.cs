@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using AutoMapper;
 using Fuyuki.Data;
 using Fuyuki.Managers;
@@ -38,9 +37,8 @@ namespace Fuyuki
             services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite(dbConnectionString));
 
             // Identity stuff
-            services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<DatabaseContext>()
-                    .AddDefaultTokenProviders();
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<DatabaseContext>();
 
             services.AddIdentityServer()
                     .AddApiAuthorization<ApplicationUser, DatabaseContext>();

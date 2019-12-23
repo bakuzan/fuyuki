@@ -1,9 +1,5 @@
 @import './_variables.scss';
 
-body {
-  font-size: $app--font-size;
-}
-
 main {
   min-height: calc(100vh - 5px - #{$header--height});
   padding: 5px {
@@ -11,8 +7,24 @@ main {
   }
 }
 
+// Page
+.page {
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    display: flex;
+    flex: 1;
+    margin: 10px 0;
+  }
+}
+
 // Forms
 .form {
+  max-width: 500px;
+
   &__buttons {
     display: flex;
     padding: 5px;

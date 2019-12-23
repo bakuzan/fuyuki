@@ -1,5 +1,5 @@
+import classNames from 'classnames';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import Icons from 'meiko/constants/icons';
@@ -7,8 +7,10 @@ import { Button } from 'meiko/Button';
 import FC from 'meiko/FormControls';
 import AutocompleteInput from 'meiko/AutocompleteInput';
 import List from 'meiko/List';
+import TagChipStyle from 'meiko/styles/TagChip';
 
 import { useAsync } from 'src/hooks/useAsync';
+import { PageProps } from 'src/interfaces/PageProps';
 import { Group } from 'src/interfaces/Group';
 import { Subreddit } from 'src/interfaces/Subreddit';
 import sendRequest from 'src/utils/sendRequest';
@@ -25,7 +27,7 @@ const defaultGroup: Group = {
   subreddits: []
 };
 
-function GroupCreateUpdate(props: RouteComponentProps) {
+function GroupCreateUpdate(props: PageProps) {
   const { id = 0 } = props.match.params as GroupCreateUpdateParams;
 
   const [searchString, setSearchString] = React.useState('');
@@ -47,8 +49,9 @@ function GroupCreateUpdate(props: RouteComponentProps) {
   }, [loading, value]);
 
   const item = state as Group;
+  const isEdit = id > 0;
   const subreddits: Subreddit[] = subState.value || [];
-  const pageTitle = id ? `Edit ${item.name}` : 'Create new group';
+  const pageTitle = isEdit ? `Edit ${item.name}` : 'Create new group';
 
   function handleCreateNew() {
     const data = {
@@ -67,9 +70,17 @@ function GroupCreateUpdate(props: RouteComponentProps) {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const data = {
+      ...item,
+      subreddits: item.subreddits.map((x) => ({
+        ...x,
+        id: x.id < 0 ? 0 : x.id
+      }))
+    };
+
     const result = await sendRequest(`group`, {
-      method: item.id ? 'PUT' : 'POST',
-      body: JSON.stringify(item)
+      method: isEdit ? 'PUT' : 'POST',
+      body: JSON.stringify(data)
     });
 
     if (result.success) {
@@ -86,85 +97,114 @@ function GroupCreateUpdate(props: RouteComponentProps) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      <h2 className="page__title">{pageTitle}</h2>
-      <form className="form" name="group" noValidate onSubmit={onSubmit}>
-        <FC.ClearableInput
-          id="name"
-          name="name"
-          label="Name"
-          value={item.name}
-          onChange={(e) => {
-            const inp = e.target as HTMLInputElement;
+      <section>
+        <header className="page__header">
+          <h2 className="page__title">{pageTitle}</h2>
+        </header>
+        <form className="form" name="group" noValidate onSubmit={onSubmit}>
+          <FC.ClearableInput
+            id="name"
+            name="name"
+            label="Name"
+            value={item.name}
+            onChange={(e) => {
+              const inp = e.target as HTMLInputElement;
 
-            setState((p: Group | null) => {
-              if (p === null) {
-                return {} as Group;
+              setState((p: Group | null) => {
+                if (p === null) {
+                  return {} as Group;
+                }
+
+                return { ...p, name: inp.value };
+              });
+            }}
+          />
+
+          <AutocompleteInput
+            id="subreddit-entry"
+            attr="name"
+            filter={searchString}
+            label="Subreddits"
+            items={subreddits}
+            onChange={(e) =>
+              setSearchString(e.target.value.toLocaleLowerCase())
+            }
+            onSelect={(itemId) => {
+              const data = subreddits.find((x) => x.id === itemId);
+              if (!data) {
+                return handleCreateNew();
               }
 
-              return { ...p, name: inp.value };
-            });
-          }}
-        />
+              setState((p: Group) => {
+                const items = [...p.subreddits, data];
+                const uniqueItems = items.filter(
+                  (x, i, a) => a.findIndex((y) => y.name === x.name) === i
+                );
 
-        <AutocompleteInput
-          id="subreddit-entry"
-          attr="name"
-          filter={searchString}
-          label="Subreddits"
-          items={subreddits}
-          onChange={(e) => setSearchString(e.target.value.toLocaleLowerCase())}
-          onSelect={(itemId) => {
-            const data = subreddits.find((x) => x.id === itemId);
-            if (!data) {
-              return handleCreateNew();
-            }
+                return { ...p, subreddits: uniqueItems };
+              });
 
-            setState((p: Group) => {
-              const items = [...p.subreddits, data];
-              const uniqueItems = items.filter(
-                (x, i, a) => a.findIndex((y) => y.name === x.name) === i
-              );
-
-              return { ...p, subreddits: uniqueItems };
-            });
-
-            setSearchString('');
-          }}
-          noSuggestionsItem={
-            <Button className="create-new-subreddit" onClick={handleCreateNew}>
-              Add new subreddit
-            </Button>
-          }
-        />
-        <List className="subreddits">
-          {item.subreddits.map((x: Subreddit) => (
-            <li key={x.id} className="subreddits__item">
-              <div>{x.name}</div>
+              setSearchString('');
+            }}
+            disableLocalFilter={subreddits.length === 0}
+            noSuggestionsItem={
               <Button
-                className="subreddits__remove"
-                icon={Icons.cross}
-                onClick={() => {
-                  setState((p: Group) => ({
-                    ...p,
-                    subreddits: [
-                      ...p.subreddits.filter((y: Subreddit) => y.id !== x.id)
-                    ]
-                  }));
-                }}
-              />
-            </li>
-          ))}
-        </List>
+                className="create-new-subreddit"
+                onClick={handleCreateNew}
+              >
+                Add new subreddit
+              </Button>
+            }
+          />
+          <List className="subreddits" shouldWrap>
+            {item.subreddits.map((x: Subreddit) => {
+              const removeLabel = `Remove ${x.name}`;
 
-        <div className="form__buttons">
-          <Button type="submit" btnStyle="primary">
-            Save
-          </Button>
-          <Button type="button" onClick={() => props.history.push('/groups')}>
-            Cancel
-          </Button>
-        </div>
-      </form>
+              return (
+                <li
+                  key={x.id}
+                  className={classNames(
+                    'subreddits__item',
+                    TagChipStyle.tagChip
+                  )}
+                >
+                  <div className={classNames(TagChipStyle.tagChip__text)}>
+                    {x.name}
+                  </div>
+                  <Button
+                    className={classNames(
+                      'subreddits__remove',
+                      TagChipStyle.tagChip__delete
+                    )}
+                    title={removeLabel}
+                    aria-label={removeLabel}
+                    icon={Icons.cross}
+                    onClick={() => {
+                      setState((p: Group) => ({
+                        ...p,
+                        subreddits: [
+                          ...p.subreddits.filter(
+                            (y: Subreddit) => y.id !== x.id
+                          )
+                        ]
+                      }));
+                    }}
+                  />
+                </li>
+              );
+            })}
+          </List>
+
+          <div className="form__buttons">
+            <Button type="submit" btnStyle="primary">
+              Save
+            </Button>
+            <Button type="button" onClick={() => props.history.push('/groups')}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </section>
     </div>
   );
 }

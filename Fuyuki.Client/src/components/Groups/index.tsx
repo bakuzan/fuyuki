@@ -31,9 +31,15 @@ function Groups(props: GroupsProps) {
 
   const isSuccess = state.value && state.value instanceof Array;
   const items = isSuccess ? (state.value as Group[]) : [];
+  const hasNoItems = items.length === 0;
   console.log('groups...', state, items);
   return (
     <List className="groups" shouldWrap>
+      {hasNoItems && (
+        <li key="NONE" className="groups__item groups__item--no-items">
+          No groups available
+        </li>
+      )}
       {items.map((x: Group) => (
         <li key={x.id} className="groups__item">
           <FYKLink to={`group/${x.id}`}>{x.name}</FYKLink>

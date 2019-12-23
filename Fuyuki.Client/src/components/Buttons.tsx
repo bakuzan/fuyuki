@@ -1,4 +1,8 @@
-import { withButtonisation } from 'meiko/Button';
-import FYKLink from './FYKLink';
+import { withButtonisation, ButtonProps } from 'meiko/Button';
+import FYKLink, { FYKLinkProps } from './FYKLink';
 
-export const LinkAsButton = withButtonisation(FYKLink);
+type LinkAsButtonProps = ButtonProps & FYKLinkProps;
+
+export const LinkAsButton: React.FC<LinkAsButtonProps> = withButtonisation(
+  FYKLink
+);

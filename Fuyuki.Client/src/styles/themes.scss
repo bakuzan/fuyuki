@@ -127,4 +127,18 @@ $yellow: #f3e29d;
       color: var(--accent-contrast-hover);
     }
   }
+
+  .has-float-label input:focus,
+  .has-float-label select:focus {
+    border-color: var(--primary-colour);
+  }
+
+  .autocomplete__menu {
+    background-color: var(--base-background);
+  }
+
+  .create-new-subreddit,
+  .autocomplete-suggestion--active {
+    border-color: var(--primary-colour);
+  }
 }
