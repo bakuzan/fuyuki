@@ -15,5 +15,28 @@ namespace Fuyuki.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<Subreddit> Subreddits { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Group>()
+                        .HasOne(x => x.ApplicationUser)
+                        .WithMany(x => x.Groups)
+                        .HasForeignKey(x => x.ApplicationUserId);
+
+            modelBuilder.Entity<GroupSubreddit>()
+                        .HasKey(x => new { x.GroupId, x.SubredditId });
+
+            modelBuilder.Entity<GroupSubreddit>()
+                        .HasOne(x => x.Group)
+                        .WithMany(x => x.GroupSubreddits)
+                        .HasForeignKey(x => x.GroupId);
+
+            modelBuilder.Entity<GroupSubreddit>()
+                        .HasOne(x => x.Subreddit)
+                        .WithMany(x => x.GroupSubreddits)
+                        .HasForeignKey(x => x.SubredditId);
+        }
+
     }
 }

@@ -14,6 +14,7 @@ namespace Fuyuki.Data
         Task<TEntity> GetAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes) where TEntity : BaseEntity<TEntity>;
         Task<List<TEntity>> GetListAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : BaseEntity<TEntity>;
         Task<List<TEntity>> GetListAsync<TEntity>(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes) where TEntity : BaseEntity<TEntity>;
+        Task<List<TEntity>> GetAllAsync<TEntity>() where TEntity : BaseEntity<TEntity>;
         void SetToPersist<TEntity>(TEntity entity) where TEntity : BaseEntity<TEntity>;
         void Delete<TEntity>(TEntity entity) where TEntity : BaseEntity<TEntity>;
 

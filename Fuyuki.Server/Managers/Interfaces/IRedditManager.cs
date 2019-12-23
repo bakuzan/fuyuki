@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
+using Reddit;
 
 namespace Fuyuki.Managers
 {
     public interface IRedditManager
     {
-        Task<RedditSharp.Reddit> GetRedditInstance(string username);
+        Task<RedditClient> GetRedditInstance(string userRefreshToken);
     }
 }

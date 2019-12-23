@@ -7,7 +7,6 @@ namespace Fuyuki.Mapping
     {
         public RedditProfile()
         {
-            CreateMap<RedditSharp.Things.Post, RedditPost>();
 
         }
     }

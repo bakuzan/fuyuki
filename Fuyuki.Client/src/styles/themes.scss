@@ -1,9 +1,9 @@
 @import './_extensions.scss';
 
-$blue: #474d9b;
+$blue: #484e9d;
 $grey: #7d7485;
-$pink: #f79db6;
-$pink-deep: #f36e93;
+$pink: #fac6d5;
+$pink-deep: #f589a8;
 $purple: #682860;
 $red: #eb516d;
 $white: #fff;
@@ -11,50 +11,56 @@ $yellow: #f3e29d;
 
 :root {
   --base-background: #{$white};
+  --base-background-hover: #{darken($white, 10%)};
+
   --base-colour: #000;
+  --base-colour-hover: #{lighten(#000, 10%)};
 
-  --primary-background: #{$blue};
-  --primary-background-hover: #{$white};
+  --primary-colour: #{$blue};
+  --primary-colour-hover: #{lighten($blue, 10%)};
 
-  --primary-colour: #{$white};
-  --primary-colour-hover: #{$blue};
+  --primary-contrast: #{$white};
+  --primary-contrast-hover: #{darken($white, 10%)};
 
-  --accent-background: #{$pink};
-  --accent-background-hover: #{darken($pink, 10%)};
+  --accent-colour: #{$pink};
+  --accent-colour-hover: #{darken($pink, 10%)};
 
-  --accent-colour: #{$blue};
-  --accent-colour-hover: #{$blue};
+  --accent-contrast: #{$blue};
+  --accent-contrast-hover: #{lighten($blue, 10%)};
 
   --highlight: #{$red};
 }
 
 .theme--alt {
   --base-background: #{$grey};
-  --base-colour: #{$white};
+  --base-background-hover: #{lighten($grey, 10%)};
 
-  --primary-background: #{$purple};
-  --primary-background-hover: #{$grey};
+  --base-colour: #{white};
+  --base-colour-hover: #{darken(white, 10%)};
 
-  --primary-colour: #{$yellow};
-  --primary-colour-hover: #{$yellow};
+  --primary-colour: #{$purple};
+  --primary-colour-hover: #{lighten($purple, 10%)};
 
-  --accent-background: #{$pink-deep};
-  --accent-background-hover: #{lighten($pink-deep, 10%)};
+  --primary-contrast: #{$yellow};
+  --primary-contrast-hover: #{darken($yellow, 10%)};
 
-  --accent-colour: #{$grey};
-  --accent-colour-hover: #{$grey};
+  --accent-colour: #{$pink-deep};
+  --accent-colour-hover: #{lighten($pink-deep, 10%)};
+
+  --accent-contrast: #{$grey};
+  --accent-contrast-hover: #{lighten($grey, 10%)};
 
   --highlight: #{$red};
 }
 
 .theme {
   .application-header {
-    background-color: var(--primary-background);
-    color: var(--primary-colour);
+    background-color: var(--primary-colour);
+    color: var(--primary-contrast);
   }
 
   .application-header__nav-link {
-    color: var(--primary-colour);
+    color: var(--primary-contrast);
   }
 
   .application-header__nav-link:not(.application-header__brand) {
@@ -62,42 +68,63 @@ $yellow: #f3e29d;
     &:focus,
     &:hover,
     &.application-header__nav-link--active {
-      background-color: var(--primary-background-hover);
-      color: var(--primary-colour-hover);
+      background-color: var(--primary-contrast);
+      color: var(--primary-colour);
     }
   }
 
-  .fyk-link,
   .application-header__brand {
-    --anchor-shadow: var(--primary-background);
-    --anchor-shadow-hover: var(--accent-background);
+    --anchor-shadow: var(--primary-colour);
+    --anchor-shadow-hover: var(--accent-colour-hover);
+
+    @extend %anchor-shadow;
+  }
+
+  .fyk-link {
+    color: var(--base-colour);
+    text-decoration: none;
+
+    --anchor-shadow: var(--accent-colour);
+    --anchor-shadow-hover: var(--accent-colour-hover);
 
     &:not(.button) {
       @extend %anchor-shadow;
     }
   }
 
-  .button--primary {
-    background-color: var(--primary-background);
-    color: var(--primary-colour);
+  .button:not(.button--primary):not(.button--accent) {
+    background-color: var(--base-background);
+    color: var(--base-contrast);
 
     &:active,
     &:focus,
     &:hover {
-      background-color: var(--primary-background-hover);
-      color: var(--primary-colour-hover);
+      background-color: var(--base-background-hover);
+      color: var(--base-contrast-hover);
+    }
+  }
+
+  .button--primary {
+    background-color: var(--primary-colour);
+    color: var(--primary-contrast);
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: var(--primary-colour-hover);
+      color: var(--primary-contrast-hover);
     }
   }
 
   .button--accent {
-    background-color: var(--accent-background);
-    color: var(--accent-colour);
+    background-color: var(--accent-colour);
+    color: var(--accent-contrast);
 
     &:active,
     &:focus,
     &:hover {
-      background-color: var(--accent-background-hover);
-      color: var(--accent-colour-hover);
+      background-color: var(--accent-colour-hover);
+      color: var(--accent-contrast-hover);
     }
   }
 }

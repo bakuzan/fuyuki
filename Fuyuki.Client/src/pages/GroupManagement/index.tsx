@@ -1,15 +1,17 @@
 import * as React from 'react';
+import { Helmet } from 'react-helmet';
 
-import Groups from '@/components/Groups';
+import Groups from 'src/components/Groups';
 
 function GroupManagement(props: any) {
   console.log('GM', props);
 
   return (
     <div className="page">
-      <h2>Groups</h2>
+      <Helmet title="Groups" />
+      <h2 className="page__title">Groups</h2>
       <div>
-        <Groups endpoint={'groups/getall'} />
+        <Groups endpoint={'group/getall'} />
       </div>
     </div>
   );

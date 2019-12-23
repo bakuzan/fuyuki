@@ -83,6 +83,11 @@ namespace Fuyuki.Data
             return await query.ToListAsync();
         }
 
+        public async Task<List<TEntity>> GetAllAsync<TEntity>() where TEntity : BaseEntity<TEntity>
+        {
+            return await _context.Set<TEntity>().ToListAsync();
+        }
+
         public void SetToPersist<TEntity>(TEntity entity) where TEntity : BaseEntity<TEntity>
         {
             if (entity.Id == default(int))

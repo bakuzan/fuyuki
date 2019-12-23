@@ -1,31 +1,27 @@
 using System.Threading.Tasks;
 using Fuyuki.Data;
 using Microsoft.AspNetCore.Identity;
-using RedditSharp;
+using Microsoft.Extensions.Configuration;
+using Reddit;
 
 namespace Fuyuki.Managers
 {
     public class RedditManager : IRedditManager
     {
-        private readonly RedditSharp.RefreshTokenWebAgentPool _webAgentPool;
+        private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public RedditManager(RedditSharp.RefreshTokenWebAgentPool webAgentPool,
+        public RedditManager(IConfiguration configuration,
                              UserManager<ApplicationUser> userManager)
         {
-            _webAgentPool = webAgentPool;
+            _configuration = configuration;
             _userManager = userManager;
         }
 
-        public async Task<Reddit> GetRedditInstance(string username)
+        public Task<RedditClient> GetRedditInstance(string userRefreshToken)
         {
-            var webAgent = await _webAgentPool.GetOrCreateWebAgentAsync(username, async (uname, uagent, rlimit) =>
-            {
-                var ident = await _userManager.FindByNameAsync(username);
-                return new RedditSharp.RefreshTokenPoolEntry(uname, "TODO", rlimit, uagent);
-            });
-
-            return new RedditSharp.Reddit(webAgent, true);
+            var reddit = new RedditClient(_configuration["RedditClientID"], userRefreshToken);
+            return Task.FromResult(reddit);
         }
     }
 }

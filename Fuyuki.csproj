@@ -11,6 +11,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="3.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.0" />
@@ -24,7 +25,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0" />
-    <PackageReference Include="RedditSharp" Version="2.0.0-CI00075" />
+    <PackageReference Include="Reddit" Version="1.3.4" />
   </ItemGroup>
 
   <ItemGroup>

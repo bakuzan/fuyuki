@@ -17,16 +17,22 @@ namespace Fuyuki.Services
             _mapper = mapper;
         }
 
-        public async Task<GroupModel> GetGroupById(int id)
+        public async Task<GroupSubsModel> GetGroupById(int id)
         {
             var group = await _groupDataService.GetAsync<Group>(id);
-            return _mapper.Map<GroupModel>(group);
+            return _mapper.Map<GroupSubsModel>(group);
         }
 
         public async Task<List<GroupModel>> GetGroups()
         {
             var groups = await _groupDataService.GetGroups();
             return _mapper.Map<List<GroupModel>>(groups);
+        }
+
+        public async Task<List<GroupSubsModel>> GetGroupsWithSubreddit()
+        {
+            var groups = await _groupDataService.GetGroups();
+            return _mapper.Map<List<GroupSubsModel>>(groups);
         }
 
         public async Task<GroupResponse> CreateGroup(GroupRequest request)

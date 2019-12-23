@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Fuyuki.Managers;
 using System.Linq;
 using AutoMapper;
-using static RedditSharp.Things.Subreddit;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Fuyuki.Controllers
@@ -44,12 +43,10 @@ namespace Fuyuki.Controllers
             var skipCount = page * pageSize;
             var username = User.Identity.Name;
 
-            var reddit = await _redditManager.GetRedditInstance(username);
-            var sub = await reddit.GetSubredditAsync("r/all");
-            var posts = await sub.GetPosts(Sort.New, -1)
-                .Skip(skipCount)
-                .Take(20)
-                .ToList();
+            var userToken = "";
+
+            var reddit = await _redditManager.GetRedditInstance(userToken);
+            var posts = new List<RedditPost>();
 
             return _mapper.Map<List<RedditPost>>(posts);
         }

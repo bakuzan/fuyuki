@@ -1,15 +1,13 @@
 import React from 'react';
 import { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 import {
   ApplicationPaths,
   QueryParameterNames
 } from './ApiAuthorisationConstants';
 import authService from './AuthoriseService';
 
-interface AuthoriseRouteProps extends React.Component<any> {
-  component: React.ComponentClass;
-}
+interface AuthoriseRouteProps extends RouteProps {}
 
 interface AuthoriseRouteState {
   ready: boolean;
@@ -51,7 +49,9 @@ export default class AuthoriseRoute extends Component<
     if (!ready) {
       return <div></div>;
     } else {
-      const { component: Component, ...rest } = this.props;
+      const { component, ...rest } = this.props;
+      const Component = component as React.ComponentClass;
+
       return (
         <Route
           {...rest}

@@ -5,6 +5,7 @@ using Fuyuki.Managers;
 using Fuyuki.Mapping;
 using Fuyuki.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RedditSharp;
 
 namespace Fuyuki
 {
@@ -41,8 +41,20 @@ namespace Fuyuki
             services.AddIdentityServer()
                     .AddApiAuthorization<ApplicationUser, DatabaseContext>();
 
-            services.AddAuthentication()
-                    .AddIdentityServerJwt();
+            services.AddAuthentication(opts =>
+                {
+                    opts.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddReddit(opts =>
+                {
+                    opts.ClientId = Configuration["RedditClientID"];
+                    opts.ClientSecret = Configuration["RedditClientSecret"];
+                    opts.Scope.Add("identity");
+                    opts.Scope.Add("read");
+                    opts.Scope.Add("submit");
+                    opts.SaveTokens = true;
+                })
+                .AddIdentityServerJwt();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -70,9 +82,12 @@ namespace Fuyuki
             services.Configure<RazorViewEngineOptions>(o => o.ViewLocationExpanders.Add(new FuyukiViewLocationExpander()));
 
             // Services
+            services.AddSingleton<IConfiguration>(Configuration);
             services.AddScoped<IGroupService, GroupService>()
-                    .AddScoped<IGroupDataService, GroupDataService>();
-            // .AddScoped<IRedditManager, RedditManager>();
+                    .AddScoped<IGroupDataService, GroupDataService>()
+                    .AddScoped<ISubredditService, SubredditService>()
+                    .AddScoped<ISubredditDataService, SubredditDataService>()
+                    .AddScoped<IRedditManager, RedditManager>();
 
             // Mapping
             var mapping = new MapperConfiguration(mc =>
@@ -85,19 +100,6 @@ namespace Fuyuki
 
             IMapper mapper = mapping.CreateMapper();
             services.AddSingleton(mapper);
-
-            // Reddit
-            // var webAgentPool = new RefreshTokenWebAgentPool(
-            //     Configuration["RedditClientID"],
-            //     Configuration["RedditClientSecret"],
-            //     Configuration["RedditRedirectURI"])
-            // {
-            //     DefaultRateLimitMode = RateLimitMode.Burst,
-            //     DefaultUserAgent = Configuration["RedditUserAgent"]
-            // };
-
-            // services.AddSingleton(webAgentPool);
-            // services.AddSingleton(new WebAgentPool<string, BotWebAgent>());
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

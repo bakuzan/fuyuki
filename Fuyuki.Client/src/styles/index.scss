@@ -10,3 +10,15 @@ main {
     top: $header--height;
   }
 }
+
+// Forms
+.form {
+  &__buttons {
+    display: flex;
+    padding: 5px;
+
+    > .button {
+      margin: 0 5px;
+    }
+  }
+}
