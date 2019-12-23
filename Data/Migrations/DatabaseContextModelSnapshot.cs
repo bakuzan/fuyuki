@@ -3,16 +3,14 @@ using System;
 using Fuyuki.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fuyuki.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20191220090437_AddGroupSubreddit")]
-    partial class AddGroupSubreddit
+    partial class DatabaseContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,10 +86,15 @@ namespace Fuyuki.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Groups");
                 });
@@ -337,6 +340,13 @@ namespace Fuyuki.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Fuyuki.Data.Group", b =>
+                {
+                    b.HasOne("Fuyuki.Data.ApplicationUser", "ApplicationUser")
+                        .WithMany("Groups")
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("Fuyuki.Data.GroupSubreddit", b =>

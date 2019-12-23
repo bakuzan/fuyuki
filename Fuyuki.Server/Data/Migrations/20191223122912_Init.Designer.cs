@@ -4,18 +4,19 @@ using Fuyuki.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fuyuki.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("00000000000000_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20191223122912_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0-rc1.19455.8");
+                .HasAnnotation("ProductVersion", "3.1.0");
 
             modelBuilder.Entity("Fuyuki.Data.ApplicationUser", b =>
                 {
@@ -79,6 +80,54 @@ namespace Fuyuki.Data.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Fuyuki.Data.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Fuyuki.Data.GroupSubreddit", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SubredditId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("GroupId", "SubredditId");
+
+                    b.HasIndex("SubredditId");
+
+                    b.ToTable("GroupSubreddit");
+                });
+
+            modelBuilder.Entity("Fuyuki.Data.Subreddit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subreddits");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -293,6 +342,28 @@ namespace Fuyuki.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Fuyuki.Data.Group", b =>
+                {
+                    b.HasOne("Fuyuki.Data.ApplicationUser", "ApplicationUser")
+                        .WithMany("Groups")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
+            modelBuilder.Entity("Fuyuki.Data.GroupSubreddit", b =>
+                {
+                    b.HasOne("Fuyuki.Data.Group", "Group")
+                        .WithMany("GroupSubreddits")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fuyuki.Data.Subreddit", "Subreddit")
+                        .WithMany("GroupSubreddits")
+                        .HasForeignKey("SubredditId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
