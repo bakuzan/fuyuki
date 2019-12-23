@@ -97,15 +97,6 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
           <LinkAsButton
             className="account-action"
             btnStyle="accent"
-            to={profilePath}
-          >
-            {userName} profile
-          </LinkAsButton>
-        </div>
-        <div>
-          <LinkAsButton
-            className="account-action"
-            btnStyle="accent"
             to={logoutPath}
           >
             Logout
@@ -118,15 +109,6 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
   anonymousView(registerPath: string, loginPath: string) {
     return (
       <Fragment>
-        <div>
-          <LinkAsButton
-            className="account-action"
-            btnStyle="accent"
-            to={registerPath}
-          >
-            Register
-          </LinkAsButton>
-        </div>
         <div>
           <LinkAsButton
             className="account-action"

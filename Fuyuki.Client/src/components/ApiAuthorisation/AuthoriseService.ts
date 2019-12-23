@@ -30,6 +30,7 @@ export class AuthoriseService {
 
   async isAuthenticated() {
     const user = await this.getUser();
+    console.log('Auth user > ', user);
     return !!user;
   }
 

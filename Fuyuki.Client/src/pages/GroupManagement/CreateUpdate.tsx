@@ -7,7 +7,7 @@ import { Button } from 'meiko/Button';
 import FC from 'meiko/FormControls';
 import AutocompleteInput from 'meiko/AutocompleteInput';
 import List from 'meiko/List';
-import TagChipStyle from 'meiko/styles/TagChip';
+import tagChipStyle from 'meiko/styles/TagChip';
 
 import { useAsync } from 'src/hooks/useAsync';
 import { PageProps } from 'src/interfaces/PageProps';
@@ -74,7 +74,7 @@ function GroupCreateUpdate(props: PageProps) {
       ...item,
       subreddits: item.subreddits.map((x) => ({
         ...x,
-        id: x.id < 0 ? 0 : x.id
+        id: Math.max(x.id, 0)
       }))
     };
 
@@ -165,16 +165,16 @@ function GroupCreateUpdate(props: PageProps) {
                   key={x.id}
                   className={classNames(
                     'subreddits__item',
-                    TagChipStyle.tagChip
+                    tagChipStyle.tagChip
                   )}
                 >
-                  <div className={classNames(TagChipStyle.tagChip__text)}>
+                  <div className={classNames(tagChipStyle.tagChip__text)}>
                     {x.name}
                   </div>
                   <Button
                     className={classNames(
                       'subreddits__remove',
-                      TagChipStyle.tagChip__delete
+                      tagChipStyle.tagChip__delete
                     )}
                     title={removeLabel}
                     aria-label={removeLabel}

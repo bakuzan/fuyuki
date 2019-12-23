@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Fuyuki.Data;
@@ -39,6 +40,14 @@ namespace Fuyuki.Services
         {
             var group = _mapper.Map<Group>(request);
 
+            foreach (var sub in request.Subreddits)
+            {
+                group.GroupSubreddits.Add(new GroupSubreddit
+                {
+                    Subreddit = _mapper.Map<Subreddit>(sub)
+                });
+            }
+
             _groupDataService.SetToPersist(group);
 
             await _groupDataService.SaveAsync();
@@ -55,6 +64,18 @@ namespace Fuyuki.Services
 
             _mapper.Map(request, group);
 
+            var requestSubreddits = _mapper.Map<List<Subreddit>>(request.Subreddits);
+            var newSubreddits = requestSubreddits
+                .Where(x => !group.GroupSubreddits.Any(g => g.SubredditId == x.Id && g.Subreddit.Name == x.Name));
+
+            foreach (var sub in newSubreddits)
+            {
+                group.GroupSubreddits.Add(new GroupSubreddit
+                {
+                    Subreddit = sub
+                });
+            }
+
             _groupDataService.SetToPersist(group);
 
             await _groupDataService.SaveAsync();
@@ -67,7 +88,7 @@ namespace Fuyuki.Services
 
         public async Task<GroupResponse> DeleteGroup(int id)
         {
-            var group = await _groupDataService.GetAsync<Group>(id);
+            var group = await _groupDataService.GetAsync<Group>(id, x => x.GroupSubreddits);
 
             _groupDataService.Delete(group);
 

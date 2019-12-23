@@ -10,7 +10,8 @@ namespace Fuyuki.Mapping
         {
             CreateMap<Subreddit, SubredditModel>();
 
-            CreateMap<SubredditModel, Subreddit>();
+            CreateMap<SubredditModel, Subreddit>()
+                .ForMember(x => x.Name, opts => opts.MapFrom(x => x.Name.Trim()));
         }
     }
 }

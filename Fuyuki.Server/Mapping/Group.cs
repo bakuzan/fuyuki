@@ -10,11 +10,15 @@ namespace Fuyuki.Mapping
         public GroupProfile()
         {
             CreateMap<Group, GroupModel>();
+
             CreateMap<Group, GroupSubsModel>()
                 .ForMember(x => x.Subreddits, opts => opts.MapFrom(x => x.GroupSubreddits.Select(s => s.Subreddit)));
 
-            CreateMap<GroupModel, Group>();
-            CreateMap<GroupRequest, Group>();
+            CreateMap<GroupModel, Group>()
+                .ForMember(x => x.Name, opts => opts.MapFrom(x => x.Name.Trim()));
+
+            CreateMap<GroupRequest, Group>()
+                .ForMember(x => x.Name, opts => opts.MapFrom(x => x.Name.Trim()));
         }
     }
 }
