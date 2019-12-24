@@ -33,7 +33,7 @@ namespace Fuyuki.Services
             var skipCount = page * pageSize;
             var after = "";
 
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
 
             var reddit = await _redditManager.GetRedditInstance(user.AccessToken);
 

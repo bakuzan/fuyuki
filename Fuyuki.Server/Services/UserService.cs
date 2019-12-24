@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Fuyuki.Data;
@@ -21,9 +22,11 @@ namespace Fuyuki.Services
             _signInManager = signInManager;
         }
 
-        public async Task<UserModel> GetUserByName(string username)
+        public async Task<UserModel> GetCurrentUser(ClaimsPrincipal claim)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var userId = claim.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var user = await _userManager.FindByIdAsync(userId);
             var token = await _userManager.GetAuthenticationTokenAsync(user, "Reddit", "access_token");
 
             var model = _mapper.Map<UserModel>(user);

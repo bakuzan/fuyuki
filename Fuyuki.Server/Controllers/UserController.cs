@@ -31,7 +31,7 @@ namespace Fuyuki.Controllers
         [HttpGet]
         public async Task<UserModel> Get()
         {
-            return await _userService.GetUserByName(User.Identity.Name);
+            return await _userService.GetCurrentUser(User);
         }
 
     }

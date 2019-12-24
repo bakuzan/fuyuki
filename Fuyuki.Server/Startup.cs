@@ -79,6 +79,7 @@ namespace Fuyuki
                 options.User.RequireUniqueEmail = false;
             });
 
+            services.AddCors();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.Configure<RazorViewEngineOptions>(o => o.ViewLocationExpanders.Add(new FuyukiViewLocationExpander()));

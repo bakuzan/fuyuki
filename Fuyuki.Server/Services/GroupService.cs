@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Fuyuki.Data;
 using Fuyuki.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Fuyuki.Services
 {
@@ -15,7 +16,9 @@ namespace Fuyuki.Services
         private readonly IGroupDataService _groupDataService;
         private readonly IMapper _mapper;
 
-        public GroupService(IUserService userService, IGroupDataService groupDataService, IMapper mapper)
+        public GroupService(IUserService userService,
+                            IGroupDataService groupDataService,
+                            IMapper mapper)
         {
             _userService = userService;
             _groupDataService = groupDataService;
@@ -24,7 +27,7 @@ namespace Fuyuki.Services
 
         public async Task<GroupSubsModel> GetGroupById(ClaimsPrincipal claim, int id)
         {
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
             var group = await _groupDataService.GetAsync<Group>(id);
 
             if (group.ApplicationUserId != user.Id)
@@ -37,21 +40,22 @@ namespace Fuyuki.Services
 
         public async Task<List<GroupModel>> GetGroups(ClaimsPrincipal claim)
         {
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
             var groups = await _groupDataService.GetGroups(user.Id);
             return _mapper.Map<List<GroupModel>>(groups);
         }
 
         public async Task<List<GroupSubsModel>> GetGroupsWithSubreddit(ClaimsPrincipal claim)
         {
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
             var groups = await _groupDataService.GetGroupsWithSubreddits(user.Id);
             return _mapper.Map<List<GroupSubsModel>>(groups);
         }
 
         public async Task<GroupResponse> CreateGroup(ClaimsPrincipal claim, GroupRequest request)
         {
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
+
             var group = _mapper.Map<Group>(request);
             group.ApplicationUserId = user.Id;
 
@@ -75,7 +79,7 @@ namespace Fuyuki.Services
 
         public async Task<GroupResponse> UpdateGroup(ClaimsPrincipal claim, GroupRequest request)
         {
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
             var group = await _groupDataService.GetAsync<Group>(request.Id);
 
             if (group.ApplicationUserId != user.Id)
@@ -112,7 +116,7 @@ namespace Fuyuki.Services
 
         public async Task<GroupResponse> DeleteGroup(ClaimsPrincipal claim, int id)
         {
-            var user = await _userService.GetUserByName(claim.Identity.Name);
+            var user = await _userService.GetCurrentUser(claim);
             var group = await _groupDataService.GetAsync<Group>(id, x => x.GroupSubreddits);
 
             if (group.ApplicationUserId != user.Id)
