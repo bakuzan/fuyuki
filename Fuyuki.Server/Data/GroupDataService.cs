@@ -14,6 +14,13 @@ namespace Fuyuki.Data
             _context = context;
         }
 
+        public async Task<Group> GetGroupAsync(int id)
+        {
+            return await _context.Groups.Include(x => x.GroupSubreddits)
+                                        .ThenInclude(x => x.Subreddit)
+                                        .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<List<Group>> GetGroups(string userId)
         {
             return await _context.Groups.Where(x => x.ApplicationUserId == userId)

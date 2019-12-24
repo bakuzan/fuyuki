@@ -28,7 +28,7 @@ namespace Fuyuki.Services
         public async Task<GroupSubsModel> GetGroupById(ClaimsPrincipal claim, int id)
         {
             var user = await _userService.GetCurrentUser(claim);
-            var group = await _groupDataService.GetAsync<Group>(id);
+            var group = await _groupDataService.GetGroupAsync(id);
 
             if (group.ApplicationUserId != user.Id)
             {
@@ -59,6 +59,11 @@ namespace Fuyuki.Services
             var group = _mapper.Map<Group>(request);
             group.ApplicationUserId = user.Id;
 
+            if (group.GroupSubreddits == null)
+            {
+                group.GroupSubreddits = new List<GroupSubreddit>();
+            }
+
             foreach (var sub in request.Subreddits)
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
@@ -72,7 +77,7 @@ namespace Fuyuki.Services
 
             await _groupDataService.SaveAsync();
 
-            return new GroupResponse
+            return new GroupResponse()
             {
                 Data = _mapper.Map<GroupModel>(group)
             };
@@ -81,7 +86,7 @@ namespace Fuyuki.Services
         public async Task<GroupResponse> UpdateGroup(ClaimsPrincipal claim, GroupRequest request)
         {
             var user = await _userService.GetCurrentUser(claim);
-            var group = await _groupDataService.GetAsync<Group>(request.Id);
+            var group = await _groupDataService.GetAsync<Group>(request.Id, x => x.GroupSubreddits);
 
             if (group.ApplicationUserId != user.Id)
             {
@@ -93,14 +98,24 @@ namespace Fuyuki.Services
 
             _mapper.Map(request, group);
 
+            if (group.GroupSubreddits == null)
+            {
+                group.GroupSubreddits = new List<GroupSubreddit>();
+            }
+
             var requestSubreddits = _mapper.Map<List<Subreddit>>(request.Subreddits);
-            var newSubreddits = requestSubreddits
-                .Where(x => !group.GroupSubreddits.Any(g => g.SubredditId == x.Id && g.Subreddit.Name == x.Name));
+
+            group.GroupSubreddits.RemoveAll(g =>
+                !requestSubreddits.Any(r => g.SubredditId == r.Id && g.Subreddit.Name == r.Name));
+
+            var newSubreddits = requestSubreddits.Where(x =>
+                !group.GroupSubreddits.Any(g => g.SubredditId == x.Id && g.Subreddit.Name == x.Name));
 
             foreach (var sub in newSubreddits)
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
                 {
+                    Group = group,
                     Subreddit = sub
                 });
             }

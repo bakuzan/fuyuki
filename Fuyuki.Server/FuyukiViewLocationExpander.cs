@@ -8,9 +8,9 @@ namespace Fuyuki
     {
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context,
-            IEnumerable<string> viewLocations)
+                                                       IEnumerable<string> viewLocations)
         {
-            // Replace the Views to MyViews..  
+            viewLocations = viewLocations.Select(s => s.Replace("Areas", "Fuyuki.Server/Areas"));
             viewLocations = viewLocations.Select(s => s.Replace("Views", "Fuyuki.Server/Pages"));
 
             return viewLocations;
