@@ -7,9 +7,15 @@ export default async function sendRequest(
   try {
     const token = await authService.getAccessToken();
 
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${token}`);
+    headers.append('pragma', 'no-cache');
+    headers.append('cache-control', 'no-cache');
+    headers.append('Content-Type', 'application/json');
+
     const response = await fetch(url, {
-      headers: !token ? {} : { Authorization: `Bearer ${token}` },
-      ...options
+      ...options,
+      headers
     });
 
     const result = await response.json();

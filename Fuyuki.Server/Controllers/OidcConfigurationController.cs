@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Fuyuki.Controllers
 {
-    public class OidcConfigurationController : BaseFuyukiController
+    public class OidcConfigurationController : ControllerBase
     {
         private readonly ILogger<OidcConfigurationController> _logger;
 

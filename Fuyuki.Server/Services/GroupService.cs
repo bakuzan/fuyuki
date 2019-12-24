@@ -63,6 +63,7 @@ namespace Fuyuki.Services
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
                 {
+                    Group = group,
                     Subreddit = _mapper.Map<Subreddit>(sub)
                 });
             }
