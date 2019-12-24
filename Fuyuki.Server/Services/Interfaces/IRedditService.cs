@@ -7,6 +7,6 @@ namespace Fuyuki.Services
 {
     public interface IRedditService
     {
-        Task<List<RedditPost>> GetRAllPage(ClaimsPrincipal claim, int page);
+        Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, string subreddit, int page);
     }
 }

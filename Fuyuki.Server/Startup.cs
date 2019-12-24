@@ -37,7 +37,7 @@ namespace Fuyuki
             services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite(dbConnectionString));
 
             // Identity stuff
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>()
                     .AddEntityFrameworkStores<DatabaseContext>();
 
             services.AddIdentityServer()
@@ -85,7 +85,8 @@ namespace Fuyuki
 
             // Services
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddScoped<IGroupService, GroupService>()
+            services.AddScoped<IUserService, UserService>()
+                    .AddScoped<IGroupService, GroupService>()
                     .AddScoped<IGroupDataService, GroupDataService>()
                     .AddScoped<ISubredditService, SubredditService>()
                     .AddScoped<ISubredditDataService, SubredditDataService>()

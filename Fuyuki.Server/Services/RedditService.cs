@@ -28,15 +28,18 @@ namespace Fuyuki.Services
             _mapper = mapper;
         }
 
-        public async Task<List<RedditPost>> GetRAllPage(ClaimsPrincipal claim, int page)
+        public async Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, string subreddit, int page)
         {
             var skipCount = page * pageSize;
+            var after = "";
+
             var user = await _userService.GetUserByName(claim.Identity.Name);
 
-            var userToken = "";
+            var reddit = await _redditManager.GetRedditInstance(user.AccessToken);
 
-            var reddit = await _redditManager.GetRedditInstance(userToken);
-            var posts = new List<RedditPost>();
+            var posts = reddit.Subreddit(subreddit)
+                              .Posts
+                              .GetNew(after: after, limit: pageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
         }

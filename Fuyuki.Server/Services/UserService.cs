@@ -24,7 +24,12 @@ namespace Fuyuki.Services
         public async Task<UserModel> GetUserByName(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
-            return _mapper.Map<UserModel>(user);
+            var token = await _userManager.GetAuthenticationTokenAsync(user, "Reddit", "access_token");
+
+            var model = _mapper.Map<UserModel>(user);
+            model.AccessToken = token;
+
+            return model;
         }
 
     }

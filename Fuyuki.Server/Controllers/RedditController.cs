@@ -28,7 +28,7 @@ namespace Fuyuki.Controllers
         [Route("[action]/{page}")]
         public async Task<List<RedditPost>> GetRAll(int page = 0)
         {
-            return await _redditService.GetRAllPage(User, page);
+            return await _redditService.GetSubredditPostsPaged(User, "all", page);
         }
 
     }
