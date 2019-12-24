@@ -3,5 +3,7 @@ declare module 'meiko/styles/TagChip' {
     [selector: string]: any | CSSLikeObject;
   }
 
-  export = CSSLikeObject;
+  declare const TagChipStyle: CSSLikeObject;
+
+  export = TagChipStyle;
 }

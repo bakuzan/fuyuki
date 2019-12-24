@@ -27,31 +27,31 @@ namespace Fuyuki.Controllers
         [Route("[action]")]
         public async Task<List<GroupModel>> GetAll()
         {
-            return await _groupService.GetGroups();
+            return await _groupService.GetGroups(User);
         }
 
         [HttpGet("{id}")]
         public async Task<GroupModel> Get(int id)
         {
-            return await _groupService.GetGroupById(id);
+            return await _groupService.GetGroupById(User, id);
         }
 
         [HttpPost]
         public async Task<GroupResponse> Post(GroupRequest request)
         {
-            return await _groupService.CreateGroup(request);
+            return await _groupService.CreateGroup(User, request);
         }
 
         [HttpPut]
         public async Task<GroupResponse> Put(GroupRequest request)
         {
-            return await _groupService.UpdateGroup(request);
+            return await _groupService.UpdateGroup(User, request);
         }
 
         [HttpDelete]
         public async Task<GroupResponse> Delete(int id)
         {
-            return await _groupService.DeleteGroup(id);
+            return await _groupService.DeleteGroup(User, id);
         }
     }
 }

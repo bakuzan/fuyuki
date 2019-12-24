@@ -14,15 +14,17 @@ namespace Fuyuki.Data
             _context = context;
         }
 
-        public async Task<List<Group>> GetGroups()
+        public async Task<List<Group>> GetGroups(string userId)
         {
-            return await _context.Groups.ToListAsync();
+            return await _context.Groups.Where(x => x.ApplicationUserId == userId)
+                                        .ToListAsync();
         }
 
-        public async Task<List<Group>> GetGroupsWithSubreddits()
+        public async Task<List<Group>> GetGroupsWithSubreddits(string userId)
         {
             return await _context.Groups
                 .Include(x => x.GroupSubreddits.Select(s => s.Subreddit))
+                .Where(x => x.ApplicationUserId == userId)
                 .ToListAsync();
         }
     }
