@@ -18,10 +18,10 @@ namespace Fuyuki.Managers
             _userManager = userManager;
         }
 
-        public Task<RedditClient> GetRedditInstance(string userRefreshToken, string accessToken)
+        public Task<RedditClient> GetRedditInstance(string refreshToken, string accessToken)
         {
             var reddit = new RedditClient(_configuration["RedditClientID"],
-                                          userRefreshToken,
+                                          refreshToken,
                                           _configuration["RedditClientSecret"],
                                           accessToken,
                                           _configuration["RedditUserAgent"]);

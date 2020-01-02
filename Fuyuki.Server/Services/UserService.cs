@@ -27,10 +27,12 @@ namespace Fuyuki.Services
             var userId = claim.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var user = await _userManager.FindByIdAsync(userId);
-            var token = await _userManager.GetAuthenticationTokenAsync(user, "Reddit", "access_token");
+            var access_token = await _userManager.GetAuthenticationTokenAsync(user, "Reddit", "access_token");
+            var refresh_token = await _userManager.GetAuthenticationTokenAsync(user, "Reddit", "refresh_token");
 
             var model = _mapper.Map<UserModel>(user);
-            model.AccessToken = token;
+            model.AccessToken = access_token;
+            model.RefreshToken = refresh_token;
 
             return model;
         }

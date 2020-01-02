@@ -21,6 +21,7 @@ export class AuthoriseService {
   _nextSubscriptionId = 0;
   _user: User | null = null;
   _isAuthenticated = false;
+  _timer = 0;
 
   // By default pop ups are disabled because they don't work properly on Edge.
   // If you want to enable pop up authentication simply set this flag to false.
@@ -31,13 +32,6 @@ export class AuthoriseService {
   async isAuthenticated() {
     const user = await this.getUser();
     const isAuth = !!user;
-
-    if (!isAuth) {
-      // Take this oppurtunity to clean all the stupid oidc.xxxx entries in localStorage.
-      Object.keys(localStorage)
-        .filter((x) => x.startsWith('oidc'))
-        .forEach((key) => localStorage.removeItem(key));
-    }
     console.log('Auth user > ', user);
     return isAuth;
   }
@@ -164,6 +158,15 @@ export class AuthoriseService {
       const userManager = this.userManager as UserManager;
       const response = await userManager.signoutCallback(url);
       this.updateState(null);
+
+      clearTimeout(this._timer);
+      this._timer = window.setTimeout(() => {
+        // Take this oppurtunity to clean all the stupid oidc.xxxx entries in localStorage.
+        Object.keys(localStorage)
+          .filter((x) => x.startsWith('oidc'))
+          .forEach((key) => localStorage.removeItem(key));
+      }, 500);
+
       return this.success(response && (response as any).data);
     } catch (error) {
       console.log(`There was an error trying to log out '${error}'.`);

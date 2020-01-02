@@ -33,7 +33,7 @@ namespace Fuyuki.Services
         public async Task<List<RedditPost>> GetRAllPostsPaged(ClaimsPrincipal claim, string lastPostId)
         {
             var user = await _userService.GetCurrentUser(claim);
-            var reddit = await _redditManager.GetRedditInstance(user.AccessToken);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
             var posts = reddit.Subreddit("all")
                               .Posts
@@ -45,7 +45,7 @@ namespace Fuyuki.Services
         public async Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, int groupId, string lastPostId)
         {
             var user = await _userService.GetCurrentUser(claim);
-            var reddit = await _redditManager.GetRedditInstance(user.AccessToken);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
             var group = await _groupDataService.GetGroupAsync(groupId);
 

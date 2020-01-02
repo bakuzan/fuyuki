@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Fuyuki.Areas.Identity.Pages.Account
 {
@@ -74,6 +75,13 @@ namespace Fuyuki.Areas.Identity.Pages.Account
             {
                 var externalUsername = info.Principal.Identity.Name;
 
+                var props = new AuthenticationProperties();
+                props.StoreTokens(info.AuthenticationTokens);
+                props.IsPersistent = true;
+
+                var user = await _userManager.GetUserAsync(info.Principal);
+                await _signInManager.SignInAsync(user, props);
+
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", externalUsername, info.LoginProvider);
 
                 return LocalRedirect(returnUrl);
@@ -101,8 +109,11 @@ namespace Fuyuki.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+                        var props = new AuthenticationProperties();
+                        props.StoreTokens(info.AuthenticationTokens);
+                        props.IsPersistent = true;
+
+                        await _signInManager.SignInAsync(user, props);
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
