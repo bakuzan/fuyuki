@@ -34,3 +34,13 @@ main {
     }
   }
 }
+
+.delete-button {
+  background-color: var(--danger-colour);
+  color: #fff;
+
+  &:focus,
+  &:hover {
+    background-color: var(--danger-colour-hover);
+  }
+}

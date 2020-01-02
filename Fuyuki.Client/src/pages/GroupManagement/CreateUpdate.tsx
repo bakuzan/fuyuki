@@ -92,6 +92,20 @@ function GroupCreateUpdate(props: PageProps) {
     }
   }
 
+  async function onDelete() {
+    const result = await sendRequest(`group/${id}`, {
+      method: 'DELETE'
+    });
+
+    if (result.success) {
+      props.history.push('/groups');
+    } else {
+      console.log('Failed', result);
+      // TODO
+      // Handle and display result.errorMessages...
+    }
+  }
+
   console.log('GM CU', props);
 
   return (
@@ -204,6 +218,14 @@ function GroupCreateUpdate(props: PageProps) {
             </Button>
           </div>
         </form>
+
+        <div className="button-group">
+          {isEdit && (
+            <Button className="delete-button" onClick={() => onDelete()}>
+              Delete
+            </Button>
+          )}
+        </div>
       </section>
     </div>
   );

@@ -88,6 +88,7 @@ namespace Fuyuki
                     .AddScoped<IGroupDataService, GroupDataService>()
                     .AddScoped<ISubredditService, SubredditService>()
                     .AddScoped<ISubredditDataService, SubredditDataService>()
+                    .AddScoped<IRedditService, RedditService>()
                     .AddScoped<IRedditManager, RedditManager>();
 
             // Mapping

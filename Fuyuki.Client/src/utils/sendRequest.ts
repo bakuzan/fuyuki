@@ -1,5 +1,14 @@
 import authService from '../components/ApiAuthorisation/AuthoriseService';
 
+function uintToString(uintArray: Uint8Array | undefined) {
+  const encodedString = String.fromCharCode.apply(
+    null,
+    Array.from(uintArray ?? [])
+  );
+
+  return decodeURIComponent(escape(encodedString));
+}
+
 export default async function sendRequest(
   url: string,
   options: RequestInit = {}
@@ -18,6 +27,17 @@ export default async function sendRequest(
       headers
     });
 
+    if (!response.ok) {
+      const errorResponse = await response.body?.getReader().read();
+      const error = uintToString(errorResponse?.value) || `Request failed.`;
+
+      console.log(error);
+      return {
+        success: false,
+        error
+      };
+    }
+    console.log(response);
     const result = await response.json();
 
     // TODO
@@ -25,6 +45,7 @@ export default async function sendRequest(
 
     return result;
   } catch (error) {
+    console.log(error);
     return { success: false, error };
   }
 }

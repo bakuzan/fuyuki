@@ -30,8 +30,16 @@ export class AuthoriseService {
 
   async isAuthenticated() {
     const user = await this.getUser();
+    const isAuth = !!user;
+
+    if (!isAuth) {
+      // Take this oppurtunity to clean all the stupid oidc.xxxx entries in localStorage.
+      Object.keys(localStorage)
+        .filter((x) => x.startsWith('oidc'))
+        .forEach((key) => localStorage.removeItem(key));
+    }
     console.log('Auth user > ', user);
-    return !!user;
+    return isAuth;
   }
 
   async getUser() {

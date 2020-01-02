@@ -1,26 +1,23 @@
-import React, { useState } from 'react';
-import Helmet from 'react-helmet';
+import * as React from 'react';
+import { Helmet } from 'react-helmet';
 
-import { useAsync } from '../hooks/useAsync';
-import sendRequest from '../utils/sendRequest';
+import Groups from 'src/components/Groups';
+import { PageProps } from 'src/interfaces/PageProps';
 
-function Home() {
-  const [page, setPage] = useState(0);
-
-  // const state = useAsync<any[]>(async () => {
-  //   return await sendRequest(`reddit/getrall/${page}`);
-  // }, [page]);
-
-  // console.log('HOME', page, state);
+function Home(props: PageProps) {
+  console.log('GM', props);
 
   return (
-    <div>
+    <div className="page">
       <Helmet title="Home" />
-      <h1>Hello, world!</h1>
-      <p>This is the placeholder home page</p>
-      <button type="button" onClick={() => setPage((p) => p + 1)}>
-        Next Page
-      </button>
+      <section>
+        <header className="page__header">
+          <h2 className="page__title">Home</h2>
+        </header>
+        <div>
+          <Groups endpoint={'group/getallwithsubreddits'} />
+        </div>
+      </section>
     </div>
   );
 }

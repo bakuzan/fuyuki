@@ -10,6 +10,7 @@ import AuthoriseRoute from './components/ApiAuthorisation/AuthoriseRoute';
 import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisationConstants';
 
 import Home from './pages/Home';
+import Posts from './pages/Posts';
 import GroupManagement from './pages/GroupManagement';
 import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
 
@@ -25,6 +26,8 @@ function App() {
       <HeaderBar />
       <main>
         <AuthoriseRoute exact path="/" component={Home} />
+        <AuthoriseRoute path="/posts/rall" component={Posts} />
+        <AuthoriseRoute path="/posts/:groupId(\d*)" component={Posts} />
         <AuthoriseRoute path="/groups" component={GroupManagement} />
         <AuthoriseRoute
           path="/group/:id(\d*)?"

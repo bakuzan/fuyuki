@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import List from 'meiko/List';
-import FYKLink from '../FYKLink';
+import GroupItem from './GroupItem';
+
 import { useAsync } from 'src/hooks/useAsync';
 import { Group } from 'src/interfaces/Group';
 import sendRequest from 'src/utils/sendRequest';
@@ -41,11 +42,7 @@ function Groups(props: GroupsProps) {
         </li>
       )}
       {items.map((x: Group) => (
-        <li key={x.id} className="groups__item">
-          <FYKLink to={`group/${x.id}`}>{x.name}</FYKLink>
-          {/* TODO */}
-          {/* Show subreddits here, if it exists on x */}
-        </li>
+        <GroupItem key={x.id} data={x} />
       ))}
     </List>
   );

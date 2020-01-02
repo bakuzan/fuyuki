@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,18 +30,36 @@ namespace Fuyuki.Services
             _mapper = mapper;
         }
 
-        public async Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, string subreddit, int page)
+        public async Task<List<RedditPost>> GetRAllPostsPaged(ClaimsPrincipal claim, string lastPostId)
         {
-            var skipCount = page * pageSize;
-            var after = "";
-
             var user = await _userService.GetCurrentUser(claim);
-
             var reddit = await _redditManager.GetRedditInstance(user.AccessToken);
 
-            var posts = reddit.Subreddit(subreddit)
+            var posts = reddit.Subreddit("all")
                               .Posts
-                              .GetNew(after: after, limit: pageSize);
+                              .GetNew(after: lastPostId, limit: pageSize);
+
+            return _mapper.Map<List<RedditPost>>(posts);
+        }
+
+        public async Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, int groupId, string lastPostId)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.AccessToken);
+
+            var group = await _groupDataService.GetGroupAsync(groupId);
+
+            if (group.ApplicationUserId != user.Id)
+            {
+                throw new Exception("User is not permitted to use this group.");
+            }
+
+            var subNames = group.GroupSubreddits.Select(x => x.Subreddit.Name);
+            var subreddits = string.Join('+', subNames);
+
+            var posts = reddit.Subreddit(subreddits)
+                              .Posts
+                              .GetNew(after: lastPostId, limit: pageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
         }

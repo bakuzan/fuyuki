@@ -59,6 +59,10 @@ namespace Fuyuki.Services
             var group = _mapper.Map<Group>(request);
             group.ApplicationUserId = user.Id;
 
+            _groupDataService.SetToPersist(group);
+
+            await _groupDataService.SaveAsync();
+
             if (group.GroupSubreddits == null)
             {
                 group.GroupSubreddits = new List<GroupSubreddit>();
@@ -86,7 +90,7 @@ namespace Fuyuki.Services
         public async Task<GroupResponse> UpdateGroup(ClaimsPrincipal claim, GroupRequest request)
         {
             var user = await _userService.GetCurrentUser(claim);
-            var group = await _groupDataService.GetAsync<Group>(request.Id, x => x.GroupSubreddits);
+            var group = await _groupDataService.GetGroupAsync(request.Id);
 
             if (group.ApplicationUserId != user.Id)
             {
@@ -115,7 +119,7 @@ namespace Fuyuki.Services
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
                 {
-                    Group = group,
+                    GroupId = group.Id,
                     Subreddit = sub
                 });
             }
@@ -133,7 +137,7 @@ namespace Fuyuki.Services
         public async Task<GroupResponse> DeleteGroup(ClaimsPrincipal claim, int id)
         {
             var user = await _userService.GetCurrentUser(claim);
-            var group = await _groupDataService.GetAsync<Group>(id, x => x.GroupSubreddits);
+            var group = await _groupDataService.GetGroupAsync(id);
 
             if (group.ApplicationUserId != user.Id)
             {

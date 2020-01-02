@@ -24,11 +24,19 @@ namespace Fuyuki.Controllers
         }
 
         [HttpGet]
-        [Route("[action]")]
-        [Route("[action]/{page}")]
-        public async Task<List<RedditPost>> GetRAll(int page = 0)
+        [Route("Posts")]
+        [Route("Posts/{lastPostId}")]
+        public async Task<List<RedditPost>> GetPostsOnRAll(string lastPostId = "")
         {
-            return await _redditService.GetSubredditPostsPaged(User, "all", page);
+            return await _redditService.GetRAllPostsPaged(User, lastPostId);
+        }
+
+        [HttpGet]
+        [Route("{groupId}/Posts")]
+        [Route("{groupId}/Posts/{lastPostId}")]
+        public async Task<List<RedditPost>> GetPosts(int groupId, string lastPostId = "")
+        {
+            return await _redditService.GetSubredditPostsPaged(User, groupId, lastPostId);
         }
 
     }

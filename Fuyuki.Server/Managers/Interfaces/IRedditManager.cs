@@ -5,6 +5,6 @@ namespace Fuyuki.Managers
 {
     public interface IRedditManager
     {
-        Task<RedditClient> GetRedditInstance(string userRefreshToken);
+        Task<RedditClient> GetRedditInstance(string userRefreshToken, string accessToken);
     }
 }

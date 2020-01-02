@@ -30,6 +30,13 @@ namespace Fuyuki.Controllers
             return await _groupService.GetGroups(User);
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<List<GroupSubsModel>> GetAllWithSubreddits()
+        {
+            return await _groupService.GetGroupsWithSubreddit(User);
+        }
+
         [HttpGet("{id}")]
         public async Task<GroupModel> Get(int id)
         {
@@ -48,7 +55,7 @@ namespace Fuyuki.Controllers
             return await _groupService.UpdateGroup(User, request);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<GroupResponse> Delete(int id)
         {
             return await _groupService.DeleteGroup(User, id);
