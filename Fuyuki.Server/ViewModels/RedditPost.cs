@@ -22,6 +22,7 @@ namespace Fuyuki.ViewModels
         public string Subreddit { get; set; }
         public Awards Awards { get; set; }
         public int NumberOfComments { get; set; }
+        public string TextBody { get; set; }
         public string Thumbnail { get; set; }
         public bool IsSelf { get; set; }
         public bool IsVideo { get; set; }

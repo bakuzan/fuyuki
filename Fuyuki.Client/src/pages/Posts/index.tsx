@@ -1,42 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Helmet from 'react-helmet';
 
+import Posts from 'src/components/Posts';
+import { useAsync } from 'src/hooks/useAsync';
+import { Group } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
-import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import sendRequest from 'src/utils/sendRequest';
 
 interface PostsPageParams {
   groupId?: string;
+  subName?: string;
 }
 
 function PostsPage(props: PageProps) {
-  const { groupId = '' } = props.match.params as PostsPageParams;
-  const [postsAfter, setPostsAfter] = useState('');
+  const { groupId = '', subName = '' } = props.match.params as PostsPageParams;
 
-  const pageTitle = groupId ? '<group> Posts' : 'All Posts';
-  const queryUrl = groupId ? `reddit/${groupId}/posts/` : `reddit/posts/`;
-
-  const [state, fetchPage] = useAsyncFn<any[], any>(
-    async (lastPostId: string) => await sendRequest(`${queryUrl}${lastPostId}`),
-    [queryUrl]
+  const { value } = useAsync<Group>(
+    async () =>
+      groupId ? await sendRequest(`group/${groupId}`) : Promise.resolve(),
+    [groupId]
   );
 
-  const lastPostId = '';
-
-  useEffect(() => {
-    fetchPage(postsAfter);
-  }, [postsAfter]);
-
-  console.log('Posts...', lastPostId, postsAfter, state);
+  const groupName = value?.name ?? subName ?? '';
+  const pageTitle = groupId ? `${groupName} Posts` : 'All Posts';
+  const queryUrl = groupId ? `reddit/${groupId}/posts/` : `reddit/posts/`;
 
   return (
-    <div>
+    <div className="page">
       <Helmet title={pageTitle} />
-      <h1>Hello, world!</h1>
-      <p>This is the placeholder home page</p>
-      <button type="button" onClick={() => setPostsAfter(lastPostId)}>
-        Next Page
-      </button>
+      <header className="page__header">
+        <h2 className="page__title">{pageTitle}</h2>
+      </header>
+      <Posts endpoint={queryUrl} />
     </div>
   );
 }

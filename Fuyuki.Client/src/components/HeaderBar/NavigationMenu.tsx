@@ -12,8 +12,10 @@ function NavigationMenu() {
   );
 
   useEffect(() => {
-    authService.subscribe(() => refreshAuthState());
+    const unsubId = authService.subscribe(() => refreshAuthState());
     refreshAuthState();
+
+    return () => authService.unsubscribe(unsubId);
   }, [refreshAuthState]);
 
   if (!state.value) {

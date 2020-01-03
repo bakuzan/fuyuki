@@ -42,14 +42,18 @@ namespace Fuyuki.Services
         {
             var user = await _userService.GetCurrentUser(claim);
             var groups = await _groupDataService.GetGroups(user.Id);
-            return _mapper.Map<List<GroupModel>>(groups);
+            return _mapper.Map<List<GroupModel>>(groups)
+                          .OrderBy(x => x.Name)
+                          .ToList();
         }
 
         public async Task<List<GroupSubsModel>> GetGroupsWithSubreddit(ClaimsPrincipal claim)
         {
             var user = await _userService.GetCurrentUser(claim);
             var groups = await _groupDataService.GetGroupsWithSubreddits(user.Id);
-            return _mapper.Map<List<GroupSubsModel>>(groups);
+            return _mapper.Map<List<GroupSubsModel>>(groups)
+                          .OrderBy(x => x.Name)
+                          .ToList();
         }
 
         public async Task<GroupResponse> CreateGroup(ClaimsPrincipal claim, GroupRequest request)

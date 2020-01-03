@@ -90,8 +90,15 @@ $yellow: #f3e29d;
     --anchor-shadow: var(--accent-colour);
     --anchor-shadow-hover: var(--accent-colour-hover);
 
-    &:not(.button) {
+    &:not(.button):not(.fyk-link--shadowless) {
       @extend %anchor-shadow;
+    }
+  }
+  .fyk-link--shadowless {
+    &:active,
+    &:focus,
+    &:hover {
+      color: var(--accent-colour-hover);
     }
   }
 
@@ -157,5 +164,10 @@ $yellow: #f3e29d;
     &--highlight-exact::before {
       border-color: var(--primary-colour);
     }
+  }
+
+  .posts__item,
+  .post__rank {
+    border-color: var(--primary-colour);
   }
 }

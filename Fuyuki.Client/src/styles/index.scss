@@ -44,3 +44,11 @@ main {
     background-color: var(--danger-colour-hover);
   }
 }
+
+$awards: (('silver', #c0c0c0), ('gold', #ffd700), ('platinum', #e5e4e2));
+
+@each $name, $colour in $awards {
+  .#{$name} {
+    background-color: $colour;
+  }
+}
