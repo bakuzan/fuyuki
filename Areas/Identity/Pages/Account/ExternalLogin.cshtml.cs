@@ -70,18 +70,16 @@ namespace Fuyuki.Areas.Identity.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider,
+                                                                       info.ProviderKey,
+                                                                       isPersistent: true,
+                                                                       bypassTwoFactor: true);
+
             if (result.Succeeded)
             {
+                await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+
                 var externalUsername = info.Principal.Identity.Name;
-
-                var props = new AuthenticationProperties();
-                props.StoreTokens(info.AuthenticationTokens);
-                props.IsPersistent = true;
-
-                var user = await _userManager.GetUserAsync(info.Principal);
-                await _signInManager.SignInAsync(user, props);
-
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", externalUsername, info.LoginProvider);
 
                 return LocalRedirect(returnUrl);
@@ -114,6 +112,7 @@ namespace Fuyuki.Areas.Identity.Pages.Account
                         props.IsPersistent = true;
 
                         await _signInManager.SignInAsync(user, props);
+                        await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

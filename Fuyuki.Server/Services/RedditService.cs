@@ -37,7 +37,7 @@ namespace Fuyuki.Services
 
             var posts = reddit.Subreddit("all")
                               .Posts
-                              .GetNew(after: lastPostId, limit: pageSize);
+                              .GetHot(after: lastPostId, limit: pageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
         }
@@ -59,7 +59,7 @@ namespace Fuyuki.Services
 
             var posts = reddit.Subreddit(subreddits)
                               .Posts
-                              .GetNew(after: lastPostId, limit: pageSize);
+                              .GetHot(after: lastPostId, limit: pageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
         }

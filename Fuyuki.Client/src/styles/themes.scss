@@ -144,4 +144,18 @@ $yellow: #f3e29d;
   .autocomplete-suggestion--active {
     border-color: var(--primary-colour);
   }
+
+  .tree__item {
+    &::before,
+    &::after {
+      border-color: var(--accent-colour);
+    }
+
+    &--highlight::after {
+      border-color: var(--primary-colour);
+    }
+    &--highlight-exact::before {
+      border-color: var(--primary-colour);
+    }
+  }
 }

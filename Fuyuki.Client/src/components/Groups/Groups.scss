@@ -6,24 +6,30 @@
 
 .tree {
   list-style-type: none;
+  padding-inline-start: 20px;
+  margin: 8px 0;
 
   &__item {
     position: relative;
+    padding: 2px 0;
 
     &::before,
     &::after {
+      content: '';
       position: absolute;
-      border: 1px solid;
+      border: 1px dashed;
     }
 
     &::before {
-      left: 15px;
-      width: 20px;
+      top: 50%;
+      left: -15px;
+      width: 10px;
     }
 
     &::after {
-      left: 15px;
-      height: 20px;
+      top: -25%;
+      left: -15px;
+      height: 75%;
     }
   }
 }

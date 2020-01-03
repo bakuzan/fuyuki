@@ -20,7 +20,7 @@ function Groups(props: GroupsProps) {
     endpoint
   ]);
 
-  console.log('GM', props, state);
+  console.log('Groups', props, state);
 
   if (state.loading) {
     return <div>Loading...</div>;

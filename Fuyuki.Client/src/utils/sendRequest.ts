@@ -31,13 +31,12 @@ export default async function sendRequest(
       const errorResponse = await response.body?.getReader().read();
       const error = uintToString(errorResponse?.value) || `Request failed.`;
 
-      console.log(error);
       return {
         success: false,
         error
       };
     }
-    console.log(response);
+
     const result = await response.json();
 
     // TODO
@@ -45,7 +44,6 @@ export default async function sendRequest(
 
     return result;
   } catch (error) {
-    console.log(error);
     return { success: false, error };
   }
 }

@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import HeaderLink from './HeaderLink';
 import { LoginMenu } from '../ApiAuthorisation/LoginMenu';
 import authService from '../ApiAuthorisation/AuthoriseService';
-import { useAsync } from '../../hooks/useAsync';
+import { useAsyncFn } from 'src/hooks/useAsyncFn';
 
 function NavigationMenu() {
-  const isAuthenticated = useAsync(authService.isAuthenticated, []);
+  const [state, refreshAuthState] = useAsyncFn(
+    () => authService.isAuthenticated(),
+    []
+  );
 
-  if (!isAuthenticated) {
-    return null;
+  useEffect(() => {
+    authService.subscribe(() => refreshAuthState());
+    refreshAuthState();
+  }, [refreshAuthState]);
+
+  if (!state.value) {
+    return <LoginMenu />;
   }
 
   return (

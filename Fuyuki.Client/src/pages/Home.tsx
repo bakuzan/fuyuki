@@ -5,7 +5,7 @@ import Groups from 'src/components/Groups';
 import { PageProps } from 'src/interfaces/PageProps';
 
 function Home(props: PageProps) {
-  console.log('GM', props);
+  console.log('Home', props);
 
   return (
     <div className="page">

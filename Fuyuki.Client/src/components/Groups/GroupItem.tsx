@@ -1,4 +1,5 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useState } from 'react';
 
 import orderBy from 'ayaka/orderBy';
 
@@ -10,22 +11,36 @@ interface GroupItemProps {
 }
 
 function GroupItem(props: GroupItemProps) {
+  const [highlightIndex, setHighlightIndex] = useState(-1);
   const x = props.data;
   const subs = orderBy(x.subreddits || [], ['name']);
   const subsExist = !!x.subreddits;
   const subsEmpty = subs.length === 0;
   const groupItemLink = subsEmpty ? `group/${x.id}` : `posts/${x.id}`;
-  console.log('GI: ', x);
+
   return (
     <li className="groups__item">
       <FYKLink to={groupItemLink}>{x.name}</FYKLink>
       {!subsEmpty && (
         <ul className="tree">
-          {subs.map((s) => (
-            <li key={s.id} className="tree__item">
-              {s.name}
-            </li>
-          ))}
+          {subs.map((s, i) => {
+            const highlight = i <= highlightIndex;
+            const highlightExact = i === highlightIndex;
+
+            return (
+              <li
+                key={s.id}
+                className={classNames('tree__item', {
+                  'tree__item--highlight': highlight,
+                  'tree__item--highlight-exact': highlightExact
+                })}
+                onMouseEnter={() => setHighlightIndex(i)}
+                onMouseLeave={() => setHighlightIndex(-1)}
+              >
+                {s.name}
+              </li>
+            );
+          })}
         </ul>
       )}
       {subsExist && subsEmpty && <div>This group has no subreddits.</div>}
@@ -33,4 +48,4 @@ function GroupItem(props: GroupItemProps) {
   );
 }
 
-export default GroupItem;
+export default React.memo(GroupItem);
