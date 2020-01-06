@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 import List from 'meiko/List';
+import LoadingBouncer from 'meiko/LoadingBouncer';
+import { usePrevious } from 'meiko/hooks/usePrevious';
+import { useProgressiveLoading } from 'meiko/hooks/useProgressiveLoading';
+import RequestMessage from '../RequestMessage';
 import PostItem from './PostItem';
 
-import { useAsyncFn } from 'src/hooks/useAsyncFn';
+import { useAsyncPaged } from 'src/hooks/useAsyncPaged';
 import { Post } from 'src/interfaces/Post';
-import sendRequest from 'src/utils/sendRequest';
 
 import './Posts.scss';
 
@@ -14,36 +17,56 @@ interface PostsProps {
 }
 
 function Posts(props: PostsProps) {
-  const [postsAfter, setPostsAfter] = useState('');
   const { endpoint } = props;
+  const [postsAfter, setPostsAfter] = useState('');
+  const [state, fetchPage] = useAsyncPaged<Post[], any>(endpoint);
 
-  const [state, fetchPage] = useAsyncFn<any[], any>(
-    async (lastPostId: string) => await sendRequest(`${endpoint}${lastPostId}`),
-    [endpoint]
-  );
+  const prevEndpoint = usePrevious(endpoint);
 
   useEffect(() => {
-    fetchPage(postsAfter);
-  }, [postsAfter]);
+    if (endpoint !== prevEndpoint) {
+      fetchPage('');
+    }
+  }, [endpoint, prevEndpoint]);
+
+  useEffect(() => {
+    if (endpoint === prevEndpoint) {
+      fetchPage(postsAfter);
+    }
+  }, [endpoint, prevEndpoint, postsAfter]);
 
   console.log('Posts', props, state);
 
-  if (state.loading) {
-    return <div>Loading...</div>;
+  const items = state.value ?? [];
+  const hasNoItems = items.length === 0;
+  const lastPostId = items[items.length - 1]?.fullname ?? '';
+
+  const ref = useProgressiveLoading<HTMLUListElement>(() => {
+    console.log(
+      '%c Prog load...',
+      'color:forestgreen;',
+      state,
+      postsAfter,
+      lastPostId
+    );
+    if (!state.loading && postsAfter !== lastPostId) {
+      setPostsAfter(lastPostId);
+    }
+  });
+
+  if (state.loading && hasNoItems) {
+    return <RequestMessage text="Loading..." />;
   }
 
   if (state.error) {
-    return <div>Failed to fetch posts</div>;
+    return <RequestMessage text="Failed to fetch posts" />;
   }
 
-  const isSuccess = state.value && state.value instanceof Array;
-  const items = isSuccess ? (state.value as Post[]) : [];
-  const hasNoItems = items.length === 0;
-  const lastPostId = items[items.length - 1]?.fullname ?? '';
   console.log('posts...', state, items);
+
   return (
     <div>
-      <List className="posts" columns={1}>
+      <List ref={ref} className="posts" columns={1}>
         {hasNoItems && (
           <li key="NONE" className="posts__item posts__item--no-items">
             No posts available
@@ -53,9 +76,7 @@ function Posts(props: PostsProps) {
           <PostItem key={x.id} index={i} data={x} />
         ))}
       </List>
-      <button type="button" onClick={() => setPostsAfter(lastPostId)}>
-        Next Page
-      </button>
+      {state.loading && <LoadingBouncer />}
     </div>
   );
 }

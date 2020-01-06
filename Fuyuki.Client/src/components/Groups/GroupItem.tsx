@@ -16,7 +16,7 @@ function GroupItem(props: GroupItemProps) {
   const subs = orderBy(x.subreddits || [], ['name']);
   const subsExist = !!x.subreddits;
   const subsEmpty = subs.length === 0;
-  const groupItemLink = subsEmpty ? `group/${x.id}` : `posts/${x.id}`;
+  const groupItemLink = subsEmpty ? `/group/${x.id}` : `/fyk/posts/${x.id}`;
 
   return (
     <li className="groups__item">

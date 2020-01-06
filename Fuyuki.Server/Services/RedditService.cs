@@ -17,7 +17,7 @@ namespace Fuyuki.Services
         private readonly IGroupDataService _groupDataService;
         private readonly IMapper _mapper;
 
-        private readonly int pageSize = 20;
+        private readonly int pageSize = 25;
 
         public RedditService(IMapper mapper,
                              IUserService userService,
@@ -30,12 +30,12 @@ namespace Fuyuki.Services
             _mapper = mapper;
         }
 
-        public async Task<List<RedditPost>> GetRAllPostsPaged(ClaimsPrincipal claim, string lastPostId)
+        public async Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, string subName, string lastPostId)
         {
             var user = await _userService.GetCurrentUser(claim);
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
-            var posts = reddit.Subreddit("all")
+            var posts = reddit.Subreddit(subName)
                               .Posts
                               .GetHot(after: lastPostId, limit: pageSize);
 

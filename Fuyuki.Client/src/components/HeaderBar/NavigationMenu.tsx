@@ -24,7 +24,7 @@ function NavigationMenu() {
 
   return (
     <React.Fragment>
-      <HeaderLink to="/posts/rall" aria-label="View posts on r/all">
+      <HeaderLink to="/rall" aria-label="View posts on r/all">
         r/all
       </HeaderLink>
       <HeaderLink to="/groups" aria-label="Manage subreddit groups">

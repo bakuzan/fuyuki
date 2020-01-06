@@ -1,4 +1,10 @@
 import authService from '../components/ApiAuthorisation/AuthoriseService';
+import {
+  ApplicationPaths,
+  QueryParameterNames
+} from 'src/components/ApiAuthorisation/ApiAuthorisationConstants';
+
+const UNAUTHOURISED_ERROR = 401;
 
 function uintToString(uintArray: Uint8Array | undefined) {
   const encodedString = String.fromCharCode.apply(
@@ -30,6 +36,21 @@ export default async function sendRequest(
     if (!response.ok) {
       const errorResponse = await response.body?.getReader().read();
       const error = uintToString(errorResponse?.value) || `Request failed.`;
+
+      // Just force a signout if you get a 401...
+      if (response.status === UNAUTHOURISED_ERROR) {
+        const params = new URLSearchParams(window.location.search);
+        let fromQuery = params.get(QueryParameterNames.ReturnUrl);
+
+        if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
+          fromQuery = '';
+        }
+
+        const returnUrl =
+          fromQuery || `${window.location.origin}${ApplicationPaths.LoggedOut}`;
+
+        await authService.signOut({ returnUrl });
+      }
 
       return {
         success: false,

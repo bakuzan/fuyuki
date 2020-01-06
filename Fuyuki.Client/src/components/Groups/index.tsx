@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import List from 'meiko/List';
+import RequestMessage from '../RequestMessage';
 import GroupItem from './GroupItem';
 
 import { useAsync } from 'src/hooks/useAsync';
@@ -23,11 +24,11 @@ function Groups(props: GroupsProps) {
   console.log('Groups', props, state);
 
   if (state.loading) {
-    return <div>Loading...</div>;
+    return <RequestMessage text="Loading..." />;
   }
 
   if (state.error) {
-    return <div>Failed to fetch groups</div>;
+    return <RequestMessage text="Failed to fetch groups" />;
   }
 
   const isSuccess = state.value && state.value instanceof Array;

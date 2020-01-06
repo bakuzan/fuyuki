@@ -1,10 +1,7 @@
 .posts__item {
   width: 100%;
-  border-bottom: 1px dashed;
-
-  &:first-child {
-    border-top: 1px dashed;
-  }
+  margin: 5px 0;
+  box-shadow: 0px 1px 4px 1px var(--primary-colour);
 }
 
 .post {
@@ -15,16 +12,17 @@
   &__score {
     display: flex;
     align-items: center;
-    padding: 0 2px;
-  }
-
-  &__rank {
     padding: 0 5px;
-    border-right: 1px dashed;
+    border-right: 1px dashed var(--primary-colour);
   }
 
   &__score {
+    justify-content: flex-end;
     min-width: 52px;
+  }
+
+  &__image-wrapper {
+    margin: 0 5px;
   }
 
   &__nsfw {
@@ -40,6 +38,8 @@
   }
 
   &__content {
+    display: flex;
+    flex-direction: column;
     margin: 0 5px;
   }
 
@@ -47,9 +47,30 @@
     font-size: 0.8rem;
   }
 
+  &__actions {
+    display: flex;
+  }
+
   &__other {
     display: flex;
     justify-content: space-between;
-    margin: 15px 0;
+    flex: 1;
+    margin: 15px;
+  }
+
+  &__expando {
+    flex: 0 0 35px;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__expanded {
+    margin: 10px 0;
+  }
+}
+
+.post-content {
+  &__image {
+    max-width: 100%;
   }
 }

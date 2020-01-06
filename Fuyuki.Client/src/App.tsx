@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 import { Helmet } from 'react-helmet';
 
 import { useGlobalStyles } from 'meiko/hooks/useGlobalStyles';
@@ -9,6 +9,7 @@ import ApiAuthorisationRoutes from './components/ApiAuthorisation/ApiAuthorisati
 import AuthoriseRoute from './components/ApiAuthorisation/AuthoriseRoute';
 import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisationConstants';
 
+import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 import Posts from './pages/Posts';
 import GroupManagement from './pages/GroupManagement';
@@ -25,19 +26,24 @@ function App() {
       <Helmet defaultTitle="Fuyuki" titleTemplate="%s | Fuyuki" />
       <HeaderBar />
       <main>
-        <AuthoriseRoute exact path="/" component={Home} />
-        <AuthoriseRoute path="/posts/rall" component={Posts} />
-        <AuthoriseRoute path="/posts/:groupId(\d*)" component={Posts} />
-        <AuthoriseRoute path="/groups" component={GroupManagement} />
-        <AuthoriseRoute
-          path="/group/:id(\d*)?"
-          component={GroupManagementCreateUpdate}
-        />
+        <Switch>
+          <AuthoriseRoute exact path="/" component={Home} />
+          <AuthoriseRoute exact path="/rall" component={Posts} />
+          <AuthoriseRoute path="/r/posts/:subName(.*)" component={Posts} />
+          <AuthoriseRoute path="/fyk/posts/:groupId(\d*)" component={Posts} />
+          <AuthoriseRoute path="/groups" component={GroupManagement} />
+          <AuthoriseRoute
+            path="/group/:id(\d*)?"
+            component={GroupManagementCreateUpdate}
+          />
 
-        <Route
-          path={ApplicationPaths.ApiAuthorisationPrefix}
-          component={ApiAuthorisationRoutes}
-        />
+          <Route
+            path={ApplicationPaths.ApiAuthorisationPrefix}
+            component={ApiAuthorisationRoutes}
+          />
+
+          <Route path="*" component={NotFound} />
+        </Switch>
       </main>
     </div>
   );

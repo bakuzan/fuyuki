@@ -7,6 +7,7 @@ import {
   QueryParameterNames,
   ApplicationPaths
 } from './ApiAuthorisationConstants';
+import RequestMessage from '../RequestMessage';
 
 interface LoginProps {
   action: string;
@@ -60,17 +61,22 @@ export class Login extends Component<LoginProps, LoginState> {
     const action = this.props.action;
     const { message } = this.state;
 
+    const errorMessage =
+      typeof message === 'string'
+        ? message
+        : message?.message ?? 'Logout error.';
+
     if (!!message) {
-      return <div>{message}</div>;
+      return <RequestMessage text={errorMessage} />;
     } else {
       switch (action) {
         case LoginActions.Login:
-          return <div>Processing login</div>;
+          return <RequestMessage text="Processing login" />;
         case LoginActions.LoginCallback:
-          return <div>Processing login callback</div>;
+          return <RequestMessage text="Processing login callback" />;
         case LoginActions.Profile:
         case LoginActions.Register:
-          return <div></div>;
+          return <RequestMessage text="" />;
         default:
           throw new Error(`Invalid action '${action}'`);
       }
@@ -119,13 +125,17 @@ export class Login extends Component<LoginProps, LoginState> {
 
   getReturnUrl(state?: AuthState) {
     const params = new URLSearchParams(window.location.search);
-    const fromQuery = params.get(QueryParameterNames.ReturnUrl);
+    let fromQuery = params.get(QueryParameterNames.ReturnUrl);
+
     if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
       // This is an extra check to prevent open redirects.
       throw new Error(
         'Invalid return url. The return url needs to have the same origin as the current page.'
       );
+    } else if (fromQuery === ApplicationPaths.LoggedOut) {
+      fromQuery = '';
     }
+    console.log(fromQuery, ApplicationPaths.LoggedOut);
     return (
       (state && state.returnUrl) || fromQuery || `${window.location.origin}/`
     );

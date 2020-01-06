@@ -7,6 +7,8 @@ import { Group } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
 import sendRequest from 'src/utils/sendRequest';
 
+const urlBase = `/reddit/posts`;
+
 interface PostsPageParams {
   groupId?: string;
   subName?: string;
@@ -14,7 +16,7 @@ interface PostsPageParams {
 
 function PostsPage(props: PageProps) {
   const { groupId = '', subName = '' } = props.match.params as PostsPageParams;
-
+  console.log('Posts page .... ', props);
   const { value } = useAsync<Group>(
     async () =>
       groupId ? await sendRequest(`group/${groupId}`) : Promise.resolve(),
@@ -22,8 +24,12 @@ function PostsPage(props: PageProps) {
   );
 
   const groupName = value?.name ?? subName ?? '';
-  const pageTitle = groupId ? `${groupName} Posts` : 'All Posts';
-  const queryUrl = groupId ? `reddit/${groupId}/posts/` : `reddit/posts/`;
+  const pageTitle = groupName ? `${groupName} Posts` : 'All Posts';
+  const queryUrl = groupId
+    ? `/group/${groupId}`
+    : subName
+    ? `/subreddit/${subName}`
+    : '';
 
   return (
     <div className="page">
@@ -31,7 +37,7 @@ function PostsPage(props: PageProps) {
       <header className="page__header">
         <h2 className="page__title">{pageTitle}</h2>
       </header>
-      <Posts endpoint={queryUrl} />
+      <Posts endpoint={`${urlBase}${queryUrl}`} />
     </div>
   );
 }

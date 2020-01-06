@@ -21,6 +21,7 @@ interface LogoutPath {
 
 export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
   private _subscription: number = 0;
+  private _mounted: boolean = true;
 
   constructor(props: LoginMenuProps) {
     super(props);
@@ -37,6 +38,7 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
   }
 
   componentWillUnmount() {
+    this._mounted = false;
     authService.unsubscribe(this._subscription);
   }
 
@@ -46,10 +48,12 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
       authService.getUser()
     ]);
 
-    this.setState({
-      isAuthenticated: !!isAuthenticated,
-      userName: (user && user.name) ?? null
-    });
+    if (this._mounted) {
+      this.setState({
+        isAuthenticated: !!isAuthenticated,
+        userName: (user && user.name) ?? null
+      });
+    }
   }
 
   render() {

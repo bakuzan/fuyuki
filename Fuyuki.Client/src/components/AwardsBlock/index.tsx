@@ -36,7 +36,7 @@ function AwardsBlock(props: AwardsBlockProps) {
           title={`${awards[key]} ${key}`}
           aria-hidden={true}
         >
-          {awards[key]}
+          <span className="awards__count">{awards[key]}</span>
         </div>
       ))}
     </div>

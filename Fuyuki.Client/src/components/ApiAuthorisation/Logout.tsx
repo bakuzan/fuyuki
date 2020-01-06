@@ -7,6 +7,7 @@ import {
   LogoutActions,
   ApplicationPaths
 } from './ApiAuthorisationConstants';
+import RequestMessage from '../RequestMessage';
 
 interface LogoutProps {
   action: string;
@@ -22,6 +23,8 @@ interface LogoutState {
 // This is the starting point for the logout process, which is usually initiated when a
 // user clicks on the logout button on the LoginMenu component.
 export class Logout extends Component<LogoutProps, LogoutState> {
+  private unsubAuthService = 0;
+
   constructor(props: LogoutProps) {
     super(props);
 
@@ -60,24 +63,38 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     }
 
     this.populateAuthenticationState();
+    this.unsubAuthService = authService.subscribe(() =>
+      this.populateAuthenticationState()
+    );
+  }
+
+  componentWillUnmount() {
+    authService.unsubscribe(this.unsubAuthService);
   }
 
   render() {
     const { isReady, message } = this.state;
+    console.log('logout page...', this.state, this.props);
     if (!isReady) {
       return <div></div>;
     }
+
+    const errorMessage =
+      typeof message === 'string'
+        ? message
+        : message?.message ?? 'Logout error.';
+
     if (!!message) {
-      return <div>{message}</div>;
+      return <RequestMessage text={errorMessage} />;
     } else {
       const action = this.props.action;
       switch (action) {
         case LogoutActions.Logout:
-          return <div>Processing logout</div>;
+          return <RequestMessage text="Processing logout" />;
         case LogoutActions.LogoutCallback:
-          return <div>Processing logout callback</div>;
+          return <RequestMessage text="Processing logout callback" />;
         case LogoutActions.LoggedOut:
-          return <div>{message}</div>;
+          return <RequestMessage text={errorMessage} />;
         default:
           throw new Error(`Invalid action '${action}'`);
       }
@@ -128,8 +145,14 @@ export class Logout extends Component<LogoutProps, LogoutState> {
   }
 
   async populateAuthenticationState() {
+    console.log('Pop');
     const authenticated = await authService.isAuthenticated();
-    this.setState({ isReady: true, authenticated });
+    this.setState({ isReady: true, authenticated }, () => {
+      const isLoggedOutPage = this.props.action === LogoutActions.LoggedOut;
+      if (isLoggedOutPage && this.state.authenticated) {
+        this.navigateToReturnUrl(`${window.location.origin}/`);
+      }
+    });
   }
 
   getReturnUrl(state?: AuthState) {
