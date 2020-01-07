@@ -1,9 +1,4 @@
-export interface Awards {
-  silver: number;
-  gold: number;
-  platinum: number;
-  count: number;
-}
+import { Awards } from './Awards';
 
 export interface Post {
   id: string;

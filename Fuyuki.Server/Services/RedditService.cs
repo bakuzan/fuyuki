@@ -76,7 +76,7 @@ namespace Fuyuki.Services
         {
             var user = await _userService.GetCurrentUser(claim);
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
-            var post = reddit.Post(postId);
+            var post = reddit.Post(postId).About();
 
             return _mapper.Map<RedditPost>(post);
         }

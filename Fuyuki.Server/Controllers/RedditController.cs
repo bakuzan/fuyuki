@@ -54,6 +54,13 @@ namespace Fuyuki.Controllers
         }
 
         [HttpGet]
+        [Route("Post/{postId}")]
+        public async Task<RedditPost> GetPost(string postId)
+        {
+            return await _redditService.GetRedditPost(User, postId);
+        }
+
+        [HttpGet]
         [Route("Post/{postId}/comments")]
         [Route("Post/{postId}/comments/{lastCommentId}")]
         public async Task<List<RedditComment>> GetCommentsForPost(string postId, string lastPostId = "")

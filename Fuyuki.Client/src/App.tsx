@@ -11,7 +11,8 @@ import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisation
 
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
-import Posts from './pages/Posts';
+import PostsPage from './pages/Posts';
+import CommentsPage from './pages/Comments';
 import GroupManagement from './pages/GroupManagement';
 import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
 
@@ -28,17 +29,22 @@ function App() {
       <main>
         <Switch>
           <AuthoriseRoute exact path="/" component={Home} />
-          <AuthoriseRoute key="all" exact path="/rall" component={Posts} />
+          <AuthoriseRoute key="all" exact path="/rall" component={PostsPage} />
           <AuthoriseRoute
             key="sub"
             path="/r/posts/:subName(.*)"
-            component={Posts}
+            component={PostsPage}
           />
           <AuthoriseRoute
             key="group"
             path="/fyk/posts/:groupId(\d*)"
-            component={Posts}
+            component={PostsPage}
           />
+          <AuthoriseRoute
+            path="/post/:postId/comments"
+            component={CommentsPage}
+          />
+
           <AuthoriseRoute path="/groups" component={GroupManagement} />
           <AuthoriseRoute
             path="/group/:id(\d*)?"

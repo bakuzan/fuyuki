@@ -31,7 +31,7 @@ function PostItem(props: PostItemProps) {
   const x = props.data;
 
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
-  const postLink = `/comments/${x.id}`;
+  const postLink = `/post/${x.id}/comments`;
   const hasTextBody = x.isSelf;
   const isVideo = x.isVideo;
   const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);

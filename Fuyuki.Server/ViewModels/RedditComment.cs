@@ -24,8 +24,6 @@ namespace Fuyuki.ViewModels
         public bool ScoreHidden { get; set; }
         public int Depth { get; set; }
         public Awards Awards { get; set; }
-        // public List<Comment> Replies { get; set; }
-        // public List<Comment> replies { get; }
         public string Body { get; set; }
         public string BodyHTML { get; set; }
         public string ParentFullname { get; set; }
