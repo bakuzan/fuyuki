@@ -1,0 +1,40 @@
+.comment {
+  border: 1px dashed var(--accent-colour);
+
+  &__top-bar {
+    display: flex;
+    align-items: center;
+
+    > * {
+      margin: 0 2px;
+    }
+  }
+
+  &__toggle {
+    min-width: 35px;
+  }
+
+  &__authour {
+    text-decoration: none;
+  }
+
+  &__posted {
+    color: var(--faded-colour);
+  }
+
+  &__body {
+    padding: 5px;
+    margin: 2px 0;
+    font-size: 1.25rem;
+  }
+
+  &__footer {
+    padding: 0 5px;
+    border-top: 1px dashed var(--accent-colour);
+  }
+
+  &__other-link {
+    color: var(--faded-colour);
+    font-size: 0.9rem;
+  }
+}

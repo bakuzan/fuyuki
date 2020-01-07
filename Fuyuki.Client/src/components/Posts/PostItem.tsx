@@ -9,6 +9,7 @@ import padNumber from 'ayaka/padNumber';
 import FYKLink from '../FYKLink';
 import AwardsBlock from '../AwardsBlock';
 import Flair from '../FlairBlock';
+import PostContent from '../PostContent';
 import { Post } from 'src/interfaces/Post';
 import thousandFormat from 'src/utils/thousandFormat';
 import { Button } from 'meiko/Button';
@@ -31,7 +32,7 @@ function PostItem(props: PostItemProps) {
   const x = props.data;
 
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
-  const postLink = `/post/${x.id}/comments`;
+  const postLink = `/post/${x.fullname}/comments`;
   const hasTextBody = x.isSelf;
   const isVideo = x.isVideo;
   const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
@@ -78,7 +79,9 @@ function PostItem(props: PostItemProps) {
             Submitted at{' '}
             <time
               className="post__time"
-              title={new Date(x.created).toLocaleDateString()}
+              title={`${new Date(x.created).toLocaleDateString()} ${new Date(
+                x.created
+              ).toLocaleTimeString()}`}
               dateTime={x.created}
             >
               {formatDate(x.created)}
@@ -113,25 +116,7 @@ function PostItem(props: PostItemProps) {
               <AwardsBlock data={x.awards} />
             </div>
           </div>
-          {isExpanded && (
-            <div className="post__expanded post-content">
-              {hasTextBody && (
-                <div className="post-content__text-body">{x.textBody}</div>
-              )}
-              {isImage && (
-                <Image
-                  className="post-content__image"
-                  src={x.url}
-                  alt="post content source"
-                />
-              )}
-              {isVideo && (
-                <video className="post-content__video" autoPlay controls>
-                  <source src={x.url}></source>
-                </video>
-              )}
-            </div>
-          )}
+          <PostContent isExpanded={isExpanded} data={x} />
         </div>
       </article>
     </li>

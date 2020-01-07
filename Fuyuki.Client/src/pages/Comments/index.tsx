@@ -1,15 +1,17 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 
+import NewTabLink from 'meiko/NewTabLink';
 import Comments from 'src/components/Comments';
 import RequestMessage from 'src/components/RequestMessage';
+import PostContent from 'src/components/PostContent';
+
 import { useAsync } from 'src/hooks/useAsync';
 import { Post } from 'src/interfaces/Post';
 import { PageProps } from 'src/interfaces/PageProps';
 import sendRequest from 'src/utils/sendRequest';
-import NewTabLink from 'meiko/NewTabLink';
 
-const urlBase = `/reddit/`;
+import './Comments.scss';
 
 interface CommentsPageParams {
   postId?: string;
@@ -29,7 +31,7 @@ function CommentsPage(props: PageProps) {
   }
 
   const title = value?.title ?? '';
-  const pageTitle = title ? `${title} Comments` : 'Comments';
+  const pageTitle = title;
   const queryUrl = `/reddit/post/${postId}/comments`;
   const post = (value && value.hasOwnProperty('permalink')
     ? value
@@ -40,12 +42,20 @@ function CommentsPage(props: PageProps) {
     <div className="page">
       <Helmet title={pageTitle} />
       <header className="page__header">
-        <h2 className="page__title">{pageTitle}</h2>
-        <p className="page__subtitle">
+        <h2 className="page__title">
+          <NewTabLink
+            className="fyk-link fyk-link--shadowless"
+            href={post.url ?? '#'}
+          >
+            {pageTitle}
+          </NewTabLink>
+        </h2>
+      </header>
+      <PostContent isExpanded={true} data={post} />
+      <div className="post-info">
+        <p>
           {post.numberOfComments ? `${post.numberOfComments} comments` : ''}
         </p>
-      </header>
-      <div>
         <NewTabLink
           href={`https://www.reddit.com/${post.permalink}`}
           aria-label={`View ${post.title ?? 'post'} on reddit`}

@@ -11,7 +11,7 @@ import { useAsyncPaged } from 'src/hooks/useAsyncPaged';
 import { ApiResponse } from 'src/interfaces/ApiResponse';
 import { Comment } from 'src/interfaces/Comment';
 
-// import './Comments.scss';
+import './Comments.scss';
 
 interface CommentsProps {
   endpoint: string;

@@ -72,19 +72,9 @@
     padding: 0;
     margin: 0;
   }
-
-  &__expanded {
-    margin: 10px 0;
-  }
 }
 
 .post--stickied .post__rank {
   background-color: var(--highlight);
   color: #fff;
-}
-
-.post-content {
-  &__image {
-    max-width: 100%;
-  }
 }

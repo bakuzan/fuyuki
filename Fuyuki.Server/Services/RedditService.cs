@@ -88,7 +88,7 @@ namespace Fuyuki.Services
 
             var comments = reddit.Post(postId)
                                  .Comments
-                                 .GetComments(sort: "top");
+                                 .GetComments(sort: "top", depth: 0);
 
             return _mapper.Map<List<RedditComment>>(comments);
         }

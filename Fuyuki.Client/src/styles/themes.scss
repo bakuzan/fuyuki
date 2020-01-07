@@ -29,6 +29,7 @@ $yellow: #f3e29d;
   --accent-contrast-hover: #{lighten($blue, 10%)};
 
   --highlight: #{$red};
+  --faded-colour: #999;
 
   --danger-colour: #{$red};
   --danger-colour-hover: #{darken($red, 10%)};
@@ -54,6 +55,7 @@ $yellow: #f3e29d;
   --accent-contrast-hover: #{lighten($grey, 10%)};
 
   --highlight: #{$red};
+  --faded-colour: #eee;
 }
 
 .theme {
