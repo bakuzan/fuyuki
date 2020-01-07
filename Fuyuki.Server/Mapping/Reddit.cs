@@ -17,7 +17,12 @@ namespace Fuyuki.Mapping
                 .ForMember(x => x.NumberOfComments, opts => opts.MapFrom(x => x.Listing.NumComments))
                 .ForMember(x => x.TextBody, opts => opts.MapFrom(x => x.Listing.SelfTextHTML))
                 .ForMember(x => x.Thumbnail, opts => opts.MapFrom(x => x.Listing.Thumbnail))
-                .ForMember(x => x.URL, opts => opts.MapFrom(x => x.Listing.URL));
+                .ForMember(x => x.URL, opts => opts.MapFrom(x => x.Listing.URL))
+                .ForMember(x => x.LinkFlairText, opts => opts.MapFrom(x => x.Listing.LinkFlairText))
+                .ForMember(x => x.LinkFlairType, opts => opts.MapFrom(x => x.Listing.LinkFlairType))
+                .ForMember(x => x.AuthorFlairText, opts => opts.MapFrom(x => x.Listing.AuthorFlairText))
+                .ForMember(x => x.AuthorFlairType, opts => opts.MapFrom(x => x.Listing.AuthorFlairType))
+                .ForMember(x => x.Stickied, opts => opts.MapFrom(x => x.Listing.Stickied));
 
             CreateMap<Reddit.Controllers.Comment, RedditComment>();
         }

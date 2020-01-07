@@ -145,12 +145,14 @@ export class Logout extends Component<LogoutProps, LogoutState> {
   }
 
   async populateAuthenticationState() {
-    console.log('Pop');
     const authenticated = await authService.isAuthenticated();
+
     this.setState({ isReady: true, authenticated }, () => {
       const isLoggedOutPage = this.props.action === LogoutActions.LoggedOut;
       if (isLoggedOutPage && this.state.authenticated) {
         this.navigateToReturnUrl(`${window.location.origin}/`);
+      } else if (isLoggedOutPage) {
+        authService.clearStaleState();
       }
     });
   }

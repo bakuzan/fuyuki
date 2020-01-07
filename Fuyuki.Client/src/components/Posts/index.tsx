@@ -8,6 +8,7 @@ import RequestMessage from '../RequestMessage';
 import PostItem from './PostItem';
 
 import { useAsyncPaged } from 'src/hooks/useAsyncPaged';
+import { ApiResponse } from 'src/interfaces/ApiResponse';
 import { Post } from 'src/interfaces/Post';
 
 import './Posts.scss';
@@ -19,28 +20,24 @@ interface PostsProps {
 function Posts(props: PostsProps) {
   const { endpoint } = props;
   const [postsAfter, setPostsAfter] = useState('');
-  const [state, fetchPage] = useAsyncPaged<Post[], any>(endpoint);
+  const [state, fetchPage] = useAsyncPaged<Post[] | ApiResponse, any>(endpoint);
 
   const prevEndpoint = usePrevious(endpoint);
 
   useEffect(() => {
-    if (endpoint !== prevEndpoint) {
-      console.log('Reset posts after');
+    if (prevEndpoint && endpoint && endpoint !== prevEndpoint) {
       setPostsAfter('');
     }
   }, [endpoint, prevEndpoint]);
 
   useEffect(() => {
-    console.log('Fetch posts page > ', postsAfter);
     fetchPage(postsAfter);
   }, [postsAfter]);
 
-  console.log('Posts', props, state);
-
-  const items = state.value ?? [];
+  const items = state.value instanceof Array ? state.value : [];
   const hasNoItems = items.length === 0;
   const lastPostId = items[items.length - 1]?.fullname ?? '';
-
+  console.log('posts...', props, state, items);
   const ref = useProgressiveLoading<HTMLUListElement>(() => {
     console.log(
       '%c Prog load...',
@@ -54,29 +51,27 @@ function Posts(props: PostsProps) {
     }
   });
 
-  if (state.loading && hasNoItems) {
-    return <RequestMessage text="Loading..." />;
+  const badResponse = state.value as ApiResponse;
+  if (state.error || badResponse?.error) {
+    return <RequestMessage text={'Failed to fetch posts'} />;
   }
-
-  if (state.error) {
-    return <RequestMessage text="Failed to fetch posts" />;
-  }
-
-  console.log('posts...', state, items);
 
   return (
     <div>
       <List ref={ref} className="posts" columns={1}>
-        {hasNoItems && (
-          <li key="NONE" className="posts__item posts__item--no-items">
-            No posts available
-          </li>
-        )}
         {items.map((x: Post, i) => (
           <PostItem key={x.id} index={i} data={x} />
         ))}
       </List>
-      {state.loading && <LoadingBouncer />}
+      {state.loading ? (
+        <LoadingBouncer />
+      ) : (
+        hasNoItems && (
+          <div className="posts__item posts__item--no-items">
+            No posts available
+          </div>
+        )
+      )}
     </div>
   );
 }

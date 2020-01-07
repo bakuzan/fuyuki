@@ -28,9 +28,17 @@ function App() {
       <main>
         <Switch>
           <AuthoriseRoute exact path="/" component={Home} />
-          <AuthoriseRoute exact path="/rall" component={Posts} />
-          <AuthoriseRoute path="/r/posts/:subName(.*)" component={Posts} />
-          <AuthoriseRoute path="/fyk/posts/:groupId(\d*)" component={Posts} />
+          <AuthoriseRoute key="all" exact path="/rall" component={Posts} />
+          <AuthoriseRoute
+            key="sub"
+            path="/r/posts/:subName(.*)"
+            component={Posts}
+          />
+          <AuthoriseRoute
+            key="group"
+            path="/fyk/posts/:groupId(\d*)"
+            component={Posts}
+          />
           <AuthoriseRoute path="/groups" component={GroupManagement} />
           <AuthoriseRoute
             path="/group/:id(\d*)?"

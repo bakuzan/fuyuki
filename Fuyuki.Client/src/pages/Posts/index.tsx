@@ -37,7 +37,7 @@ function PostsPage(props: PageProps) {
       <header className="page__header">
         <h2 className="page__title">{pageTitle}</h2>
       </header>
-      <Posts key={queryUrl} endpoint={`${urlBase}${queryUrl}`} />
+      <Posts endpoint={`${urlBase}${queryUrl}`} />
     </div>
   );
 }

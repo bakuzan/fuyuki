@@ -28,4 +28,9 @@ export interface Post {
   isSelf: boolean;
   isVideo: boolean;
   url: string;
+  linkFlairText: string;
+  linkFlairType: string;
+  authorFlairText: string;
+  authorFlairType: string;
+  stickied: boolean;
 }

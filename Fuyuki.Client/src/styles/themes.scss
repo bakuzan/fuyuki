@@ -83,6 +83,10 @@ $yellow: #f3e29d;
     @extend %anchor-shadow;
   }
 
+  .loading-bouncer__orb {
+    background-color: var(--primary-colour);
+  }
+
   .fyk-link {
     color: var(--base-colour);
     text-decoration: none;

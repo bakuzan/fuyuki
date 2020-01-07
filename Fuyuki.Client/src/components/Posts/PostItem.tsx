@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 
 import Image from 'meiko/Image';
@@ -7,6 +8,7 @@ import padNumber from 'ayaka/padNumber';
 
 import FYKLink from '../FYKLink';
 import AwardsBlock from '../AwardsBlock';
+import Flair from '../FlairBlock';
 import { Post } from 'src/interfaces/Post';
 import thousandFormat from 'src/utils/thousandFormat';
 import { Button } from 'meiko/Button';
@@ -19,14 +21,16 @@ interface PostItemProps {
 }
 
 function isImageURL(url: string) {
-  return url.match(/\.(jpeg|jpg|gif|gifv|png|webp)$/) != null;
+  return url && url.match(/\.(jpeg|jpg|gif|gifv|png|webp)$/) != null;
 }
 
 function PostItem(props: PostItemProps) {
   const [isExpanded, setExpanded] = useState(false);
-  const rank = `#${padNumber(props.index + 1, 2)}`;
+  const rankNum = props.index + 1;
+  const rank = `#${padNumber(rankNum, 2)}`;
   const x = props.data;
 
+  const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
   const postLink = `/comments/${x.id}`;
   const hasTextBody = x.isSelf;
   const isVideo = x.isVideo;
@@ -38,8 +42,10 @@ function PostItem(props: PostItemProps) {
 
   return (
     <li className="posts__item">
-      <article className="post">
-        <div className="post__rank">{rank}</div>
+      <article className={classNames('post', { 'post--stickied': x.stickied })}>
+        <div className="post__rank" aria-label={postLabel} title={postLabel}>
+          <span aria-hidden={true}>{rank}</span>
+        </div>
         <div className="post__score">{thousandFormat(x.score)}</div>
         <div className="post__image-wrapper">
           <Image
@@ -59,6 +65,7 @@ function PostItem(props: PostItemProps) {
         <div className="post__content">
           <header>
             <h2 className="post__title">
+              <Flair text={x.linkFlairText} />
               <NewTabLink
                 className="fyk-link fyk-link--shadowless"
                 href={x.url}
@@ -82,7 +89,8 @@ function PostItem(props: PostItemProps) {
               href={`https://www.reddit.com/user/${x.author}`}
             >
               {x.author}
-            </NewTabLink>{' '}
+            </NewTabLink>
+            <Flair text={x.authorFlairText} />
             to{' '}
             <FYKLink className="post__subreddit" to={`/r/posts/${x.subreddit}`}>
               r/{x.subreddit}

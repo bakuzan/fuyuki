@@ -27,5 +27,10 @@ namespace Fuyuki.ViewModels
         public bool IsSelf { get; set; }
         public bool IsVideo { get; set; }
         public string URL { get; set; }
+        public string LinkFlairText { get; set; }
+        public string LinkFlairType { get; set; }
+        public string AuthorFlairText { get; set; }
+        public string AuthorFlairType { get; set; }
+        public bool Stickied { get; set; }
     }
 }
