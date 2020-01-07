@@ -23,6 +23,12 @@ namespace Fuyuki.Controllers
             _redditService = redditService;
         }
 
+        [HttpGet("me")]
+        public async Task<RedditUser> GetRedditUser()
+        {
+            return await _redditService.GetCurrentRedditUser(User);
+        }
+
         [HttpGet]
         [Route("Posts")]
         [Route("Posts/{lastPostId}")]
@@ -45,6 +51,14 @@ namespace Fuyuki.Controllers
         public async Task<List<RedditPost>> GetPostsForGroup(int groupId, string lastPostId = "")
         {
             return await _redditService.GetSubredditPostsPaged(User, groupId, lastPostId);
+        }
+
+        [HttpGet]
+        [Route("Post/{postId}/comments")]
+        [Route("Post/{postId}/comments/{lastCommentId}")]
+        public async Task<List<RedditComment>> GetCommentsForPost(string postId, string lastPostId = "")
+        {
+            return await _redditService.GetPostCommentsPaged(User, postId, lastPostId);
         }
 
     }

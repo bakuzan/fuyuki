@@ -17,7 +17,8 @@ function uintToString(uintArray: Uint8Array | undefined) {
 
 export default async function sendRequest(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  ignoreUnauthorised: boolean = false
 ) {
   try {
     const token = await authService.getAccessToken();
@@ -38,7 +39,7 @@ export default async function sendRequest(
       const error = uintToString(errorResponse?.value) || `Request failed.`;
 
       // Just force a signout if you get a 401...
-      if (response.status === UNAUTHOURISED_ERROR) {
+      if (response.status === UNAUTHOURISED_ERROR && !ignoreUnauthorised) {
         const params = new URLSearchParams(window.location.search);
         let fromQuery = params.get(QueryParameterNames.ReturnUrl);
 

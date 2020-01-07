@@ -7,6 +7,8 @@ namespace Fuyuki.Mapping
     {
         public RedditProfile()
         {
+            CreateMap<Reddit.Controllers.User, RedditUser>();
+
             CreateMap<Reddit.Controllers.Post, RedditPost>()
                 .ForMember(x => x.Created, opts => opts.MapFrom(x => x.Listing.CreatedUTC))
                 .ForMember(x => x.Edited, opts => opts.MapFrom(x => x.Listing.Edited))
@@ -17,6 +19,7 @@ namespace Fuyuki.Mapping
                 .ForMember(x => x.Thumbnail, opts => opts.MapFrom(x => x.Listing.Thumbnail))
                 .ForMember(x => x.URL, opts => opts.MapFrom(x => x.Listing.URL));
 
+            CreateMap<Reddit.Controllers.Comment, RedditComment>();
         }
     }
 }

@@ -13,3 +13,28 @@
 .account-action {
   justify-content: flex-start;
 }
+
+.account-mail {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10;
+
+  &,
+  &__icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  &__icon {
+    background-color: var(--accent-colour);
+    color: var(--accent-contrast);
+    text-align: center;
+    border-radius: 50%;
+  }
+}
+
+.account-placeholder {
+  padding: 10px 5px;
+  color: initial;
+}

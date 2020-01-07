@@ -31,11 +31,10 @@ function PostItem(props: PostItemProps) {
   const hasTextBody = x.isSelf;
   const isVideo = x.isVideo;
   const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
-  const isLink = !x.isSelf && !x.isVideo;
+  const isLink = !x.isSelf && !x.isVideo && !isImage;
 
   // TODO
-  // handle expando to display post image, video, or text
-  // link to reddit directly (on comments page?)
+  // Expando..how to show reddit hosted video/images
 
   return (
     <li className="posts__item">
@@ -96,6 +95,7 @@ function PostItem(props: PostItemProps) {
               aria-label="View post content inline"
               title="Peek"
               icon={OPEN}
+              disabled={isLink}
               onClick={() => setExpanded((p) => !p)}
             />
             <div className="post__other">
@@ -109,11 +109,6 @@ function PostItem(props: PostItemProps) {
             <div className="post__expanded post-content">
               {hasTextBody && (
                 <div className="post-content__text-body">{x.textBody}</div>
-              )}
-              {isLink && (
-                <NewTabLink className="post-content__link" href={x.url}>
-                  Post link
-                </NewTabLink>
               )}
               {isImage && (
                 <Image

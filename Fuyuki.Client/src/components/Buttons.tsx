@@ -1,8 +1,9 @@
-import { withButtonisation, ButtonProps } from 'meiko/Button';
+import { withButtonisation } from 'meiko/Button';
 import FYKLink, { FYKLinkProps } from './FYKLink';
+import NewTabLink from 'meiko/NewTabLink';
 
-type LinkAsButtonProps = ButtonProps & FYKLinkProps;
+export const LinkAsButton = withButtonisation<FYKLinkProps>(FYKLink);
 
-export const LinkAsButton: React.FC<LinkAsButtonProps> = withButtonisation(
-  FYKLink
-);
+export const NewTabLinkAsButton = withButtonisation<
+  React.HTMLProps<HTMLAnchorElement>
+>(NewTabLink);

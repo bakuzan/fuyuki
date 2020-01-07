@@ -25,15 +25,15 @@ function Posts(props: PostsProps) {
 
   useEffect(() => {
     if (endpoint !== prevEndpoint) {
-      fetchPage('');
+      console.log('Reset posts after');
+      setPostsAfter('');
     }
   }, [endpoint, prevEndpoint]);
 
   useEffect(() => {
-    if (endpoint === prevEndpoint) {
-      fetchPage(postsAfter);
-    }
-  }, [endpoint, prevEndpoint, postsAfter]);
+    console.log('Fetch posts page > ', postsAfter);
+    fetchPage(postsAfter);
+  }, [postsAfter]);
 
   console.log('Posts', props, state);
 

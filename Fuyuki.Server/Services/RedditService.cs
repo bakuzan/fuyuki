@@ -30,6 +30,14 @@ namespace Fuyuki.Services
             _mapper = mapper;
         }
 
+        public async Task<RedditUser> GetCurrentRedditUser(ClaimsPrincipal claim)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            return _mapper.Map<RedditUser>(reddit.Account.Me);
+        }
+
         public async Task<List<RedditPost>> GetSubredditPostsPaged(ClaimsPrincipal claim, string subName, string lastPostId)
         {
             var user = await _userService.GetCurrentUser(claim);
@@ -62,6 +70,27 @@ namespace Fuyuki.Services
                               .GetHot(after: lastPostId, limit: pageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
+        }
+
+        public async Task<RedditPost> GetRedditPost(ClaimsPrincipal claim, string postId)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+            var post = reddit.Post(postId);
+
+            return _mapper.Map<RedditPost>(post);
+        }
+
+        public async Task<List<RedditComment>> GetPostCommentsPaged(ClaimsPrincipal claim, string postId, string lastPostId)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            var comments = reddit.Post(postId)
+                                 .Comments
+                                 .GetComments(sort: "top");
+
+            return _mapper.Map<List<RedditComment>>(comments);
         }
 
     }

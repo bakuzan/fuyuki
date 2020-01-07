@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using AutoMapper;
 using Fuyuki.Data;
 using Fuyuki.Managers;

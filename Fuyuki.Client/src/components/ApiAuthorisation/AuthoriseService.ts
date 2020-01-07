@@ -1,5 +1,6 @@
 import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import { ApplicationPaths, ApplicationName } from './ApiAuthorisationConstants';
+import sendRequest from 'src/utils/sendRequest';
 
 interface AuthSubscrption {
   callback: () => void;
@@ -33,6 +34,11 @@ export class AuthoriseService {
     const user = await this.getUser();
     const isAuth = !!user;
     return isAuth;
+  }
+
+  async getUserObject() {
+    const response = await sendRequest('/reddit/me', {}, true);
+    return response ?? {};
   }
 
   async getUser() {
