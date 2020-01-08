@@ -36,6 +36,11 @@ function App() {
             component={PostsPage}
           />
           <AuthoriseRoute
+            key="sublink"
+            path="/r/:subName(.*)"
+            component={PostsPage}
+          />
+          <AuthoriseRoute
             key="group"
             path="/fyk/posts/:groupId(\d*)"
             component={PostsPage}

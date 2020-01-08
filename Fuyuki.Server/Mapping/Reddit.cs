@@ -24,7 +24,16 @@ namespace Fuyuki.Mapping
                 .ForMember(x => x.AuthorFlairType, opts => opts.MapFrom(x => x.Listing.AuthorFlairType))
                 .ForMember(x => x.Stickied, opts => opts.MapFrom(x => x.Listing.Stickied));
 
-            CreateMap<Reddit.Controllers.Comment, RedditComment>();
+            CreateMap<Reddit.Controllers.Comment, RedditComment>()
+                .ForMember(x => x.Created, opts => opts.MapFrom(x => x.Listing.CreatedUTC))
+                .ForMember(x => x.Edited, opts => opts.MapFrom(x => x.Listing.Edited))
+                .ForMember(x => x.AuthorFlairText, opts => opts.MapFrom(x => x.Listing.AuthorFlairText))
+                .ForMember(x => x.Distinguished, opts => opts.MapFrom(x => x.Listing.Distinguished))
+                .ForMember(x => x.Stickied, opts => opts.MapFrom(x => x.Listing.Stickied))
+                .ForMember(x => x.Removed, opts => opts.MapFrom(x => x.Listing.Removed))
+                .ForMember(x => x.Replies, opts => opts.MapFrom(x => x.Replies))
+                .ForMember(x => x.More, opts => opts.MapFrom(x => x.More));
+
         }
     }
 }

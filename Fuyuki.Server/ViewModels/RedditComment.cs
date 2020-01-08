@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Reddit.Controllers.Structures;
 
 namespace Fuyuki.ViewModels
@@ -27,5 +28,10 @@ namespace Fuyuki.ViewModels
         public string Body { get; set; }
         public string BodyHTML { get; set; }
         public string ParentFullname { get; set; }
+        public string AuthorFlairText { get; set; }
+        public string Distinguished { get; set; }
+        public bool Stickied { get; set; }
+        public List<RedditComment> Replies { get; set; }
+        public List<Reddit.Things.More> More { get; set; }
     }
 }

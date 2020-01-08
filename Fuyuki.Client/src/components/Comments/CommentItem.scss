@@ -17,8 +17,19 @@
     text-decoration: none;
   }
 
+  &__distinguished {
+    background-color: var(--highlight);
+    color: #fff;
+    padding: 0 2px;
+  }
+
   &__posted {
     color: var(--faded-colour);
+  }
+
+  &__stickied {
+    font-size: 0.8rem;
+    color: var(--highlight);
   }
 
   &__body {
@@ -28,8 +39,7 @@
   }
 
   &__footer {
-    padding: 0 5px;
-    border-top: 1px solid var(--accent-colour);
+    padding: 0 10px;
   }
 
   &__other-link {

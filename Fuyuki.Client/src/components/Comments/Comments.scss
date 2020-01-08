@@ -2,5 +2,9 @@
   &__item {
     margin: 5px 0;
     box-shadow: 1px 1px 2px 1px var(--accent-colour);
+
+    &--stickied {
+      box-shadow: 0px 0px 4px 2px var(--highlight);
+    }
   }
 }

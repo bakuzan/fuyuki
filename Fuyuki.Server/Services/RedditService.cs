@@ -87,9 +87,14 @@ namespace Fuyuki.Services
             var user = await _userService.GetCurrentUser(claim);
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
-            var comments = reddit.Post(postId)
-                                 .Comments
-                                 .GetTop(limit: commentsLimit);
+            // TODO 
+            // This is reallllly slow. Need to limit the comments to just top level, first 50
+            // Will then have "get more" buttons for beyond 50, or deeper in the tree
+            var post = reddit.Post(postId).About();
+            var comments = post.Comments.GetComments(sort: "top",
+                                                     depth: 0,
+                                                     showMore: true,
+                                                     limit: commentsLimit);
 
             return _mapper.Map<List<RedditComment>>(comments);
         }

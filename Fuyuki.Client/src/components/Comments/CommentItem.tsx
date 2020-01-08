@@ -1,8 +1,9 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 
 import { Button } from 'meiko/Button';
 import NewTabLink from 'meiko/NewTabLink';
-import FYKLink from '../FYKLink';
+import List from 'meiko/List';
 import AwardsBlock from '../AwardsBlock';
 import Flair from '../FlairBlock';
 import { Comment } from 'src/interfaces/Comment';
@@ -13,20 +14,32 @@ import formatDateTimeAgo from 'src/utils/formatDateTimeAgo';
 import './CommentItem.scss';
 
 const BAD_DATE = '0001-01-01T00:00:00';
+const stickyMessage = "selected by this subreddit's moderators";
 
 interface CommentItemProps {
   index: number;
   data: Comment;
 }
 
-function CommentItem(props: CommentItemProps) {
+const CommentItem = React.memo(function(props: CommentItemProps) {
   const [collapsed, setCollapsed] = useState(props.data.collapsed);
   const x = props.data;
   const isEdited = x.edited !== BAD_DATE && x.edited;
   const commentDate = isEdited ? x.edited : x.created;
+  const hasReplies = x.replies && x.replies.length > 0;
+
+  if (!x.permalink) {
+    // TODO
+    // Implement a query to get more replies using x.depth and x.parentFullname...
+    return <li className="comments__item">See more...</li>;
+  }
 
   return (
-    <li className="comments__item">
+    <li
+      className={classNames('comments__item', {
+        'comments__item--stickied': x.stickied
+      })}
+    >
       <article className="comment">
         <div className="comment__top-bar">
           <div>
@@ -46,7 +59,16 @@ function CommentItem(props: CommentItemProps) {
           >
             {x.author}
           </NewTabLink>
-          <Flair text={''} />
+          {x.distinguished && (
+            <div
+              className="comment__distinguished"
+              title={x.distinguished}
+              aria-label={x.distinguished}
+            >
+              <span aria-hidden={true}>[{x.distinguished.slice(0, 1)}]</span>
+            </div>
+          )}
+          <Flair text={x.authorFlairText} />
           <AwardsBlock data={x.awards} />
           <span className="comment__karma">
             {thousandFormat(x.score)} points
@@ -59,11 +81,26 @@ function CommentItem(props: CommentItemProps) {
           >
             {formatDateTimeAgo(commentDate)}
           </time>
+          {x.stickied && (
+            <div
+              className="comment__stickied"
+              title={stickyMessage}
+              aria-label={stickyMessage}
+            >
+              stickied
+            </div>
+          )}
         </div>
         {!collapsed && (
           <React.Fragment>
             <div className="comment__body">
-              <div dangerouslySetInnerHTML={{ __html: x.bodyHTML }}></div>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: !x.removed
+                    ? x.bodyHTML
+                    : '<p>[Removed for some reason]</p>'
+                }}
+              ></div>
             </div>
             <div className="comment__footer">
               <NewTabLink
@@ -76,8 +113,19 @@ function CommentItem(props: CommentItemProps) {
           </React.Fragment>
         )}
       </article>
+      {hasReplies && !collapsed && (
+        <List
+          style={{ paddingLeft: `${(x.depth + 1) * 12}px` }}
+          className="comments"
+          columns={1}
+        >
+          {x.replies.map((reply, j) => (
+            <CommentItem key={reply.id} index={j} data={reply} />
+          ))}
+        </List>
+      )}
     </li>
   );
-}
+});
 
-export default React.memo(CommentItem);
+export default CommentItem;

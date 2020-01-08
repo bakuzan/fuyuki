@@ -23,4 +23,8 @@ export interface Comment {
   body: string;
   bodyHTML: string;
   parentFullname: string;
+  authorFlairText?: string;
+  stickied: boolean;
+  distinguished?: string;
+  replies: Comment[];
 }
