@@ -3,6 +3,8 @@ import React from 'react';
 import Image from 'meiko/Image';
 
 import isImageURL from 'src/utils/isImageURL';
+import getImageUrl from 'src/utils/getImageUrl';
+import isIframeContent from 'src/utils/isIframeContent';
 import { Post } from 'src/interfaces/Post';
 
 import './PostContent.scss';
@@ -17,6 +19,7 @@ function PostContent(props: PostContentProps) {
   const hasTextBody = x.isSelf;
   const isVideo = x.isVideo;
   const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
+  const isIframe = !x.isSelf && !isImage && isIframeContent(x.url);
 
   if (!props.isExpanded) {
     return null;
@@ -25,12 +28,14 @@ function PostContent(props: PostContentProps) {
   return (
     <div className="post-content">
       {hasTextBody && (
-        <div className="post-content__text-body">{x.textBody}</div>
+        <div className="post-content__text-body">
+          <div dangerouslySetInnerHTML={{ __html: x.textBody }}></div>
+        </div>
       )}
       {isImage && (
         <Image
           className="post-content__image"
-          src={x.url}
+          src={getImageUrl(x.url)}
           alt="post content source"
         />
       )}
@@ -38,6 +43,16 @@ function PostContent(props: PostContentProps) {
         <video className="post-content__video" autoPlay controls>
           <source src={x.url}></source>
         </video>
+      )}
+      {isIframe && (
+        <iframe
+          src={`//www.redditmedia.com/mediaembed/${x.id}`}
+          width={610}
+          height={350}
+          frameBorder="0"
+          scrolling="no"
+          allowFullScreen
+        ></iframe>
       )}
     </div>
   );

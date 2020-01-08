@@ -1,6 +1,4 @@
 .comment {
-  border: 1px dashed var(--accent-colour);
-
   &__top-bar {
     display: flex;
     align-items: center;
@@ -15,6 +13,7 @@
   }
 
   &__authour {
+    --base-colour: var(--primary-colour);
     text-decoration: none;
   }
 
@@ -30,11 +29,17 @@
 
   &__footer {
     padding: 0 5px;
-    border-top: 1px dashed var(--accent-colour);
+    border-top: 1px solid var(--accent-colour);
   }
 
   &__other-link {
     color: var(--faded-colour);
     font-size: 0.9rem;
+    text-decoration: none;
+
+    &:focus,
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

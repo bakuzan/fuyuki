@@ -12,6 +12,7 @@ import { PageProps } from 'src/interfaces/PageProps';
 import sendRequest from 'src/utils/sendRequest';
 
 import './Comments.scss';
+import FYKLink from 'src/components/FYKLink';
 
 interface CommentsPageParams {
   postId?: string;
@@ -52,17 +53,23 @@ function CommentsPage(props: PageProps) {
         </h2>
       </header>
       <PostContent isExpanded={true} data={post} />
-      <div className="post-info">
-        <p>
-          {post.numberOfComments ? `${post.numberOfComments} comments` : ''}
-        </p>
-        <NewTabLink
-          href={`https://www.reddit.com/${post.permalink}`}
-          aria-label={`View ${post.title ?? 'post'} on reddit`}
-        >
-          <span aria-hidden={true}>View post on reddit</span>
-        </NewTabLink>
-      </div>
+      {post && post.permalink && (
+        <div className="post-info">
+          <p>
+            <FYKLink to={props.location.pathname}>
+              {!isNaN(post.numberOfComments)
+                ? `${post.numberOfComments} comments`
+                : ''}
+            </FYKLink>
+          </p>
+          <NewTabLink
+            href={`https://www.reddit.com/${post.permalink}`}
+            aria-label={`View ${post.title ?? 'post'} on reddit`}
+          >
+            <span aria-hidden={true}>View post on reddit</span>
+          </NewTabLink>
+        </div>
+      )}
       <Comments endpoint={queryUrl} />
     </div>
   );

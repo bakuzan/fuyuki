@@ -37,7 +37,9 @@ function GroupItem(props: GroupItemProps) {
                 onMouseEnter={() => setHighlightIndex(i)}
                 onMouseLeave={() => setHighlightIndex(-1)}
               >
-                {s.name}
+                <FYKLink noShadow to={`/r/posts/${s.name}`}>
+                  {s.name}
+                </FYKLink>
               </li>
             );
           })}

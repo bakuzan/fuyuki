@@ -62,7 +62,9 @@ function CommentItem(props: CommentItemProps) {
         </div>
         {!collapsed && (
           <React.Fragment>
-            <div className="comment__body">{x.body}</div>
+            <div className="comment__body">
+              <div dangerouslySetInnerHTML={{ __html: x.bodyHTML }}></div>
+            </div>
             <div className="comment__footer">
               <NewTabLink
                 className="comment__other-link"

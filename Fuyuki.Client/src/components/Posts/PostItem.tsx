@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 
+import { Button } from 'meiko/Button';
 import Image from 'meiko/Image';
 import NewTabLink from 'meiko/NewTabLink';
 import formatDate from 'ayaka/formatDateTimeForDisplay';
@@ -12,17 +13,14 @@ import Flair from '../FlairBlock';
 import PostContent from '../PostContent';
 import { Post } from 'src/interfaces/Post';
 import thousandFormat from 'src/utils/thousandFormat';
-import { Button } from 'meiko/Button';
+import isImageURL from 'src/utils/isImageURL';
+import isIframeContent from 'src/utils/isIframeContent';
 
 const OPEN = `\uD83D\uDDC1\uFE0E`;
 
 interface PostItemProps {
   index: number;
   data: Post;
-}
-
-function isImageURL(url: string) {
-  return url && url.match(/\.(jpeg|jpg|gif|gifv|png|webp)$/) != null;
 }
 
 function PostItem(props: PostItemProps) {
@@ -33,13 +31,10 @@ function PostItem(props: PostItemProps) {
 
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
   const postLink = `/post/${x.fullname}/comments`;
-  const hasTextBody = x.isSelf;
-  const isVideo = x.isVideo;
-  const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
-  const isLink = !x.isSelf && !x.isVideo && !isImage;
 
-  // TODO
-  // Expando..how to show reddit hosted video/images
+  const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
+  const isIframe = !x.isSelf && !isImage && isIframeContent(x.url);
+  const isLink = !x.isSelf && !x.isVideo && !isImage && !isIframe;
 
   return (
     <li className="posts__item">

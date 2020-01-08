@@ -17,7 +17,8 @@ namespace Fuyuki.Services
         private readonly IGroupDataService _groupDataService;
         private readonly IMapper _mapper;
 
-        private readonly int pageSize = 25;
+        private readonly int postsPageSize = 25;
+        private readonly int commentsLimit = 50;
 
         public RedditService(IMapper mapper,
                              IUserService userService,
@@ -45,7 +46,7 @@ namespace Fuyuki.Services
 
             var posts = reddit.Subreddit(subName)
                               .Posts
-                              .GetHot(after: lastPostId, limit: pageSize);
+                              .GetHot(after: lastPostId, limit: postsPageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
         }
@@ -67,7 +68,7 @@ namespace Fuyuki.Services
 
             var posts = reddit.Subreddit(subreddits)
                               .Posts
-                              .GetHot(after: lastPostId, limit: pageSize);
+                              .GetHot(after: lastPostId, limit: postsPageSize);
 
             return _mapper.Map<List<RedditPost>>(posts);
         }
@@ -88,7 +89,7 @@ namespace Fuyuki.Services
 
             var comments = reddit.Post(postId)
                                  .Comments
-                                 .GetComments(sort: "top", depth: 0);
+                                 .GetTop(limit: commentsLimit);
 
             return _mapper.Map<List<RedditComment>>(comments);
         }

@@ -62,6 +62,7 @@ $yellow: #f3e29d;
   .application-header {
     background-color: var(--primary-colour);
     color: var(--primary-contrast);
+    box-shadow: 0px 0px 5px 1px var(--highlight);
   }
 
   .application-header__nav-link {
