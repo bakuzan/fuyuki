@@ -8,7 +8,7 @@ import RequestMessage from '../RequestMessage';
 import CommentItem from './CommentItem';
 
 import { useAsyncPaged } from 'src/hooks/useAsyncPaged';
-import { ApiResponse } from 'src/interfaces/ApiResponse';
+import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { Comment } from 'src/interfaces/Comment';
 
 import './Comments.scss';
@@ -20,7 +20,7 @@ interface CommentsProps {
 function Comments(props: CommentsProps) {
   const { endpoint } = props;
   const [commentsAfter, setCommentsAfter] = useState('');
-  const [state, fetchPage] = useAsyncPaged<Comment[] | ApiResponse, any>(
+  const [state, fetchPage] = useAsyncPaged<FykResponse<Comment[]>, any>(
     endpoint
   );
 

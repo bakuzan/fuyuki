@@ -21,9 +21,10 @@ import './PostItem.scss';
 const OPEN = `\uD83D\uDDC1\uFE0E`;
 
 interface PostItemProps {
+  className?: string;
   index?: number;
   data: Post;
-  locked: boolean;
+  defaultExpanded?: boolean;
   headingTag: keyof Pick<
     JSX.IntrinsicElements,
     'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
@@ -31,7 +32,7 @@ interface PostItemProps {
 }
 
 function PostItem(props: PostItemProps) {
-  const [isExpanded, setExpanded] = useState(false);
+  const [isExpanded, setExpanded] = useState(props.defaultExpanded ?? false);
   const Heading = props.headingTag;
   const rankNum = (props.index ?? 0) + 1;
   const rank = `#${padNumber(rankNum, 2)}`;
@@ -46,7 +47,13 @@ function PostItem(props: PostItemProps) {
   const isLink = !x.isSelf && !x.isVideo && !isImage && !isIframe;
 
   return (
-    <article className={classNames('post', { 'post--stickied': x.stickied })}>
+    <article
+      className={classNames(
+        'post',
+        { 'post--stickied': x.stickied },
+        props.className
+      )}
+    >
       {showRank && (
         <div className="post__rank" aria-label={postLabel} title={postLabel}>
           <span aria-hidden={true}>{rank}</span>
@@ -102,17 +109,16 @@ function PostItem(props: PostItemProps) {
           </FYKLink>
         </p>
         <div className="post__actions">
-          {!props.locked && (
-            <Button
-              className="post__expando"
-              btnStyle="primary"
-              aria-label="View post content inline"
-              title="Peek"
-              icon={OPEN}
-              disabled={isLink}
-              onClick={() => setExpanded((p) => !p)}
-            />
-          )}
+          <Button
+            className="post__expando"
+            btnStyle="primary"
+            aria-label="View post content inline"
+            title="Peek"
+            icon={OPEN}
+            disabled={isLink}
+            onClick={() => setExpanded((p) => !p)}
+          />
+
           <div className="post__other">
             <FYKLink className="post__comments" to={postLink}>
               {x.numberOfComments} comments
@@ -120,14 +126,10 @@ function PostItem(props: PostItemProps) {
             <AwardsBlock data={x.awards} />
           </div>
         </div>
-        {!props.locked && <PostContent isExpanded={isExpanded} data={x} />}
+        <PostContent isExpanded={isExpanded} data={x} />
       </div>
     </article>
   );
 }
-
-PostItem.defaultProps = {
-  locked: false
-};
 
 export default PostItem;

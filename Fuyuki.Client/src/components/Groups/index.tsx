@@ -6,7 +6,7 @@ import RequestMessage from '../RequestMessage';
 import GroupItem from './GroupItem';
 
 import { useAsync } from 'src/hooks/useAsync';
-import { ApiResponse } from 'src/interfaces/ApiResponse';
+import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { Group } from 'src/interfaces/Group';
 import sendRequest from 'src/utils/sendRequest';
 
@@ -19,7 +19,7 @@ interface GroupsProps {
 function Groups(props: GroupsProps) {
   const { endpoint } = props;
 
-  const state = useAsync<Group[] | ApiResponse>(
+  const state = useAsync<FykResponse<Group[]>>(
     async () => await sendRequest(endpoint),
     [endpoint]
   );

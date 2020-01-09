@@ -17,10 +17,17 @@
     text-decoration: none;
   }
 
-  &__distinguished {
-    background-color: var(--highlight);
+  &__distinguished,
+  &__submitter {
     color: #fff;
     padding: 0 2px;
+  }
+
+  &__distinguished {
+    background-color: var(--highlight);
+  }
+  &__submitter {
+    background-color: var(--primary-colour);
   }
 
   &__posted {
@@ -52,4 +59,9 @@
       text-decoration: underline;
     }
   }
+}
+
+.see-more {
+  padding: 0 5px;
+  margin: 5px 0;
 }

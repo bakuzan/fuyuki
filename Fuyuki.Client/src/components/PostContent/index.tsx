@@ -17,7 +17,7 @@ interface PostContentProps {
 function PostContent(props: PostContentProps) {
   const x = props.data;
   const hasTextBody = x.isSelf;
-  const isVideo = x.isVideo;
+  const isVideo = x.isVideo && !x.url.includes('v.redd.it');
   const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
   const isIframe = !x.isSelf && !isImage && isIframeContent(x.url);
 

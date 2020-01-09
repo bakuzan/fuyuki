@@ -87,17 +87,33 @@ namespace Fuyuki.Services
             var user = await _userService.GetCurrentUser(claim);
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
-            // TODO 
-            // This is reallllly slow. Need to limit the comments to just top level, first 50
-            // Will then have "get more" buttons for beyond 50, or deeper in the tree
             var post = reddit.Post(postId).About();
-            var comments = post.Comments.GetComments(sort: "top",
+            var comments = post.Comments.GetComments(sort: "best",
                                                      depth: 0,
                                                      showMore: true,
                                                      limit: commentsLimit);
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var mapped = _mapper.Map<List<Reddit.Controllers.Comment>, List<RedditComment>>(comments);
+            var mapped = _mapper.Map<List<RedditComment>>(comments);
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            return mapped;
+        }
+
+        public async Task<List<RedditComment>> GetMoreComments(ClaimsPrincipal claim, string postId, List<string> commentIds)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            var idString = string.Join(',', commentIds);
+            var children = reddit.Models.LinksAndComments.MoreChildren(
+                new Reddit.Inputs.LinksAndComments.LinksAndCommentsMoreChildrenInput(linkId: postId, children: idString));
+
+            var comments = children.Comments;
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var mapped = _mapper.Map<List<RedditComment>>(comments);
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
 

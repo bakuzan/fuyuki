@@ -68,5 +68,12 @@ namespace Fuyuki.Controllers
             return await _redditService.GetPostCommentsPaged(User, postId, lastPostId);
         }
 
+        [HttpPost]
+        [Route("MoreComments")]
+        public async Task<List<RedditComment>> GetMoreComments(MoreChildrenRequest request)
+        {
+            return await _redditService.GetMoreComments(User, request.PostId, request.CommentIds);
+        }
+
     }
 }

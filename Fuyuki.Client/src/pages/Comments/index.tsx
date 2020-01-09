@@ -6,6 +6,7 @@ import Comments from 'src/components/Comments';
 import RequestMessage from 'src/components/RequestMessage';
 import PostContent from 'src/components/PostContent';
 
+import { PostContext } from 'src/context';
 import { useAsync } from 'src/hooks/useAsync';
 import { Post } from 'src/interfaces/Post';
 import { PageProps } from 'src/interfaces/PageProps';
@@ -32,9 +33,7 @@ function CommentsPage(props: PageProps) {
     return <RequestMessage text="No post found" />;
   }
 
-  const title = value?.title ?? '';
-  const subreddit = value?.subreddit ?? '';
-  const pageTitle = `${title} : ${subreddit}`;
+  const pageTitle = value ? `${value.title} : ${value.subreddit}` : '';
   const queryUrl = `/reddit/post/${postId}/comments`;
   const post =
     value && value.hasOwnProperty('permalink') ? (value as Post) : null;
@@ -43,18 +42,14 @@ function CommentsPage(props: PageProps) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      {post && <PostItem headingTag="h2" data={post} locked />}
-      {/* <header className="page__header">
-        <h2 className="page__title">
-          <NewTabLink
-            className="fyk-link fyk-link--shadowless"
-            href={post?.url ?? '#'}
-          >
-            {pageTitle}
-          </NewTabLink>
-        </h2>
-      </header> */}
-      {post && <PostContent isExpanded={true} data={post} />}
+      {post && (
+        <PostItem
+          headingTag="h2"
+          className="top-spacing"
+          data={post}
+          defaultExpanded
+        />
+      )}
       {post && post.permalink && (
         <div className="post-info">
           <p>
@@ -72,7 +67,9 @@ function CommentsPage(props: PageProps) {
           </NewTabLink>
         </div>
       )}
-      <Comments endpoint={queryUrl} />
+      <PostContext.Provider value={{ postId: post?.fullname }}>
+        <Comments endpoint={queryUrl} />
+      </PostContext.Provider>
     </div>
   );
 }

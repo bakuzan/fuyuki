@@ -21,3 +21,13 @@
     text-decoration: none;
   }
 }
+
+.navigation-button {
+  $selector: &;
+
+  &#{$selector} {
+    flex: unset;
+    padding: 6px;
+    margin: 2px;
+  }
+}

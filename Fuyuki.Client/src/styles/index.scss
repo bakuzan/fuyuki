@@ -49,10 +49,18 @@ main {
   }
 }
 
-$awards: (('silver', #c0c0c0), ('gold', #ffd700), ('platinum', #e5e4e2));
+.loading-bouncer--local {
+  justify-content: flex-start;
 
-@each $name, $colour in $awards {
-  .#{$name} {
-    background-color: $colour;
+  .loading-bouncer__orb {
+    margin: 1rem 0.05rem;
   }
 }
+
+/* Reddit Markdown Style Start */
+blockquote {
+  background: #efefef;
+  padding: 10px;
+}
+
+/* Reddit Markdown Style END */

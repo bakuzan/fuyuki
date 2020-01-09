@@ -1,3 +1,4 @@
+using System.Linq;
 using AutoMapper;
 using Fuyuki.ViewModels;
 
@@ -27,7 +28,16 @@ namespace Fuyuki.Mapping
                 .ForMember(x => x.Created, opts => opts.MapFrom(x => x.Listing.CreatedUTC))
                 .ForMember(x => x.AuthorFlairText, opts => opts.MapFrom(x => x.Listing.AuthorFlairText))
                 .ForMember(x => x.Distinguished, opts => opts.MapFrom(x => x.Listing.Distinguished))
-                .ForMember(x => x.Stickied, opts => opts.MapFrom(x => x.Listing.Stickied));
+                .ForMember(x => x.Stickied, opts => opts.MapFrom(x => x.Listing.Stickied))
+                .ForMember(x => x.ReplyIds, opts => opts.MapFrom(x => x.Replies.Select(y => y.Id)));
+
+            CreateMap<Reddit.Things.Comment, Reddit.Controllers.Structures.Awards>()
+                .ConvertUsing(new AwardsConverter());
+
+            CreateMap<Reddit.Things.Comment, RedditComment>()
+                .ForMember(x => x.Awards, opts => opts.MapFrom(x => x))
+                .ForMember(x => x.ReplyIds, opts => opts.MapFrom(x => x.Replies.Comments.Select(y => y.Id)))
+                .ForMember(x => x.More, opts => opts.MapFrom(x => x.Replies.MoreData));
 
         }
     }

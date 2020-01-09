@@ -31,7 +31,7 @@ namespace Fuyuki.ViewModels
         public string AuthorFlairText { get; set; }
         public string Distinguished { get; set; }
         public bool Stickied { get; set; }
-        public List<RedditComment> Replies { get; set; }
+        public List<string> ReplyIds { get; set; }
         public List<Reddit.Things.More> More { get; set; }
     }
 }

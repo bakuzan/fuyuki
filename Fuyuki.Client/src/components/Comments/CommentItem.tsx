@@ -1,12 +1,19 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { Button } from 'meiko/Button';
 import NewTabLink from 'meiko/NewTabLink';
 import List from 'meiko/List';
+import LoadingBouncer from 'meiko/LoadingBouncer';
+
 import AwardsBlock from '../AwardsBlock';
 import Flair from '../FlairBlock';
+import { SeeMoreButton } from '../Buttons';
+
+import { PostContext } from 'src/context';
+import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { Comment } from 'src/interfaces/Comment';
+import sendRequest from 'src/utils/sendRequest';
 import thousandFormat from 'src/utils/thousandFormat';
 import formatDateTimeForDisplay from 'ayaka/formatDateTimeForDisplay';
 import formatDateTimeAgo from 'src/utils/formatDateTimeAgo';
@@ -22,17 +29,29 @@ interface CommentItemProps {
 }
 
 const CommentItem = React.memo(function(props: CommentItemProps) {
+  const { postId } = useContext(PostContext);
   const [collapsed, setCollapsed] = useState(props.data.collapsed);
+
+  const [moreState, fetchMore] = useAsyncFn<Comment[], any>(
+    async (commentIds: string[]) =>
+      await sendRequest(`reddit/morecomments`, {
+        method: 'POST',
+        body: JSON.stringify({ postId, commentIds })
+      }),
+    [postId]
+  );
+
   const x = props.data;
   const isEdited = x.edited !== BAD_DATE && x.edited;
   const commentDate = isEdited ? x.edited : x.created;
-  const hasReplies = x.replies && x.replies.length > 0;
+  const moreCommentIds = (x.more || []).reduce(
+    (p, c) => [...p, ...c.children],
+    x.replyIds
+  );
 
-  if (!x.permalink) {
-    // TODO
-    // Implement a query to get more replies using x.depth and x.parentFullname...
-    return <li className="comments__item">See more...</li>;
-  }
+  const replies = moreState.value as Comment[];
+  const hasReplies = moreState.value instanceof Array;
+  const hasMore = !hasReplies && moreCommentIds.length > 0;
 
   return (
     <li
@@ -40,89 +59,110 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
         'comments__item--stickied': x.stickied
       })}
     >
-      <article className="comment">
-        <div className="comment__top-bar">
-          <div>
-            <Button
-              className="comment__toggle"
-              btnSize="small"
-              aria-label={collapsed ? 'Expand comment' : 'Collapse comment'}
-              onClick={() => setCollapsed((p) => !p)}
-            >
-              <span aria-hidden={true}>[{collapsed ? '+' : '-'}]</span>
-            </Button>
-          </div>
-
-          <NewTabLink
-            className="comment__authour fyk-link fyk-link--shadowless"
-            href={`https://www.reddit.com/user/${x.author}`}
-          >
-            {x.author}
-          </NewTabLink>
-          {x.distinguished && (
-            <div
-              className="comment__distinguished"
-              title={x.distinguished}
-              aria-label={x.distinguished}
-            >
-              <span aria-hidden={true}>[{x.distinguished.slice(0, 1)}]</span>
-            </div>
-          )}
-          <Flair text={x.authorFlairText} />
-          <AwardsBlock data={x.awards} />
-          <span className="comment__karma">
-            {thousandFormat(x.score)} points
-          </span>
-          {isEdited ? `Edited ` : ''}
-          <time
-            className="comment__posted"
-            dateTime={commentDate}
-            title={formatDateTimeForDisplay(commentDate)}
-          >
-            {formatDateTimeAgo(commentDate)}
-          </time>
-          {x.stickied && (
-            <div
-              className="comment__stickied"
-              title={stickyMessage}
-              aria-label={stickyMessage}
-            >
-              stickied
-            </div>
-          )}
-        </div>
-        {!collapsed && (
-          <React.Fragment>
-            <div className="comment__body">
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: !x.removed
-                    ? x.bodyHTML
-                    : '<p>[Removed for some reason]</p>'
-                }}
-              ></div>
-            </div>
-            <div className="comment__footer">
-              <NewTabLink
-                className="comment__other-link"
-                href={`https://www.reddit.com/${x.permalink}`}
+      {x.permalink && (
+        <article className="comment">
+          <div className="comment__top-bar">
+            <div>
+              <Button
+                className="comment__toggle"
+                btnSize="small"
+                aria-label={collapsed ? 'Expand comment' : 'Collapse comment'}
+                onClick={() => setCollapsed((p) => !p)}
               >
-                reddit permalink
-              </NewTabLink>
+                <span aria-hidden={true}>[{collapsed ? '+' : '-'}]</span>
+              </Button>
             </div>
-          </React.Fragment>
-        )}
-      </article>
+
+            <NewTabLink
+              className="comment__authour fyk-link fyk-link--shadowless"
+              href={`https://www.reddit.com/user/${x.author}`}
+            >
+              {x.author}
+            </NewTabLink>
+            {x.isSubmitter && (
+              <div
+                className="comment__submitter"
+                title="submitter"
+                aria-label="user is post submitter"
+              >
+                <span aria-hidden={true}>[s]</span>
+              </div>
+            )}
+            {x.distinguished && (
+              <div
+                className="comment__distinguished"
+                title={x.distinguished}
+                aria-label={x.distinguished}
+              >
+                <span aria-hidden={true}>[{x.distinguished.slice(0, 1)}]</span>
+              </div>
+            )}
+            <Flair text={x.authorFlairText} />
+            <AwardsBlock data={x.awards} />
+            <span className="comment__karma">
+              {thousandFormat(x.score)} points
+            </span>
+            {isEdited ? `Edited ` : ''}
+            <time
+              className="comment__posted"
+              dateTime={commentDate}
+              title={formatDateTimeForDisplay(commentDate)}
+            >
+              {formatDateTimeAgo(commentDate)}
+            </time>
+            {x.stickied && (
+              <div
+                className="comment__stickied"
+                title={stickyMessage}
+                aria-label={stickyMessage}
+              >
+                stickied
+              </div>
+            )}
+          </div>
+          {!collapsed && (
+            <React.Fragment>
+              <div className="comment__body">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: !x.removed
+                      ? x.bodyHTML
+                      : '<p>[Removed for some reason]</p>'
+                  }}
+                ></div>
+              </div>
+              <div className="comment__footer">
+                <NewTabLink
+                  className="comment__other-link"
+                  href={`https://www.reddit.com/${x.permalink}`}
+                >
+                  reddit permalink
+                </NewTabLink>
+              </div>
+            </React.Fragment>
+          )}
+        </article>
+      )}
       {hasReplies && !collapsed && (
         <List
           style={{ paddingLeft: `${(x.depth + 1) * 12}px` }}
           className="comments"
           columns={1}
         >
-          {x.replies.map((reply, j) => (
+          {replies.map((reply, j) => (
             <CommentItem key={reply.id} index={j} data={reply} />
           ))}
         </List>
+      )}
+      {hasMore && !collapsed && (
+        <div className="see-more">
+          {!moreState.loading && (
+            <SeeMoreButton onClick={() => fetchMore(moreCommentIds)} />
+          )}
+          {moreState.loading && (
+            <LoadingBouncer className="loading-bouncer--local" />
+          )}
+        </div>
       )}
     </li>
   );

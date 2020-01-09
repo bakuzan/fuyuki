@@ -1,5 +1,8 @@
 .post-content {
+  padding: 5px;
   margin: 10px 0;
+  border: 1px solid var(--primary-colour);
+  border-radius: 3px;
 
   &__image {
     max-width: 100%;

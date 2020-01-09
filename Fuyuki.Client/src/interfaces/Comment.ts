@@ -1,4 +1,5 @@
 import { Awards } from './Awards';
+import { MoreData } from './MoreData';
 
 export interface Comment {
   spam: boolean;
@@ -26,5 +27,6 @@ export interface Comment {
   authorFlairText?: string;
   stickied: boolean;
   distinguished?: string;
-  replies: Comment[];
+  replyIds: string[];
+  more: MoreData[];
 }
