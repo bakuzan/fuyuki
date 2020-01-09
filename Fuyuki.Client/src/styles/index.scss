@@ -12,6 +12,10 @@ main {
   &__header {
     display: flex;
     align-items: center;
+
+    &--spaced {
+      justify-content: space-between;
+    }
   }
 
   &__title {

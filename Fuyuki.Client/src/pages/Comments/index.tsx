@@ -13,6 +13,7 @@ import sendRequest from 'src/utils/sendRequest';
 
 import './Comments.scss';
 import FYKLink from 'src/components/FYKLink';
+import PostItem from 'src/components/Posts/PostItem';
 
 interface CommentsPageParams {
   postId?: string;
@@ -32,27 +33,28 @@ function CommentsPage(props: PageProps) {
   }
 
   const title = value?.title ?? '';
-  const pageTitle = title;
+  const subreddit = value?.subreddit ?? '';
+  const pageTitle = `${title} : ${subreddit}`;
   const queryUrl = `/reddit/post/${postId}/comments`;
-  const post = (value && value.hasOwnProperty('permalink')
-    ? value
-    : {}) as Post;
+  const post =
+    value && value.hasOwnProperty('permalink') ? (value as Post) : null;
 
   console.log('Comments...', value);
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      <header className="page__header">
+      {post && <PostItem headingTag="h2" data={post} locked />}
+      {/* <header className="page__header">
         <h2 className="page__title">
           <NewTabLink
             className="fyk-link fyk-link--shadowless"
-            href={post.url ?? '#'}
+            href={post?.url ?? '#'}
           >
             {pageTitle}
           </NewTabLink>
         </h2>
-      </header>
-      <PostContent isExpanded={true} data={post} />
+      </header> */}
+      {post && <PostContent isExpanded={true} data={post} />}
       {post && post.permalink && (
         <div className="post-info">
           <p>

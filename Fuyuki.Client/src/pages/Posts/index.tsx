@@ -1,7 +1,9 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 
+import NewTabLink from 'meiko/NewTabLink';
 import Posts from 'src/components/Posts';
+
 import { useAsync } from 'src/hooks/useAsync';
 import { Group } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
@@ -34,8 +36,18 @@ function PostsPage(props: PageProps) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      <header className="page__header">
-        <h2 className="page__title">{pageTitle}</h2>
+      <header className="page__header page__header--spaced">
+        {(!groupId || (groupId && groupName)) && (
+          <h2 className="page__title">{pageTitle}</h2>
+        )}
+        {subName && (
+          <NewTabLink
+            href={`https://www.reddit.com/r/${subName}`}
+            aria-label={`View r/${subName} on reddit`}
+          >
+            <span aria-hidden={true}>View r/{subName} on reddit</span>
+          </NewTabLink>
+        )}
       </header>
       <Posts endpoint={`${urlBase}${queryUrl}`} />
     </div>

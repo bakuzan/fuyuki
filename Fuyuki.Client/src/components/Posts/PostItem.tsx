@@ -16,17 +16,26 @@ import thousandFormat from 'src/utils/thousandFormat';
 import isImageURL from 'src/utils/isImageURL';
 import isIframeContent from 'src/utils/isIframeContent';
 
+import './PostItem.scss';
+
 const OPEN = `\uD83D\uDDC1\uFE0E`;
 
 interface PostItemProps {
-  index: number;
+  index?: number;
   data: Post;
+  locked: boolean;
+  headingTag: keyof Pick<
+    JSX.IntrinsicElements,
+    'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  >;
 }
 
 function PostItem(props: PostItemProps) {
   const [isExpanded, setExpanded] = useState(false);
-  const rankNum = props.index + 1;
+  const Heading = props.headingTag;
+  const rankNum = (props.index ?? 0) + 1;
   const rank = `#${padNumber(rankNum, 2)}`;
+  const showRank = props.index !== undefined;
   const x = props.data;
 
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
@@ -37,64 +46,63 @@ function PostItem(props: PostItemProps) {
   const isLink = !x.isSelf && !x.isVideo && !isImage && !isIframe;
 
   return (
-    <li className="posts__item">
-      <article className={classNames('post', { 'post--stickied': x.stickied })}>
+    <article className={classNames('post', { 'post--stickied': x.stickied })}>
+      {showRank && (
         <div className="post__rank" aria-label={postLabel} title={postLabel}>
           <span aria-hidden={true}>{rank}</span>
         </div>
-        <div className="post__score">{thousandFormat(x.score)}</div>
-        <div className="post__image-wrapper">
-          <Image
-            className="post__thumbnail"
-            src={x.thumbnail}
-            alt={x.title}
-            height={70}
-            width={70}
-            isLazy
-          />
-          {x.nsfw && (
-            <div className="post__nsfw" aria-label="Not safe for work">
-              <span aria-hidden={true}>NSFW</span>
-            </div>
-          )}
-        </div>
-        <div className="post__content">
-          <header>
-            <h2 className="post__title">
-              <Flair text={x.linkFlairText} />
-              <NewTabLink
-                className="fyk-link fyk-link--shadowless"
-                href={x.url}
-              >
-                {x.title}
-              </NewTabLink>
-            </h2>
-          </header>
-          <p className="post__submission-meta">
-            Submitted at{' '}
-            <time
-              className="post__time"
-              title={`${new Date(x.created).toLocaleDateString()} ${new Date(
-                x.created
-              ).toLocaleTimeString()}`}
-              dateTime={x.created}
-            >
-              {formatDate(x.created)}
-            </time>{' '}
-            by{' '}
-            <NewTabLink
-              className="post__authour"
-              href={`https://www.reddit.com/user/${x.author}`}
-            >
-              {x.author}
+      )}
+      <div className="post__score">{thousandFormat(x.score)}</div>
+      <div className="post__image-wrapper">
+        <Image
+          className="post__thumbnail"
+          src={x.thumbnail}
+          alt={x.title}
+          height={70}
+          width={70}
+          isLazy
+        />
+        {x.nsfw && (
+          <div className="post__nsfw" aria-label="Not safe for work">
+            <span aria-hidden={true}>NSFW</span>
+          </div>
+        )}
+      </div>
+      <div className="post__content">
+        <header>
+          <Heading className="post__title">
+            <Flair text={x.linkFlairText} />
+            <NewTabLink className="fyk-link fyk-link--shadowless" href={x.url}>
+              {x.title}
             </NewTabLink>
-            <Flair text={x.authorFlairText} />
-            to{' '}
-            <FYKLink className="post__subreddit" to={`/r/posts/${x.subreddit}`}>
-              r/{x.subreddit}
-            </FYKLink>
-          </p>
-          <div className="post__actions">
+          </Heading>
+        </header>
+        <p className="post__submission-meta">
+          Submitted at{' '}
+          <time
+            className="post__time"
+            title={`${new Date(x.created).toLocaleDateString()} ${new Date(
+              x.created
+            ).toLocaleTimeString()}`}
+            dateTime={x.created}
+          >
+            {formatDate(x.created)}
+          </time>{' '}
+          by{' '}
+          <NewTabLink
+            className="post__authour"
+            href={`https://www.reddit.com/user/${x.author}`}
+          >
+            {x.author}
+          </NewTabLink>
+          <Flair text={x.authorFlairText} />
+          to{' '}
+          <FYKLink className="post__subreddit" to={`/r/posts/${x.subreddit}`}>
+            r/{x.subreddit}
+          </FYKLink>
+        </p>
+        <div className="post__actions">
+          {!props.locked && (
             <Button
               className="post__expando"
               btnStyle="primary"
@@ -104,18 +112,22 @@ function PostItem(props: PostItemProps) {
               disabled={isLink}
               onClick={() => setExpanded((p) => !p)}
             />
-            <div className="post__other">
-              <FYKLink className="post__comments" to={postLink}>
-                {x.numberOfComments} comments
-              </FYKLink>
-              <AwardsBlock data={x.awards} />
-            </div>
+          )}
+          <div className="post__other">
+            <FYKLink className="post__comments" to={postLink}>
+              {x.numberOfComments} comments
+            </FYKLink>
+            <AwardsBlock data={x.awards} />
           </div>
-          <PostContent isExpanded={isExpanded} data={x} />
         </div>
-      </article>
-    </li>
+        {!props.locked && <PostContent isExpanded={isExpanded} data={x} />}
+      </div>
+    </article>
   );
 }
 
-export default React.memo(PostItem);
+PostItem.defaultProps = {
+  locked: false
+};
+
+export default PostItem;

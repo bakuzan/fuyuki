@@ -60,7 +60,9 @@ function Posts(props: PostsProps) {
     <div>
       <List ref={ref} className="posts" columns={1}>
         {items.map((x: Post, i) => (
-          <PostItem key={x.id} index={i} data={x} />
+          <li key={x.id} className="posts__item">
+            <PostItem index={i} headingTag="h3" data={x} />
+          </li>
         ))}
       </List>
       {state.loading ? (

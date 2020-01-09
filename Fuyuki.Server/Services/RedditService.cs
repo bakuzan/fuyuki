@@ -18,7 +18,7 @@ namespace Fuyuki.Services
         private readonly IMapper _mapper;
 
         private readonly int postsPageSize = 25;
-        private readonly int commentsLimit = 50;
+        private readonly int commentsLimit = 25;
 
         public RedditService(IMapper mapper,
                              IUserService userService,
@@ -96,7 +96,12 @@ namespace Fuyuki.Services
                                                      showMore: true,
                                                      limit: commentsLimit);
 
-            return _mapper.Map<List<RedditComment>>(comments);
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var mapped = _mapper.Map<List<Reddit.Controllers.Comment>, List<RedditComment>>(comments);
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            return mapped;
         }
 
     }

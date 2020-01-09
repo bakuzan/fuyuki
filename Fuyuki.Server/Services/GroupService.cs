@@ -58,10 +58,17 @@ namespace Fuyuki.Services
 
         public async Task<GroupResponse> CreateGroup(ClaimsPrincipal claim, GroupRequest request)
         {
+            var response = new GroupResponse();
             var user = await _userService.GetCurrentUser(claim);
 
             var group = _mapper.Map<Group>(request);
             group.ApplicationUserId = user.Id;
+
+            if (string.IsNullOrEmpty(group.Name))
+            {
+                response.ErrorMessages.Add("Group name is required");
+                return response;
+            }
 
             _groupDataService.SetToPersist(group);
 
@@ -72,7 +79,8 @@ namespace Fuyuki.Services
                 group.GroupSubreddits = new List<GroupSubreddit>();
             }
 
-            foreach (var sub in request.Subreddits)
+            var subreddits = request.Subreddits.Where(x => !string.IsNullOrEmpty(x.Name));
+            foreach (var sub in subreddits)
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
                 {
@@ -85,14 +93,13 @@ namespace Fuyuki.Services
 
             await _groupDataService.SaveAsync();
 
-            return new GroupResponse()
-            {
-                Data = _mapper.Map<GroupModel>(group)
-            };
+            response.Data = _mapper.Map<GroupModel>(group);
+            return response;
         }
 
         public async Task<GroupResponse> UpdateGroup(ClaimsPrincipal claim, GroupRequest request)
         {
+            var response = new GroupResponse();
             var user = await _userService.GetCurrentUser(claim);
             var group = await _groupDataService.GetGroupAsync(request.Id);
 
@@ -105,6 +112,12 @@ namespace Fuyuki.Services
             }
 
             _mapper.Map(request, group);
+
+            if (string.IsNullOrEmpty(group.Name))
+            {
+                response.ErrorMessages.Add("Group name is required");
+                return response;
+            }
 
             if (group.GroupSubreddits == null)
             {
@@ -119,6 +132,7 @@ namespace Fuyuki.Services
             var newSubreddits = requestSubreddits.Where(x =>
                 !group.GroupSubreddits.Any(g => g.SubredditId == x.Id && g.Subreddit.Name == x.Name));
 
+            var subreddits = newSubreddits.Where(x => !string.IsNullOrEmpty(x.Name));
             foreach (var sub in newSubreddits)
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
@@ -132,10 +146,8 @@ namespace Fuyuki.Services
 
             await _groupDataService.SaveAsync();
 
-            return new GroupResponse
-            {
-                Data = _mapper.Map<GroupModel>(group)
-            };
+            response.Data = _mapper.Map<GroupModel>(group);
+            return response;
         }
 
         public async Task<GroupResponse> DeleteGroup(ClaimsPrincipal claim, int id)
