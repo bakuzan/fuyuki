@@ -7,8 +7,6 @@ import { LinkAsButton } from 'src/components/Buttons';
 import { PageProps } from 'src/interfaces/PageProps';
 
 function GroupManagement(props: PageProps) {
-  console.log('GM', props);
-
   return (
     <div className="page">
       <Helmet title="Groups" />

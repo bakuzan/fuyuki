@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 import DropdownMenu from 'meiko/DropdownMenu';
+import ThemeToggler from '../ThemeToggler';
 import authService from './AuthoriseService';
 import { ApplicationPaths } from './ApiAuthorisationConstants';
 import { LinkAsButton, NewTabLinkAsButton } from '../Buttons';
@@ -110,6 +111,9 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
     return (
       <Fragment>
         <div>
+          <ThemeToggler />
+        </div>
+        <div>
           {clickableAccount ? (
             <NewTabLinkAsButton
               className="account-action"
@@ -138,6 +142,9 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
   anonymousView(loginPath: string) {
     return (
       <Fragment>
+        <div>
+          <ThemeToggler />
+        </div>
         <div>
           <LinkAsButton
             className="account-action"

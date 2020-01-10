@@ -135,7 +135,7 @@ export class Login extends Component<LoginProps, LoginState> {
     } else if (fromQuery === ApplicationPaths.LoggedOut) {
       fromQuery = '';
     }
-    console.log(fromQuery, ApplicationPaths.LoggedOut);
+
     return (
       (state && state.returnUrl) || fromQuery || `${window.location.origin}/`
     );

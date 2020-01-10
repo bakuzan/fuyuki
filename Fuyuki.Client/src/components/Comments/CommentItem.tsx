@@ -56,7 +56,13 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
   const allReplies = hasReplies ? [...itemReplies, ...replies] : itemReplies;
   const showReplies = allReplies.length > 0;
 
-  if (!x.permalink) {
+  const isSeeMoreLink = !x.permalink;
+  const isTopLevel = x.depth === 0;
+  if (isSeeMoreLink && isTopLevel) {
+    // TODO FIX
+    // This doesn't work...
+    // I don't know how to get more "top-level" comments.
+
     return (
       <li className="comments__item">
         <div className="see-more">

@@ -50,84 +50,90 @@ function PostItem(props: PostItemProps) {
     <article
       className={classNames(
         'post',
+        { 'post--with-rank': showRank },
         { 'post--stickied': x.stickied },
         props.className
       )}
     >
-      {showRank && (
-        <div className="post__rank" aria-label={postLabel} title={postLabel}>
-          <span aria-hidden={true}>{rank}</span>
-        </div>
-      )}
-      <div className="post__score">{thousandFormat(x.score)}</div>
-      <div className="post__image-wrapper">
-        <Image
-          className="post__thumbnail"
-          src={x.thumbnail}
-          alt={x.title}
-          height={70}
-          width={70}
-          isLazy
-        />
-        {x.nsfw && (
-          <div className="post__nsfw" aria-label="Not safe for work">
-            <span aria-hidden={true}>NSFW</span>
+      <div className="post__inner">
+        {showRank && (
+          <div className="post__rank" aria-label={postLabel} title={postLabel}>
+            <span aria-hidden={true}>{rank}</span>
           </div>
         )}
-      </div>
-      <div className="post__content">
-        <header>
-          <Heading className="post__title">
-            <Flair text={x.linkFlairText} />
-            <NewTabLink className="fyk-link fyk-link--shadowless" href={x.url}>
-              {x.title}
-            </NewTabLink>
-          </Heading>
-        </header>
-        <p className="post__submission-meta">
-          Submitted at{' '}
-          <time
-            className="post__time"
-            title={`${new Date(x.created).toLocaleDateString()} ${new Date(
-              x.created
-            ).toLocaleTimeString()}`}
-            dateTime={x.created}
-          >
-            {formatDate(x.created)}
-          </time>{' '}
-          by{' '}
-          <NewTabLink
-            className="post__authour"
-            href={`https://www.reddit.com/user/${x.author}`}
-          >
-            {x.author}
-          </NewTabLink>
-          <Flair text={x.authorFlairText} />
-          to{' '}
-          <FYKLink className="post__subreddit" to={`/r/posts/${x.subreddit}`}>
-            r/{x.subreddit}
-          </FYKLink>
-        </p>
-        <div className="post__actions">
-          <Button
-            className="post__expando"
-            btnStyle="primary"
-            aria-label="View post content inline"
-            title="Peek"
-            icon={OPEN}
-            disabled={isLink}
-            onClick={() => setExpanded((p) => !p)}
+        <div className="post__score">{thousandFormat(x.score)}</div>
+        <div className="post__image-wrapper">
+          <Image
+            className="post__thumbnail"
+            src={x.thumbnail}
+            alt={x.title}
+            height={70}
+            width={70}
+            isLazy
           />
-
-          <div className="post__other">
-            <FYKLink className="post__comments" to={postLink}>
-              {x.numberOfComments} comments
+          {x.nsfw && (
+            <div className="post__nsfw" aria-label="Not safe for work">
+              <span aria-hidden={true}>NSFW</span>
+            </div>
+          )}
+        </div>
+        <div className="post__content">
+          <header>
+            <Heading className="post__title">
+              <Flair text={x.linkFlairText} />
+              <NewTabLink
+                className="fyk-link fyk-link--shadowless"
+                href={x.url}
+              >
+                {x.title}
+              </NewTabLink>
+            </Heading>
+          </header>
+          <p className="post__submission-meta">
+            Submitted at{' '}
+            <time
+              className="post__time"
+              title={`${new Date(x.created).toLocaleDateString()} ${new Date(
+                x.created
+              ).toLocaleTimeString()}`}
+              dateTime={x.created}
+            >
+              {formatDate(x.created)}
+            </time>{' '}
+            by{' '}
+            <NewTabLink
+              className="regular-link post__authour"
+              href={`https://www.reddit.com/user/${x.author}`}
+            >
+              {x.author}
+            </NewTabLink>
+            <Flair text={x.authorFlairText} />
+            to{' '}
+            <FYKLink className="post__subreddit" to={`/r/posts/${x.subreddit}`}>
+              r/{x.subreddit}
             </FYKLink>
-            <AwardsBlock data={x.awards} />
+          </p>
+          <div className="post__actions">
+            <Button
+              className="post__expando"
+              btnStyle="primary"
+              aria-label="View post content inline"
+              title="Peek"
+              icon={OPEN}
+              disabled={isLink}
+              onClick={() => setExpanded((p) => !p)}
+            />
+
+            <div className="post__other">
+              <FYKLink className="post__comments" to={postLink}>
+                {x.numberOfComments} comments
+              </FYKLink>
+              <AwardsBlock data={x.awards} />
+            </div>
           </div>
         </div>
-        <PostContent isExpanded={isExpanded} data={x} />
       </div>
+      <PostContent isExpanded={isExpanded} data={x} />
     </article>
   );
 }

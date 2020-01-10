@@ -24,7 +24,6 @@ function Posts(props: PostsProps) {
   const [state, fetchPage] = useAsyncPaged<FykResponse<Post[]>, any>(endpoint);
 
   const prevEndpoint = usePrevious(endpoint);
-  const prevLoading = usePrevious(state.loading);
 
   useEffect(() => {
     if (prevEndpoint && endpoint && endpoint !== prevEndpoint) {
@@ -36,27 +35,21 @@ function Posts(props: PostsProps) {
     fetchPage(postsAfter);
   }, [postsAfter]);
 
-  const currentLoading = state.loading;
-  useEffect(() => {
-    if (!ready && prevLoading && !currentLoading) {
-      console.log('%c READY', 'color: orange; font-size: 20px;');
-      setReady(ready);
-    }
-  }, [ready, currentLoading, prevLoading]);
-
+  const currentlyLoading = state.loading;
   const items = state.value instanceof Array ? state.value : [];
-  const hasNoItems = items.length === 0;
-  const lastPostId = items[items.length - 1]?.fullname ?? '';
-  console.log('posts...', props, state, items);
+  const itemCount = items.length;
+  const hasNoItems = itemCount === 0;
+  const lastPostId = items[itemCount - 1]?.fullname ?? '';
+
+  useEffect(() => {
+    // This is to ensure the prog loader can initialise.
+    if (!ready && itemCount) {
+      setReady(true);
+    }
+  }, [ready, itemCount]);
+
   const ref = useProgressiveLoading<HTMLUListElement>(() => {
-    console.log(
-      '%c Should load...',
-      'color:forestgreen;',
-      state,
-      postsAfter,
-      lastPostId
-    );
-    if (!state.loading && postsAfter !== lastPostId) {
+    if (!currentlyLoading && postsAfter !== lastPostId) {
       setPostsAfter(lastPostId);
     }
   });
@@ -65,12 +58,12 @@ function Posts(props: PostsProps) {
   if (state.error || badResponse?.error) {
     return <RequestMessage text={'Failed to fetch posts'} />;
   }
-  console.log(ref?.current);
+
   return (
     <div>
       <List ref={ref} className="posts" columns={1}>
         {items.map((x: Post, i) => (
-          <li key={x.id} className="posts__item">
+          <li key={x.fullname} className="posts__item">
             <PostItem index={i} headingTag="h3" data={x} />
           </li>
         ))}

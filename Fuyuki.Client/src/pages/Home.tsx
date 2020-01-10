@@ -5,8 +5,6 @@ import Groups from 'src/components/Groups';
 import { PageProps } from 'src/interfaces/PageProps';
 
 function Home(props: PageProps) {
-  console.log('Home', props);
-
   return (
     <div className="page">
       <Helmet title="Home" />

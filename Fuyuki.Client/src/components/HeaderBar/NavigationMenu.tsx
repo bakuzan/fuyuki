@@ -29,24 +29,26 @@ function NavigationMenu() {
 
   return (
     <React.Fragment>
-      <Button
-        className="navigation-button"
-        btnStyle="accent"
-        icon={Icons.left}
-        title="Go to previous page"
-        aria-label="Go to previous page"
-        onClick={history.goBack}
-      />
-      <Button
-        className="navigation-button"
-        btnStyle="accent"
-        icon={Icons.right}
-        title="Go to next page"
-        aria-label="Go to next page"
-        onClick={history.goForward}
-      />
+      <div className="navigation-button-group">
+        <Button
+          className="navigation-button"
+          btnStyle="accent"
+          icon={Icons.left}
+          title="Go to previous page"
+          aria-label="Go to previous page"
+          onClick={history.goBack}
+        />
+        <Button
+          className="navigation-button"
+          btnStyle="accent"
+          icon={Icons.right}
+          title="Go to next page"
+          aria-label="Go to next page"
+          onClick={history.goForward}
+        />
+      </div>
 
-      <HeaderLink to="/rall" aria-label="View posts on r/all">
+      <HeaderLink to="/r/all" aria-label="View posts on r/all">
         r/all
       </HeaderLink>
       <HeaderLink to="/groups" aria-label="Manage subreddit groups">

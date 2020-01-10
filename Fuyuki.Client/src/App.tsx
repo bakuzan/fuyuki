@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { Route, Switch } from 'react-router';
 import { Helmet } from 'react-helmet';
@@ -16,20 +17,36 @@ import CommentsPage from './pages/Comments';
 import GroupManagement from './pages/GroupManagement';
 import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
 
+import { ThemeContext } from './context';
+import { useStorage } from 'src/hooks/useStorage';
+
 import './styles/index.scss';
 import './styles/themes.scss';
 
 function App() {
+  const [isDarkTheme, setTheme] = useStorage('isDarkTheme');
   useGlobalStyles();
 
+  const themeState: [boolean, (newValue: boolean) => void] = [
+    isDarkTheme as boolean,
+    setTheme as (newValue: boolean) => void
+  ];
+  const showAltTheme = themeState[0];
+
   return (
-    <div className="theme theme--default">
+    <div
+      className={classNames('theme', {
+        'theme--default': !showAltTheme,
+        'theme--alt': showAltTheme
+      })}
+    >
       <Helmet defaultTitle="Fuyuki" titleTemplate="%s | Fuyuki" />
-      <HeaderBar />
+      <ThemeContext.Provider value={themeState}>
+        <HeaderBar />
+      </ThemeContext.Provider>
       <main>
         <Switch>
           <AuthoriseRoute exact path="/" component={Home} />
-          <AuthoriseRoute key="all" exact path="/rall" component={PostsPage} />
           <AuthoriseRoute
             key="sub"
             path="/r/posts/:subName(.*)"

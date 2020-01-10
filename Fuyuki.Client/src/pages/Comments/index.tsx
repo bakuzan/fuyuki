@@ -22,7 +22,6 @@ interface CommentsPageParams {
 
 function CommentsPage(props: PageProps) {
   const { postId } = props.match.params as CommentsPageParams;
-  console.log('Comments page .... ', props);
   const { value } = useAsync<Post>(
     async () =>
       postId ? await sendRequest(`/reddit/post/${postId}`) : Promise.resolve(),
@@ -38,7 +37,6 @@ function CommentsPage(props: PageProps) {
   const post =
     value && value.hasOwnProperty('permalink') ? (value as Post) : null;
 
-  console.log('Comments...', value);
   return (
     <div className="page">
       <Helmet title={pageTitle} />
@@ -60,6 +58,7 @@ function CommentsPage(props: PageProps) {
             </FYKLink>
           </p>
           <NewTabLink
+            className="regular-link"
             href={`https://www.reddit.com/${post.permalink}`}
             aria-label={`View ${post.title ?? 'post'} on reddit`}
           >

@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import List from 'meiko/List';
 import LoadingBouncer from 'meiko/LoadingBouncer';
-import { usePrevious } from 'meiko/hooks/usePrevious';
-import { useProgressiveLoading } from 'meiko/hooks/useProgressiveLoading';
 import RequestMessage from '../RequestMessage';
 import CommentItem from './CommentItem';
 
@@ -19,39 +17,16 @@ interface CommentsProps {
 
 function Comments(props: CommentsProps) {
   const { endpoint } = props;
-  const [commentsAfter, setCommentsAfter] = useState('');
   const [state, fetchPage] = useAsyncPaged<FykResponse<Comment[]>, any>(
     endpoint
   );
 
-  const prevEndpoint = usePrevious(endpoint);
-
   useEffect(() => {
-    if (prevEndpoint && endpoint && endpoint !== prevEndpoint) {
-      setCommentsAfter('');
-    }
-  }, [endpoint, prevEndpoint]);
-
-  useEffect(() => {
-    fetchPage(commentsAfter);
-  }, [commentsAfter]);
+    fetchPage();
+  }, []);
 
   const items = state.value instanceof Array ? state.value : [];
   const hasNoItems = items.length === 0;
-  //   const lastPostId = items[items.length - 1]?.fullname ?? '';
-  console.log('comments...', props, state, items);
-  //   const ref = useProgressiveLoading<HTMLUListElement>(() => {
-  //     console.log(
-  //       '%c Prog load...',
-  //       'color:forestgreen;',
-  //       state,
-  //       commentsAfter,
-  //       lastPostId
-  //     );
-  //     if (!state.loading && commentsAfter !== lastPostId) {
-  //       setCommentsAfter(lastPostId);
-  //     }
-  //   });
 
   const badResponse = state.value as ApiResponse;
   if (state.error || badResponse?.error) {
@@ -62,7 +37,7 @@ function Comments(props: CommentsProps) {
     <div>
       <List className="comments" columns={1}>
         {items.map((x: Comment, i: number) => (
-          <CommentItem key={x.id} index={i} data={x} />
+          <CommentItem key={x.fullname} index={i} data={x} />
         ))}
       </List>
       {state.loading ? (

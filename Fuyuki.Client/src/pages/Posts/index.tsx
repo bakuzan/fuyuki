@@ -18,7 +18,6 @@ interface PostsPageParams {
 
 function PostsPage(props: PageProps) {
   const { groupId = '', subName = '' } = props.match.params as PostsPageParams;
-  console.log('Posts page .... ', props);
   const { value } = useAsync<Group>(
     async () =>
       groupId ? await sendRequest(`group/${groupId}`) : Promise.resolve(),
@@ -42,6 +41,7 @@ function PostsPage(props: PageProps) {
         )}
         {subName && (
           <NewTabLink
+            className="regular-link"
             href={`https://www.reddit.com/r/${subName}`}
             aria-label={`View r/${subName} on reddit`}
           >

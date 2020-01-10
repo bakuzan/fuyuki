@@ -1,27 +1,33 @@
+@import '../../styles/_variables.scss';
+
 .post {
   display: flex;
+  flex-direction: column;
   padding: 5px 0;
+
+  &__inner {
+    display: flex;
+  }
 
   &__rank,
   &__score {
     display: flex;
     align-items: center;
-    padding: 0 5px;
+    padding: 0 $post--score-spacing;
     border-right: 1px dashed var(--primary-colour);
   }
 
   &__score {
     justify-content: flex-end;
-    min-width: 52px;
-    max-height: 70px;
+    width: $post--score-width;
   }
 
   &__image-wrapper {
-    margin: 0 5px;
+    margin: 0 $post--thumbnail-spacing;
   }
 
   &__thumbnail {
-    max-width: 70px;
+    max-width: $post--thumbnail-width;
     overflow: hidden;
   }
 

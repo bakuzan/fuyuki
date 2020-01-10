@@ -4,7 +4,7 @@ import sendRequest from 'src/utils/sendRequest';
 export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
   endpoint: string
 ): AsyncFn<Result, Args> {
-  const [state, fetchPage] = useAsyncFn<Result, Args>(
+  const [state, fetchPage, resetState] = useAsyncFn<Result, Args>(
     async (...params) => {
       const currentState: AsyncState<Result> = params[0];
       const lastPostId: string = params[1];
@@ -12,8 +12,11 @@ export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
       const queryUrl = `${endpoint}/${lastPostId}`.replace(/\/\//, '/');
       const response = await sendRequest(queryUrl);
 
-      if (response && !response.success) {
-        // TODO is this okay?
+      const isResponseArray = response instanceof Array;
+
+      if (!isResponseArray) {
+        // TODO
+        // is this okay?
         return response;
       }
 
@@ -33,6 +36,7 @@ export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
     (...args: Args | []) => {
       const callArgs = [state, ...args] as Args;
       return fetchPage(...callArgs);
-    }
+    },
+    resetState
   ];
 }

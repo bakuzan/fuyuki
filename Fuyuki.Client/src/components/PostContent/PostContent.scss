@@ -1,10 +1,21 @@
+@import '../../styles/_variables.scss';
+
+$post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
+  $post--thumbnail-width + ($post--thumbnail-spacing * 2);
+
 .post-content {
+  --rank-spacing: 0px;
   padding: 5px;
-  margin: 10px 0;
+  margin: 10px;
+  margin-left: calc(var(--rank-spacing) + #{$post-left-spacing});
   border: 1px solid var(--primary-colour);
   border-radius: 3px;
 
   &__image {
     max-width: 100%;
   }
+}
+
+.post--with-rank .post-content {
+  --rank-spacing: 40px;
 }

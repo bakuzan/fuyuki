@@ -1,7 +1,7 @@
 @import './_extensions.scss';
 
 $blue: #484e9d;
-$grey: #7d7485;
+$grey: #736a7b;
 $pink: #fac6d5;
 $pink-deep: #f589a8;
 $purple: #682860;
@@ -33,6 +33,8 @@ $yellow: #f3e29d;
 
   --danger-colour: #{$red};
   --danger-colour-hover: #{darken($red, 10%)};
+
+  --regular-link--colour: #0366d6;
 }
 
 .theme--alt {
@@ -56,9 +58,14 @@ $yellow: #f3e29d;
 
   --highlight: #{$red};
   --faded-colour: #eee;
+
+  --regular-link--colour: #f8c4f8;
 }
 
 .theme {
+  background-color: var(--base-background);
+  color: var(--base-colour);
+
   .application-header {
     background-color: var(--primary-colour);
     color: var(--primary-contrast);
@@ -88,6 +95,16 @@ $yellow: #f3e29d;
 
   .loading-bouncer__orb {
     background-color: var(--primary-colour);
+  }
+
+  .dropdown-menu__menu,
+  .dropdown-menu__arrow {
+    background-color: var(--base-background);
+    color: var(--base-colour);
+  }
+
+  .regular-link {
+    color: var(--regular-link--colour);
   }
 
   .fyk-link {
