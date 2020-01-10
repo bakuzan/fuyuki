@@ -8,8 +8,6 @@ namespace Fuyuki.ViewModels
     {
         public bool Spam { get; set; }
         public bool Removed { get; set; }
-        public int DownVotes { get; set; }
-        public int UpVotes { get; set; }
         public int Score { get; set; }
         public string Permalink { get; set; }
         public DateTime Created { get; set; }
@@ -17,7 +15,6 @@ namespace Fuyuki.ViewModels
         public string Id { get; set; }
         public string Author { get; set; }
         public DateTime Edited { get; set; }
-        public string ParentId { get; set; }
         public string CollapsedReason { get; set; }
         public string Subreddit { get; set; }
         public bool Collapsed { get; set; }
@@ -31,7 +28,7 @@ namespace Fuyuki.ViewModels
         public string AuthorFlairText { get; set; }
         public string Distinguished { get; set; }
         public bool Stickied { get; set; }
-        public List<string> ReplyIds { get; set; }
+        public List<RedditComment> Replies { get; set; }
         public List<Reddit.Things.More> More { get; set; }
     }
 }

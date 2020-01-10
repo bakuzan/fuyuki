@@ -18,7 +18,6 @@ namespace Fuyuki.Services
         private readonly IMapper _mapper;
 
         private readonly int postsPageSize = 25;
-        private readonly int commentsLimit = 25;
 
         public RedditService(IMapper mapper,
                              IUserService userService,
@@ -90,14 +89,10 @@ namespace Fuyuki.Services
             var post = reddit.Post(postId).About();
             var comments = post.Comments.GetComments(sort: "best",
                                                      depth: 0,
-                                                     showMore: true,
-                                                     limit: commentsLimit);
+                                                     showMore: true);
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var mapped = _mapper.Map<List<RedditComment>>(comments);
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-
+            var listings = comments.Select(x => x.Listing);
+            var mapped = _mapper.Map<List<RedditComment>>(listings);
             return mapped;
         }
 
@@ -106,18 +101,28 @@ namespace Fuyuki.Services
             var user = await _userService.GetCurrentUser(claim);
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
-            var idString = string.Join(',', commentIds);
+            var idString = string.Join(',', commentIds.Take(100));
             var children = reddit.Models.LinksAndComments.MoreChildren(
                 new Reddit.Inputs.LinksAndComments.LinksAndCommentsMoreChildrenInput(linkId: postId, children: idString));
 
-            var comments = children.Comments;
+            var mapped = _mapper.Map<List<RedditComment>>(children.Comments);
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var mapped = _mapper.Map<List<RedditComment>>(comments);
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
+            foreach (var item in mapped)
+            {
+                if (item.Replies == null)
+                    item.Replies = new List<RedditComment>();
 
-            return mapped;
+                item.Replies.AddRange(
+                    mapped.Where(x => x.ParentFullname == item.Fullname)
+                          .OrderByDescending(x => x.Score)
+                          .ThenByDescending(x => x.Created)
+                          .ToList());
+            }
+
+            var minDepth = mapped.Select(x => x.Depth).Min();
+            var result = mapped.Where(x => x.Depth == minDepth).ToList();
+
+            return result;
         }
 
     }

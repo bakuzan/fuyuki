@@ -46,12 +46,30 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
   const commentDate = isEdited ? x.edited : x.created;
   const moreCommentIds = (x.more || []).reduce(
     (p, c) => [...p, ...c.children],
-    x.replyIds
+    [] as string[]
   );
 
   const replies = moreState.value as Comment[];
   const hasReplies = moreState.value instanceof Array;
   const hasMore = !hasReplies && moreCommentIds.length > 0;
+  const itemReplies = x.replies ?? [];
+  const allReplies = hasReplies ? [...itemReplies, ...replies] : itemReplies;
+  const showReplies = allReplies.length > 0;
+
+  if (!x.permalink) {
+    return (
+      <li className="comments__item">
+        <div className="see-more">
+          {!moreState.loading && (
+            <SeeMoreButton onClick={() => fetchMore([x.id])} />
+          )}
+          {moreState.loading && (
+            <LoadingBouncer className="loading-bouncer--local" />
+          )}
+        </div>
+      </li>
+    );
+  }
 
   return (
     <li
@@ -143,13 +161,13 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
           )}
         </article>
       )}
-      {hasReplies && !collapsed && (
+      {showReplies && !collapsed && (
         <List
           style={{ paddingLeft: `${(x.depth + 1) * 12}px` }}
           className="comments"
           columns={1}
         >
-          {replies.map((reply, j) => (
+          {allReplies.map((reply, j) => (
             <CommentItem key={reply.id} index={j} data={reply} />
           ))}
         </List>

@@ -12,9 +12,6 @@ export interface Post {
   spam: boolean;
   nsfw: boolean;
   score: number;
-  upvoteRatio: number;
-  upVotes: number;
-  downVotes: number;
   subreddit: string;
   awards: Awards;
   numberOfComments: number;

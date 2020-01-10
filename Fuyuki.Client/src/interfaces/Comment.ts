@@ -4,8 +4,6 @@ import { MoreData } from './MoreData';
 export interface Comment {
   spam: boolean;
   removed: boolean;
-  downVotes: number;
-  upVotes: number;
   score: number;
   permalink: string;
   created: string;
@@ -13,7 +11,6 @@ export interface Comment {
   id: string;
   author: string;
   edited: string;
-  parentId: string;
   collapsedReason: string;
   subreddit: string;
   collapsed: boolean;
@@ -27,6 +24,6 @@ export interface Comment {
   authorFlairText?: string;
   stickied: boolean;
   distinguished?: string;
-  replyIds: string[];
+  replies?: Comment[];
   more: MoreData[];
 }

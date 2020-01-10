@@ -16,9 +16,6 @@ namespace Fuyuki.ViewModels
         public bool Spam { get; set; }
         public bool NSFW { get; set; }
         public int Score { get; set; }
-        public double UpvoteRatio { get; set; }
-        public int UpVotes { get; set; }
-        public int DownVotes { get; }
         public string Subreddit { get; set; }
         public Awards Awards { get; set; }
         public int NumberOfComments { get; set; }
