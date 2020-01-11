@@ -1,13 +1,13 @@
 import Storage from 'ayaka/localStorage';
 
 export interface StorageState {
-  version: string;
   isDarkTheme: boolean;
+  version: string;
 }
 
 const DEFAULTS: StorageState = {
-  version: `1.0`,
-  isDarkTheme: false
+  isDarkTheme: false,
+  version: `1.0`
 };
 
 const s = new Storage<StorageState>('fuyukiUserSettings', DEFAULTS);

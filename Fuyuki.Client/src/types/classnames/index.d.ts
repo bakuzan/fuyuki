@@ -14,11 +14,9 @@ declare module 'classnames' {
 
   interface ClassArray extends Array<ClassValue> {}
 
-  interface ClassNamesFn {
-    (...classes: ClassValue[]): string;
-  }
+  type ClassNamesFn = (...classes: ClassValue[]) => string;
 
-  var classNames: ClassNamesFn;
+  const classNames: ClassNamesFn;
 
   export = classNames;
 }

@@ -1,5 +1,5 @@
-import { DependencyList, useEffect } from "react";
-import { useAsyncFn } from "./useAsyncFn";
+import { DependencyList, useEffect } from 'react';
+import { useAsyncFn } from './useAsyncFn';
 
 // export { AsyncState, AsyncFn } from "./useAsyncFn";
 

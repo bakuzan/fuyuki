@@ -38,13 +38,17 @@
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test --env=jsdom",
+    "test": "cross-env CI=true react-scripts test --env=jsdom --passWithNoTests",
     "eject": "react-scripts eject",
     "lint": "tslint --fix -c tslint.json 'src/**/*.ts'"
   },
   "lint-staged": {
     "{,src}/**/*.{ts,tsx,js}": [
       "npm run lint",
+      "git add"
+    ],
+    "{,src}/**/*.{tsx,js}": [
+      "prettier --write",
       "git add"
     ]
   },

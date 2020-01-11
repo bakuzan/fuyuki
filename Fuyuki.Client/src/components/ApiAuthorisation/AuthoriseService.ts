@@ -1,6 +1,6 @@
-import { UserManager, WebStorageStateStore, User } from 'oidc-client';
-import { ApplicationPaths, ApplicationName } from './ApiAuthorisationConstants';
+import { User, UserManager, WebStorageStateStore } from 'oidc-client';
 import sendRequest from 'src/utils/sendRequest';
+import { ApplicationName, ApplicationPaths } from './ApiAuthorisationConstants';
 
 interface AuthSubscrption {
   callback: () => void;
@@ -18,40 +18,43 @@ export interface AuthSignInOutResponse {
 }
 
 export class AuthoriseService {
-  _callbacks: AuthSubscrption[] = [];
-  _nextSubscriptionId = 0;
-  _user: User | null = null;
-  _isAuthenticated = false;
-
-  // By default pop ups are disabled because they don't work properly on Edge.
-  // If you want to enable pop up authentication simply set this flag to false.
-  _popUpDisabled = true;
+  static get instance() {
+    return authService;
+  }
 
   public userManager: UserManager | null = null;
 
-  async isAuthenticated() {
+  // By default pop ups are disabled because they don't work properly on Edge.
+  // If you want to enable pop up authentication simply set this flag to false.
+  private popUpDisabled = true;
+  private callbacks: AuthSubscrption[] = [];
+  private nextSubscriptionId = 0;
+  private user: User | null = null;
+  private isUserAuthenticated = false;
+
+  public async isAuthenticated() {
     const user = await this.getUser();
     const isAuth = !!user;
     return isAuth;
   }
 
-  async getUserObject() {
+  public async getUserObject() {
     const response = await sendRequest('/reddit/me', {}, true);
     return response ?? {};
   }
 
-  clearStaleState() {
+  public clearStaleState() {
     Object.keys(localStorage)
       .filter((x) => x.startsWith('oidc'))
       .forEach((key) => localStorage.removeItem(key));
   }
 
-  async getUser() {
-    if (this._user) {
-      const user = this._user as User;
+  public async getUser() {
+    if (this.user) {
+      const u = this.user as User;
 
-      if (user.profile) {
-        return user.profile;
+      if (u.profile) {
+        return u.profile;
       }
     }
 
@@ -61,7 +64,7 @@ export class AuthoriseService {
     return user && user.profile;
   }
 
-  async getAccessToken() {
+  public async getAccessToken() {
     await this.ensureUserManagerInitialized();
     const userManager = this.userManager as UserManager;
     const user = await userManager.getUser();
@@ -76,7 +79,7 @@ export class AuthoriseService {
   //    Pop-Up blocker or the user has disabled PopUps.
   // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
   //    redirect flow.
-  async signIn(state: AuthState): Promise<AuthSignInOutResponse> {
+  public async signIn(state: AuthState): Promise<AuthSignInOutResponse> {
     await this.ensureUserManagerInitialized();
     const userManager = this.userManager as UserManager;
 
@@ -89,9 +92,9 @@ export class AuthoriseService {
       console.log('Silent authentication error: ', silentError);
 
       try {
-        if (this._popUpDisabled) {
+        if (this.popUpDisabled) {
           throw new Error(
-            "Popup disabled. Change 'AuthoriseService.js:AuthoriseService._popupDisabled' to false to enable it."
+            'Popup disabled. Change "AuthoriseService.js:AuthoriseService.popUpDisabled" to false to enable it.'
           );
         }
 
@@ -102,7 +105,7 @@ export class AuthoriseService {
         if (popUpError.message === 'Popup window closed') {
           // The user explicitly cancelled the login action by closing an opened popup.
           return this.error('The user closed the window.');
-        } else if (!this._popUpDisabled) {
+        } else if (!this.popUpDisabled) {
           console.log('Popup authentication error: ', popUpError);
         }
 
@@ -118,7 +121,7 @@ export class AuthoriseService {
     }
   }
 
-  async completeSignIn(url: string): Promise<AuthSignInOutResponse> {
+  public async completeSignIn(url: string): Promise<AuthSignInOutResponse> {
     try {
       await this.ensureUserManagerInitialized();
       const userManager = this.userManager as UserManager;
@@ -136,14 +139,14 @@ export class AuthoriseService {
   //    Pop-Up blocker or the user has disabled PopUps.
   // 2) If the method above fails, we redirect the browser to the IdP to perform a traditional
   //    post logout redirect flow.
-  async signOut(state: AuthState): Promise<AuthSignInOutResponse> {
+  public async signOut(state: AuthState): Promise<AuthSignInOutResponse> {
     await this.ensureUserManagerInitialized();
     const userManager = this.userManager as UserManager;
 
     try {
-      if (this._popUpDisabled) {
+      if (this.popUpDisabled) {
         throw new Error(
-          "Popup disabled. Change 'AuthoriseService.js:AuthoriseService._popupDisabled' to false to enable it."
+          'Popup disabled. Change "AuthoriseService.js:AuthoriseService.popUpDisabled" to false to enable it.'
         );
       }
 
@@ -162,7 +165,7 @@ export class AuthoriseService {
     }
   }
 
-  async completeSignOut(url: string): Promise<AuthSignInOutResponse> {
+  public async completeSignOut(url: string): Promise<AuthSignInOutResponse> {
     await this.ensureUserManagerInitialized();
     try {
       const userManager = this.userManager as UserManager;
@@ -175,22 +178,22 @@ export class AuthoriseService {
     }
   }
 
-  updateState(user: User | null) {
-    this._user = user;
-    this._isAuthenticated = !!this._user;
+  public updateState(user: User | null) {
+    this.user = user;
+    this.isUserAuthenticated = !!this.user;
     this.notifySubscribers();
   }
 
-  subscribe(callback: () => void) {
-    this._callbacks.push({
+  public subscribe(callback: () => void) {
+    this.callbacks.push({
       callback,
-      subscription: this._nextSubscriptionId++
+      subscription: this.nextSubscriptionId++
     });
-    return this._nextSubscriptionId - 1;
+    return this.nextSubscriptionId - 1;
   }
 
-  unsubscribe(subscriptionId: number) {
-    const subscriptionIndex = this._callbacks
+  public unsubscribe(subscriptionId: number) {
+    const subscriptionIndex = this.callbacks
       .map((element, index) =>
         element.subscription === subscriptionId
           ? { found: true, index }
@@ -204,38 +207,38 @@ export class AuthoriseService {
       );
     }
 
-    this._callbacks.splice(subscriptionIndex[0].index as number, 1);
+    this.callbacks.splice(subscriptionIndex[0].index as number, 1);
   }
 
-  notifySubscribers() {
-    for (let i = 0; i < this._callbacks.length; i++) {
-      const callback = this._callbacks[i].callback;
+  public notifySubscribers() {
+    for (const item of this.callbacks) {
+      const callback = item.callback;
       callback();
     }
   }
 
-  createArguments(state?: AuthState) {
+  public createArguments(state?: AuthState) {
     return { useReplaceToNavigate: true, data: state };
   }
 
-  error(message: Error | string) {
+  public error(message: Error | string) {
     return { status: AuthenticationResultStatus.Fail, message };
   }
 
-  success(state: AuthState) {
+  public success(state: AuthState) {
     return { status: AuthenticationResultStatus.Success, state };
   }
 
-  redirect() {
+  public redirect() {
     return { status: AuthenticationResultStatus.Redirect };
   }
 
-  async ensureUserManagerInitialized() {
+  public async ensureUserManagerInitialized() {
     if (this.userManager !== null) {
       return;
     }
 
-    let response = await fetch(
+    const response = await fetch(
       ApplicationPaths.ApiAuthorisationClientConfigurationUrl
     );
 
@@ -243,7 +246,7 @@ export class AuthoriseService {
       throw new Error(`Could not load settings for '${ApplicationName}'`);
     }
 
-    let settings = await response.json();
+    const settings = await response.json();
     settings.automaticSilentRenew = true;
     settings.includeIdTokenInSilentRenew = true;
     settings.userStore = new WebStorageStateStore({
@@ -258,10 +261,6 @@ export class AuthoriseService {
       this.updateState(null);
     });
   }
-
-  static get instance() {
-    return authService;
-  }
 }
 
 const authService = new AuthoriseService();
@@ -269,7 +268,7 @@ const authService = new AuthoriseService();
 export default authService;
 
 export const AuthenticationResultStatus = {
+  Fail: 'fail',
   Redirect: 'redirect',
-  Success: 'success',
-  Fail: 'fail'
+  Success: 'success'
 };

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { Awards } from '../../interfaces/Post';
+import { Awards } from '../../interfaces/Awards';
 import typedKeys from '../../utils/typedKeys';
 import './AwardsBlock.scss';
 

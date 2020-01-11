@@ -1,4 +1,4 @@
-import { useAsyncFn, AsyncState, AsyncFn } from 'src/hooks/useAsyncFn';
+import { AsyncFn, AsyncState, useAsyncFn } from 'src/hooks/useAsyncFn';
 import sendRequest from 'src/utils/sendRequest';
 
 export function useAsyncPaged<Result = any, Args extends any[] = any[]>(

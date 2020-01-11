@@ -1,4 +1,5 @@
-import { DependencyList, useCallback, useState, useRef } from 'react';
+/* tslint:disable:no-unused-expression */
+import { DependencyList, useCallback, useRef, useState } from 'react';
 import { useMountedState } from './useMountedState';
 
 export type AsyncState<T> =

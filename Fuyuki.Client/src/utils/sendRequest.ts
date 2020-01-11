@@ -1,8 +1,8 @@
-import authService from '../components/ApiAuthorisation/AuthoriseService';
 import {
   ApplicationPaths,
   QueryParameterNames
 } from 'src/components/ApiAuthorisation/ApiAuthorisationConstants';
+import authService from '../components/ApiAuthorisation/AuthoriseService';
 
 const UNAUTHOURISED_ERROR = 401;
 
@@ -54,8 +54,8 @@ export default async function sendRequest(
       }
 
       return {
-        success: false,
-        error
+        error,
+        success: false
       };
     }
 
@@ -66,6 +66,6 @@ export default async function sendRequest(
 
     return result;
   } catch (error) {
-    return { success: false, error };
+    return { error, success: false };
   }
 }

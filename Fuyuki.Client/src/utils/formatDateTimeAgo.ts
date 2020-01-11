@@ -1,3 +1,4 @@
+/* tslint:disable:object-literal-sort-keys */
 const defaults = {
   now: 'now',
   seconds: {
