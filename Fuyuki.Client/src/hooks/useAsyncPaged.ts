@@ -7,7 +7,7 @@ export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
   const [state, fetchPage, resetState] = useAsyncFn<Result, Args>(
     async (...params) => {
       const currentState: AsyncState<Result> = params[0];
-      const lastPostId: string = params[1];
+      const lastPostId: string = params[1] ?? '';
 
       const queryUrl = `${endpoint}/${lastPostId}`.replace(/\/\//, '/');
       const response = await sendRequest(queryUrl);

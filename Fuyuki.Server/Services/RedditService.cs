@@ -87,9 +87,7 @@ namespace Fuyuki.Services
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
             var post = reddit.Post(postId).About();
-            var comments = post.Comments.GetComments(sort: "best",
-                                                     depth: 0,
-                                                     showMore: true);
+            var comments = post.Comments.GetComments(sort: "best");
 
             var listings = comments.Select(x => x.Listing);
             var mapped = _mapper.Map<List<RedditComment>>(listings);
