@@ -1,7 +1,7 @@
 .account-menu {
   display: flex;
 
-  .dropdown-menu__toggler {
+  .dropdown-menu__toggler.dropdown-menu__toggler {
     height: 100%;
     width: 35px;
     flex: unset;
@@ -12,6 +12,9 @@
 
 .account-action {
   justify-content: flex-start;
+}
+.theme-toggle {
+  margin: 3px 0;
 }
 
 .account-mail {
