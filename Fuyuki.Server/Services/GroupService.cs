@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Fuyuki.Data;
 using Fuyuki.ViewModels;
-using Microsoft.AspNetCore.Identity;
 
 namespace Fuyuki.Services
 {

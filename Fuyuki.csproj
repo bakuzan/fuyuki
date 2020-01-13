@@ -8,8 +8,9 @@
     <SpaRoot>Fuyuki.Client\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <UserSecretsId>778b707c-a69a-4181-ad70-b95191e1ff37</UserSecretsId>
+    <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
   </PropertyGroup>
-  
+    
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Reddit" Version="3.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
