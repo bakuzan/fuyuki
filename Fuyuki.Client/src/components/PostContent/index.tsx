@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import Image from 'meiko/Image';
 
-import isImageURL from 'src/utils/isImageURL';
-import getImageUrl from 'src/utils/getImageUrl';
-import isIframeContent from 'src/utils/isIframeContent';
 import { Post } from 'src/interfaces/Post';
+import contentManager from './ContentManager';
+import { ContentType } from './contentHosts';
 
 import './PostContent.scss';
+
+interface IframeSizes {
+  [key: string]: any;
+  height: number;
+  width: number;
+}
 
 interface PostContentProps {
   data: Post;
@@ -15,11 +20,30 @@ interface PostContentProps {
 }
 
 function PostContent(props: PostContentProps) {
-  const x = props.data;
-  const hasTextBody = x.isSelf;
-  const isVideo = x.isVideo && !x.url.includes('v.redd.it');
-  const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
-  const isIframe = !x.isSelf && !isImage && isIframeContent(x.url);
+  const [iframeSizes, setIframeSizes] = useState<IframeSizes | undefined>();
+  const iframeRef = useRef(null);
+  const { data: x } = props;
+
+  const host = contentManager.processContent(x);
+  const isVideo = host.type === ContentType.isVideo;
+
+  useEffect(() => {
+    function onMessage(event: MessageEvent) {
+      const { data } = event;
+      if (event.origin === window.location.origin) {
+        return;
+      }
+
+      // Responsive third-party iframe
+      // This is a crude solution to an "impossible" problem.
+      if (data.includes('height') || data.includes('width')) {
+        setIframeSizes(JSON.parse(data));
+      }
+    }
+
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
 
   if (!props.isExpanded) {
     return null;
@@ -27,31 +51,37 @@ function PostContent(props: PostContentProps) {
 
   return (
     <div className="post-content">
-      {hasTextBody && (
+      {host.type === ContentType.isText && (
         <div className="post-content__text-body">
-          <div dangerouslySetInnerHTML={{ __html: x.textBody }}></div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: x.textBody
+            }}
+          ></div>
         </div>
       )}
-      {isImage && (
-        <Image
-          className="post-content__image"
-          src={getImageUrl(x.url)}
-          alt="post content source"
-        />
-      )}
       {isVideo && (
-        <video className="post-content__video" autoPlay controls>
-          <source src={x.url}></source>
+        <video className="post-content__video" autoPlay controls loop>
+          <source src={(host.url && host.url(x)) || x.url}></source>
         </video>
       )}
-      {isIframe && (
+      {host.type === ContentType.isImage && (
+        <Image
+          className="post-content__image"
+          src={host.url(x)}
+          alt="post content source"
+          style={{ maxHeight: `800px` }}
+        />
+      )}
+      {host.type === ContentType.isIframe && (
         <iframe
-          src={`//www.redditmedia.com/mediaembed/${x.id}`}
-          width={610}
-          height={350}
+          ref={iframeRef}
+          src={host.url(x)}
           frameBorder="0"
-          scrolling="no"
-          allowFullScreen
+          scrolling={host.scrollable ?? 'no'}
+          width={iframeSizes?.width}
+          height={iframeSizes?.height ?? host.defaultHeight ?? 600}
+          style={{ width: '1px', minWidth: '100%' }}
         ></iframe>
       )}
     </div>

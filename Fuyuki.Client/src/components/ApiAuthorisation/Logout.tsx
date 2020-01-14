@@ -90,9 +90,9 @@ export class Logout extends Component<LogoutProps, LogoutState> {
       const action = this.props.action;
       switch (action) {
         case LogoutActions.Logout:
-          return <RequestMessage text="Processing logout" />;
+          return <RequestMessage text="Processing logout..." />;
         case LogoutActions.LogoutCallback:
-          return <RequestMessage text="Processing logout callback" />;
+          return <RequestMessage text="Processing logout callback..." />;
         case LogoutActions.LoggedOut:
           return <RequestMessage text={errorMessage} />;
         default:

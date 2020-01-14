@@ -11,10 +11,10 @@ import FYKLink from '../FYKLink';
 import AwardsBlock from '../AwardsBlock';
 import Flair from '../FlairBlock';
 import PostContent from '../PostContent';
+
 import { Post } from 'src/interfaces/Post';
 import thousandFormat from 'src/utils/thousandFormat';
-import isImageURL from 'src/utils/isImageURL';
-import isIframeContent from 'src/utils/isIframeContent';
+import contentManager from '../PostContent/ContentManager';
 
 import './PostItem.scss';
 
@@ -41,10 +41,7 @@ function PostItem(props: PostItemProps) {
 
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
   const postLink = `/post/${x.fullname}/comments`;
-
-  const isImage = !x.isSelf && !x.isVideo && isImageURL(x.url);
-  const isIframe = !x.isSelf && !isImage && isIframeContent(x.url);
-  const isLink = !x.isSelf && !x.isVideo && !isImage && !isIframe;
+  const canExpand = contentManager.isExpandable(x);
 
   return (
     <article
@@ -120,7 +117,7 @@ function PostItem(props: PostItemProps) {
               aria-label="View post content inline"
               title="Peek"
               icon={OPEN}
-              disabled={isLink}
+              disabled={!canExpand}
               onClick={() => setExpanded((p) => !p)}
             />
 

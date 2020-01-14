@@ -71,9 +71,9 @@ export class Login extends Component<LoginProps, LoginState> {
     } else {
       switch (action) {
         case LoginActions.Login:
-          return <RequestMessage text="Processing login" />;
+          return <RequestMessage text="Processing login..." />;
         case LoginActions.LoginCallback:
-          return <RequestMessage text="Processing login callback" />;
+          return <RequestMessage text="Processing login callback..." />;
         case LoginActions.Profile:
         case LoginActions.Register:
           return <RequestMessage text="" />;

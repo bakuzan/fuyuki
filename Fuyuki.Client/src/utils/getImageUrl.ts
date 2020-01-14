@@ -1,4 +1,4 @@
-import { hasImageExtension } from './isImageURL';
+import hasImageExtension from './hasImageExtension';
 
 export default function getImageUrl(url: string) {
   if (hasImageExtension(url)) {

@@ -106,8 +106,6 @@ function GroupCreateUpdate(props: PageProps) {
     }
   }
 
-  console.log('GM CU', props);
-
   return (
     <div className="page">
       <Helmet title={pageTitle} />
