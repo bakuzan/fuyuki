@@ -17,6 +17,7 @@ function match(post: Post) {
 }
 
 async function meta(post: Post): Promise<ContentMeta> {
+  let hasAudio = false;
   const id = post.url.split('/').slice(-1)[0];
   const response = await sendRequest(`/Content/Vreddit/${id}`);
 
@@ -30,7 +31,7 @@ async function meta(post: Post): Promise<ContentMeta> {
 
   // Audio is in a seperate stream, and requires a heavy dash dependency to add to the video
   if (manifest.querySelector('AudioChannelConfiguration')) {
-    throw new Error('Audio is not supported');
+    hasAudio = true;
   }
 
   const reps = Array.from(manifest.querySelectorAll('Representation'));
@@ -46,7 +47,8 @@ async function meta(post: Post): Promise<ContentMeta> {
 
   return {
     type: ContentType.isVideo,
-    sources
+    sources,
+    hasAudio
   };
 }
 

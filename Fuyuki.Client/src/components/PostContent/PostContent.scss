@@ -1,20 +1,33 @@
 @import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
 
 $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
   $post--thumbnail-width + ($post--thumbnail-spacing * 2);
 
 .post-content {
   --rank-spacing: 0px;
+  position: relative;
   padding: 5px;
   margin: 10px;
   margin-left: calc(var(--rank-spacing) + #{$post-left-spacing});
   border: 1px solid var(--primary-colour);
   border-radius: 3px;
 
+  @include respondToAll((xs, sm)) {
+    margin: 20px 5px;
+  }
+
   &__image,
   &__video,
   &__iframe {
     max-width: 100%;
+  }
+
+  &__audio-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
   }
 }
 

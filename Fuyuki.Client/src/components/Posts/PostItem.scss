@@ -1,12 +1,22 @@
 @import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
 
 .post {
   display: flex;
   flex-direction: column;
   padding: 5px 0;
 
+  @include respondToAll((xs, sm)) {
+    flex-wrap: wrap;
+  }
+
   &__inner {
     display: flex;
+  }
+
+  &__score {
+    justify-content: flex-end;
+    width: $post--score-width;
   }
 
   &__rank,
@@ -15,11 +25,11 @@
     align-items: center;
     padding: 0 $post--score-spacing;
     border-right: 1px dashed var(--primary-colour);
-  }
 
-  &__score {
-    justify-content: flex-end;
-    width: $post--score-width;
+    @include respondToAll((xs, sm)) {
+      flex: 1;
+      justify-content: center;
+    }
   }
 
   &__image-wrapper {

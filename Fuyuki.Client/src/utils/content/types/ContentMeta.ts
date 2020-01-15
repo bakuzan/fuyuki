@@ -12,6 +12,7 @@ export type ContentMeta =
   | {
       type: ContentType.isVideo;
       sources: VideoSource[];
+      hasAudio?: boolean;
     }
   | {
       type: ContentType.isImage;
