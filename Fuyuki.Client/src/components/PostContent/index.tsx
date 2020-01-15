@@ -1,18 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import Image from 'meiko/Image';
+import Iframe from './Iframe';
+import Image from './Image';
+import Video from './Video';
 
 import { Post } from 'src/interfaces/Post';
-import contentManager from './ContentManager';
-import { ContentType } from './contentHosts';
+import { useAsyncFn } from 'src/hooks/useAsyncFn';
+import { ContentManager } from 'src/utils/content/manager';
+import { ContentType } from 'src/utils/content/types/ContentType';
+import { ContentMeta } from 'src/utils/content/types/ContentMeta';
+import { typeGuard } from './contentGuard';
 
 import './PostContent.scss';
-
-interface IframeSizes {
-  [key: string]: any;
-  height: number;
-  width: number;
-}
 
 interface PostContentProps {
   data: Post;
@@ -20,38 +19,25 @@ interface PostContentProps {
 }
 
 function PostContent(props: PostContentProps) {
-  const [iframeSizes, setIframeSizes] = useState<IframeSizes | undefined>();
-  const iframeRef = useRef(null);
-  const { data: x } = props;
+  const { isExpanded, data: x } = props;
 
-  const host = contentManager.processContent(x);
-  const isVideo = host.type === ContentType.isVideo;
+  const getContentMeta = ContentManager.getContentMetaFunction(x);
+  const [state, fetchMeta] = useAsyncFn<ContentMeta, any>(getContentMeta);
+  const meta = state.value as ContentMeta;
 
   useEffect(() => {
-    function onMessage(event: MessageEvent) {
-      const { data } = event;
-      if (event.origin === window.location.origin) {
-        return;
-      }
-
-      // Responsive third-party iframe
-      // This is a crude solution to an "impossible" problem.
-      if (data.includes('height') || data.includes('width')) {
-        setIframeSizes(JSON.parse(data));
-      }
+    if (isExpanded) {
+      fetchMeta(x);
     }
+  }, [isExpanded, x]);
 
-    window.addEventListener('message', onMessage);
-    return () => window.removeEventListener('message', onMessage);
-  }, []);
-
-  if (!props.isExpanded) {
+  if (!isExpanded) {
     return null;
   }
 
   return (
     <div className="post-content">
-      {host.type === ContentType.isText && (
+      {typeGuard(ContentType.isText, meta) && (
         <div className="post-content__text-body">
           <div
             dangerouslySetInnerHTML={{
@@ -60,30 +46,9 @@ function PostContent(props: PostContentProps) {
           ></div>
         </div>
       )}
-      {isVideo && (
-        <video className="post-content__video" autoPlay controls loop>
-          <source src={(host.url && host.url(x)) || x.url}></source>
-        </video>
-      )}
-      {host.type === ContentType.isImage && (
-        <Image
-          className="post-content__image"
-          src={host.url(x)}
-          alt="post content source"
-          style={{ maxHeight: `800px` }}
-        />
-      )}
-      {host.type === ContentType.isIframe && (
-        <iframe
-          ref={iframeRef}
-          src={host.url(x)}
-          frameBorder="0"
-          scrolling={host.scrollable ?? 'no'}
-          width={iframeSizes?.width}
-          height={iframeSizes?.height ?? host.defaultHeight ?? 600}
-          style={{ width: '1px', minWidth: '100%' }}
-        ></iframe>
-      )}
+      <Video data={meta} />
+      <Image data={meta} />
+      <Iframe data={meta} />
     </div>
   );
 }

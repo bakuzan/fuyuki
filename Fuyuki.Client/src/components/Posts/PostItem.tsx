@@ -14,7 +14,7 @@ import PostContent from '../PostContent';
 
 import { Post } from 'src/interfaces/Post';
 import thousandFormat from 'src/utils/thousandFormat';
-import contentManager from '../PostContent/ContentManager';
+import { ContentManager } from 'src/utils/content/manager';
 
 import './PostItem.scss';
 
@@ -41,7 +41,7 @@ function PostItem(props: PostItemProps) {
 
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
   const postLink = `/post/${x.fullname}/comments`;
-  const canExpand = contentManager.isExpandable(x);
+  const canExpand = ContentManager.isExpandable(x);
 
   return (
     <article
