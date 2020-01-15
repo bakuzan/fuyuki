@@ -1,4 +1,5 @@
 import { AsyncFn, AsyncState, useAsyncFn } from 'src/hooks/useAsyncFn';
+import distinct from 'src/utils/distinct';
 import sendRequest from 'src/utils/sendRequest';
 
 export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
@@ -25,7 +26,7 @@ export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
 
       const pagingReset = lastPostId === '' && pages.length;
 
-      return pagingReset ? response : [...pages, ...response];
+      return pagingReset ? response : distinct([...pages, ...response]);
     },
     [endpoint],
     { loading: true }

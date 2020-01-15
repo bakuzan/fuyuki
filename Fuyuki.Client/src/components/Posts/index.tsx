@@ -19,10 +19,10 @@ interface PostsProps {
 
 function Posts(props: PostsProps) {
   const { endpoint } = props;
+
   const [ready, setReady] = useState(false);
   const [postsAfter, setPostsAfter] = useState('');
   const [state, fetchPage] = useAsyncPaged<FykResponse<Post[]>, any>(endpoint);
-
   const prevEndpoint = usePrevious(endpoint);
 
   useEffect(() => {
