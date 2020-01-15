@@ -18,7 +18,7 @@ function contentTypeFn(type: ContentType.isNone | ContentType.isText) {
 export class ContentManager {
   public static isExpandable(post: Post) {
     const match = items.find((x) => x.match(post));
-    return post.isSelf || match !== null;
+    return post.isSelf || match !== undefined;
   }
 
   public static getContentMetaFunction(

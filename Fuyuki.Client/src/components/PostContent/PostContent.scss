@@ -11,7 +11,9 @@ $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
   border: 1px solid var(--primary-colour);
   border-radius: 3px;
 
-  &__image {
+  &__image,
+  &__video,
+  &__iframe {
     max-width: 100%;
   }
 }

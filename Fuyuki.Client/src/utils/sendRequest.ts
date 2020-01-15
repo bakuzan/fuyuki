@@ -21,13 +21,21 @@ export default async function sendRequest(
   ignoreUnauthorised: boolean = false
 ) {
   try {
-    const token = await authService.getAccessToken();
+    const sameSite = !url.startsWith('http');
+    const reqHeaders = options.headers ?? {};
+    let authorisation = {};
 
-    const headers = new Headers();
-    headers.append('Authorization', `Bearer ${token}`);
-    headers.append('pragma', 'no-cache');
-    headers.append('cache-control', 'no-cache');
-    headers.append('Content-Type', 'application/json');
+    if (sameSite) {
+      const token = await authService.getAccessToken();
+      authorisation = { Authorization: `Bearer ${token}` };
+    }
+
+    const headers = {
+      ...authorisation,
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/json',
+      ...reqHeaders
+    };
 
     const response = await fetch(url, {
       ...options,

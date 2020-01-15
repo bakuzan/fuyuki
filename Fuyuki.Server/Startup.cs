@@ -91,6 +91,8 @@ namespace Fuyuki
                     .AddScoped<IRedditService, RedditService>()
                     .AddScoped<IRedditManager, RedditManager>();
 
+            services.AddHttpClient<IContentService, ContentService>();
+
             // Mapping
             var mapping = new MapperConfiguration(mc =>
             {

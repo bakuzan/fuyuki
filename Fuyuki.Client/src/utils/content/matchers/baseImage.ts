@@ -5,7 +5,8 @@ import { ContentMeta } from '../types/ContentMeta';
 import { ContentMatcher } from '../types/ContentMatcher';
 
 function match(post: Post) {
-  return hasImageExtension(post.url);
+  const imgurGifv = post.url.includes('imgur') && post.url.includes('.gifv');
+  return hasImageExtension(post.url) && !imgurGifv;
 }
 
 async function meta(post: Post): Promise<ContentMeta> {

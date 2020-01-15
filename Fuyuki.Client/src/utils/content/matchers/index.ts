@@ -1,4 +1,5 @@
 export { default as baseImage } from './baseImage';
+export { default as gfycat } from './gfycat';
 export { default as imgur } from './imgur';
 export { default as pornhub } from './pornhub';
 export { default as streamable } from './streamable';

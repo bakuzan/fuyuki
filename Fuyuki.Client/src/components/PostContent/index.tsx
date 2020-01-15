@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import LoadingBouncer from 'meiko/LoadingBouncer';
 import Iframe from './Iframe';
 import Image from './Image';
 import Video from './Video';
@@ -37,6 +38,7 @@ function PostContent(props: PostContentProps) {
 
   return (
     <div className="post-content">
+      {state.loading && <LoadingBouncer />}
       {typeGuard(ContentType.isText, meta) && (
         <div className="post-content__text-body">
           <div
