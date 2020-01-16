@@ -13,7 +13,7 @@ $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
   border: 1px solid var(--primary-colour);
   border-radius: 3px;
 
-  @include respondToAll((xs, sm)) {
+  @include respondTo(xs) {
     margin: 20px 5px;
   }
 
@@ -22,15 +22,26 @@ $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
   &__iframe {
     max-width: 100%;
   }
-
-  &__audio-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 1000;
-  }
 }
 
 .post--with-rank .post-content {
   --rank-spacing: 40px;
+}
+
+.vreddit-downloader {
+  display: flex;
+  margin: 10px 0;
+
+  &__message {
+    padding: 0 5px;
+    font-size: 1.1rem;
+
+    &--success {
+      color: $success-colour;
+    }
+
+    &--error {
+      color: $danger-colour;
+    }
+  }
 }

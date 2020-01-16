@@ -51,7 +51,7 @@ namespace Fuyuki
                     opts.ClientSecret = Configuration["RedditClientSecret"];
                     opts.Scope.Add("identity");
                     opts.Scope.Add("read");
-                    opts.Scope.Add("submit");
+                    opts.Scope.Add("privatemessages");
                     opts.SaveTokens = true;
                 })
                 .AddIdentityServerJwt();

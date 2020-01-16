@@ -17,7 +17,6 @@ function match(post: Post) {
 }
 
 async function meta(post: Post): Promise<ContentMeta> {
-  let hasAudio = false;
   const id = post.url.split('/').slice(-1)[0];
   const response = await sendRequest(`/Content/Vreddit/${id}`);
 
@@ -29,16 +28,27 @@ async function meta(post: Post): Promise<ContentMeta> {
   const mpd = response.content;
   const manifest = new DOMParser().parseFromString(mpd, 'text/xml');
 
+  const reps = Array.from(manifest.querySelectorAll('Representation'));
+  const rawSources = sortBy(reps, (rep: Element) =>
+    parseInt(rep.getAttribute('bandwidth') || '', 10)
+  );
+
   // Audio is in a seperate stream, and requires a heavy dash dependency to add to the video
   if (manifest.querySelector('AudioChannelConfiguration')) {
-    hasAudio = true;
+    const frameSource = rawSources[0] as Element;
+    const height = Number(frameSource.getAttribute('height'));
+    const width = Number(frameSource.getAttribute('width'));
+
+    return {
+      type: ContentType.isIframe,
+      src: `//www.redditmedia.com/mediaembed/${post.id}`,
+      vreddit: post.permalink,
+      height: height || undefined,
+      width: width || undefined
+    };
   }
 
-  const reps = Array.from(manifest.querySelectorAll('Representation'));
-  const sources: VideoSource[] = sortBy(reps, (rep: Element) =>
-    parseInt(rep.getAttribute('bandwidth') || '', 10)
-  )
-    .reverse()
+  const sources: VideoSource[] = rawSources
     .map((rep: Element) => rep.querySelector('BaseURL'))
     .map((baseUrl: Element | null) => ({
       src: `https://v.redd.it/${id}/${baseUrl?.textContent ?? ''}`,
@@ -47,8 +57,7 @@ async function meta(post: Post): Promise<ContentMeta> {
 
   return {
     type: ContentType.isVideo,
-    sources,
-    hasAudio
+    sources
   };
 }
 

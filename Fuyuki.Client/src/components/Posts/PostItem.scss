@@ -6,12 +6,12 @@
   flex-direction: column;
   padding: 5px 0;
 
-  @include respondToAll((xs, sm)) {
-    flex-wrap: wrap;
-  }
-
   &__inner {
     display: flex;
+
+    @include respondTo(xs) {
+      flex-wrap: wrap;
+    }
   }
 
   &__score {
@@ -26,7 +26,7 @@
     padding: 0 $post--score-spacing;
     border-right: 1px dashed var(--primary-colour);
 
-    @include respondToAll((xs, sm)) {
+    @include respondTo(xs) {
       flex: 1;
       justify-content: center;
     }
@@ -58,6 +58,10 @@
     flex-direction: column;
     width: 100%;
     margin: 0 5px;
+
+    @include respondTo(xs) {
+      margin: 20px 5px;
+    }
   }
 
   &__submission-meta {

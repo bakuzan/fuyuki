@@ -123,5 +123,30 @@ namespace Fuyuki.Services
             return result;
         }
 
+        public async Task<RequestVideoResponse> GetRequestVideo(ClaimsPrincipal claim, string url)
+        {
+            var response = new RequestVideoResponse();
+
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            var message = new Reddit.Inputs.PrivateMessages.PrivateMessagesComposeInput(
+                subject: "Reddit video request",
+                text: $"https://www.reddit.com{url}",
+                to: "VredditDownloader"
+            );
+
+            try
+            {
+                await reddit.Models.PrivateMessages.ComposeAsync(message);
+            }
+            catch (Exception e)
+            {
+                response.ErrorMessages.Add(e.Message);
+            }
+
+            return response;
+        }
+
     }
 }

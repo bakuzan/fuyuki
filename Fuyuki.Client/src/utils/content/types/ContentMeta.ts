@@ -12,17 +12,15 @@ export type ContentMeta =
   | {
       type: ContentType.isVideo;
       sources: VideoSource[];
-      hasAudio?: boolean;
     }
   | {
       type: ContentType.isImage;
       src: string;
-      width?: number;
-      height?: number;
     }
   | {
       type: ContentType.isIframe;
       src: string;
+      vreddit?: string;
       width?: number;
       height?: number;
       scrollable?: string;

@@ -7,6 +7,9 @@ import { ApplicationPaths } from './ApiAuthorisationConstants';
 import { LinkAsButton, NewTabLinkAsButton } from '../Buttons';
 
 import './LoginMenu.scss';
+import NewTabLink from 'meiko/NewTabLink';
+
+const TEN_MINUTES = 1000 * 60 * 10;
 
 interface LoginMenuProps {}
 
@@ -30,6 +33,7 @@ interface LogoutPath {
 export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
   private _subscription: number = 0;
   private _mounted: boolean = true;
+  private _interval: number = 0;
 
   constructor(props: LoginMenuProps) {
     super(props);
@@ -43,11 +47,13 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
   componentDidMount() {
     this._subscription = authService.subscribe(() => this.populateState());
     this.populateState();
+    this.pollingUserState(true);
   }
 
   componentWillUnmount() {
     this._mounted = false;
     authService.unsubscribe(this._subscription);
+    this.pollingUserState(false);
   }
 
   async populateState() {
@@ -63,6 +69,17 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
         isAuthenticated: !!isAuthenticated,
         user
       });
+    }
+  }
+
+  pollingUserState(init: boolean) {
+    clearInterval(this._interval);
+
+    if (init) {
+      this._interval = window.setInterval(
+        () => this.populateState(),
+        TEN_MINUTES
+      );
     }
   }
 
@@ -87,7 +104,19 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
       <Fragment>
         <div className="account-mail">
           {(user?.hasMail || user?.hasNewModmail) && (
-            <div className="account-mail__icon">{user.inboxCount}</div>
+            <div className="account-mail__icon">
+              <NewTabLink
+                href={
+                  user.hasMail
+                    ? 'https://www.reddit.com/message/unread/'
+                    : user.hasNewModmail
+                    ? 'https://mod.reddit.com/mail/all'
+                    : '#'
+                }
+              >
+                {user.inboxCount || '!'}
+              </NewTabLink>
+            </div>
           )}
         </div>
         <DropdownMenu

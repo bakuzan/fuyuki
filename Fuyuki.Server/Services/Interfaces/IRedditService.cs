@@ -13,5 +13,6 @@ namespace Fuyuki.Services
         Task<RedditPost> GetRedditPost(ClaimsPrincipal claim, string postId);
         Task<List<RedditComment>> GetPostCommentsPaged(ClaimsPrincipal claim, string postId, string lastPostId);
         Task<List<RedditComment>> GetMoreComments(ClaimsPrincipal claim, string postId, List<string> commentIds);
+        Task<RequestVideoResponse> GetRequestVideo(ClaimsPrincipal claim, string url);
     }
 }

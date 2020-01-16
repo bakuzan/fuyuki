@@ -75,5 +75,12 @@ namespace Fuyuki.Controllers
             return await _redditService.GetMoreComments(User, request.PostId, request.CommentIds);
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<RequestVideoResponse> RequestVideo(RequestVideoRequest request)
+        {
+            return await _redditService.GetRequestVideo(User, request.Url);
+        }
+
     }
 }
