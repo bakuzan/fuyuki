@@ -1,10 +1,10 @@
 @import './_extensions.scss';
 
 $blue: #484e9d;
-$grey: #736a7b;
+$grey: #5b5562; //#736a7b;
 $pink: #fac6d5;
-$pink-deep: #f589a8;
-$purple: #682860;
+$pink-dark: #fabdcc; //#f589a8;
+$purple: #582251;
 $red: #eb516d;
 $white: #fff;
 $yellow: #f3e29d;
@@ -35,31 +35,44 @@ $yellow: #f3e29d;
   --danger-colour-hover: #{darken($red, 10%)};
 
   --regular-link--colour: #0366d6;
+
+  // fyk link
+  --anchor-shadow: var(--accent-colour);
+  --anchor-shadow-hover: var(--accent-colour-hover);
 }
 
 .theme--alt {
-  --base-background: #{$grey};
-  --base-background-hover: #{lighten($grey, 10%)};
+  --base-background: #{$purple};
+  --base-background-hover: #{lighten($purple, 10%)};
 
   --base-colour: #{white};
   --base-colour-hover: #{darken(white, 10%)};
 
-  --primary-colour: #{$purple};
-  --primary-colour-hover: #{lighten($purple, 10%)};
+  --primary-colour: #{$yellow};
+  --primary-colour-hover: #{lighten($yellow, 10%)};
 
-  --primary-contrast: #{$yellow};
-  --primary-contrast-hover: #{darken($yellow, 10%)};
+  --primary-contrast: #{$purple};
+  --primary-contrast-hover: #{darken($purple, 10%)};
 
-  --accent-colour: #{$pink-deep};
-  --accent-colour-hover: #{lighten($pink-deep, 10%)};
+  --accent-colour: #{$pink-dark};
+  --accent-colour-hover: #{lighten($pink-dark, 10%)};
 
-  --accent-contrast: #{$grey};
-  --accent-contrast-hover: #{lighten($grey, 10%)};
+  --accent-contrast: #{$blue};
+  --accent-contrast-hover: #{darken($blue, 10%)};
 
   --highlight: #{$red};
   --faded-colour: #eee;
 
   --regular-link--colour: #f8c4f8;
+
+  // fyk link
+  --anchor-shadow: #{$blue};
+  --anchor-shadow-hover: #{darken($blue, 10%)};
+}
+
+input {
+  background: inherit;
+  color: inherit;
 }
 
 .theme {
@@ -97,10 +110,12 @@ $yellow: #f3e29d;
     background-color: var(--primary-colour);
   }
 
-  .dropdown-menu__menu,
-  .dropdown-menu__arrow {
+  .dropdown-menu__menu {
     background-color: var(--base-background);
     color: var(--base-colour);
+  }
+  .dropdown-menu__arrow {
+    border-bottom-color: var(--base-background);
   }
 
   .regular-link {
@@ -110,9 +125,6 @@ $yellow: #f3e29d;
   .fyk-link {
     color: var(--base-colour);
     text-decoration: none;
-
-    --anchor-shadow: var(--accent-colour);
-    --anchor-shadow-hover: var(--accent-colour-hover);
 
     &:not(.button):not(.fyk-link--shadowless) {
       @extend %anchor-shadow;
