@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useDimensions } from '../../hooks/useDimensions';
 
@@ -7,7 +7,7 @@ import './Peekaboo.scss';
 
 interface PeekabooProps {
   className?: string;
-  children: React.ReactChildren;
+  children: React.ReactNode;
 }
 
 function Peekaboo(props: PeekabooProps) {
@@ -15,7 +15,7 @@ function Peekaboo(props: PeekabooProps) {
 
   const timer = useRef<number>();
   const prevPosition = useRef<number>(0);
-  const [hidden, setHidden] = useState(false);
+  const [fixed, setFixed] = useState(false);
   const [dimRef, dimensions] = useDimensions<HTMLDivElement>();
 
   useEffect(() => {
@@ -25,27 +25,32 @@ function Peekaboo(props: PeekabooProps) {
         const scrollY = window.scrollY || window.pageYOffset;
         const scrollingUp = scrollY > prevPosition.current;
 
-        if (scrollingUp && !hidden) {
-          setHidden(true);
-        } else if (scrollingUp && hidden) {
-          setHidden(false);
+        if (scrollY === 0 && fixed) {
+          setFixed(false);
+        } else if (scrollingUp && !fixed) {
+          setFixed(true);
+        } else if (!scrollingUp && fixed) {
+          setFixed(false);
         }
 
         prevPosition.current = scrollY;
-      }, 500);
+      }, 250);
     }
 
     window.addEventListener('scroll', handleHide);
     return () => window.removeEventListener('scroll', handleHide);
-  }, [hidden]);
-
-  const height = hidden
-    ? { height: 0, overflow: 'hidden' }
-    : { height: dimensions?.height };
+  }, [fixed]);
 
   return (
-    <div style={height}>
-      <div ref={dimRef} className={classNames('peekaboo', className)}>
+    <div style={{ height: dimensions?.height }}>
+      <div
+        ref={dimRef}
+        className={classNames(
+          'peekaboo',
+          { 'peekaboo--fixed': fixed },
+          className
+        )}
+      >
         {children}
       </div>
     </div>

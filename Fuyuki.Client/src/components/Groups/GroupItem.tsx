@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 
 import orderBy from 'ayaka/orderBy';
 
-import FYKLink from '../FYKLink';
 import { Group } from 'src/interfaces/Group';
+import FYKLink from '../FYKLink';
 
 interface GroupItemProps {
   data: Group;
+  noSubredditsMessage?: string;
 }
 
 function GroupItem(props: GroupItemProps) {
@@ -45,7 +46,11 @@ function GroupItem(props: GroupItemProps) {
           })}
         </ul>
       )}
-      {subsExist && subsEmpty && <div>This group has no subreddits.</div>}
+      {subsExist && subsEmpty && (
+        <div>
+          {props.noSubredditsMessage ?? 'This group has no subreddits.'}
+        </div>
+      )}
     </li>
   );
 }

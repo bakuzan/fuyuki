@@ -1,8 +1,9 @@
-import { ContentType } from '../types/ContentType';
-import { Post } from '../../../interfaces/Post';
-import { ContentMeta, VideoSource } from '../types/ContentMeta';
-import { ContentMatcher } from '../types/ContentMatcher';
+/* tslint:disable:object-literal-sort-keys */
 import sendRequest from 'src/utils/sendRequest';
+import { Post } from '../../../interfaces/Post';
+import { ContentMatcher } from '../types/ContentMatcher';
+import { ContentMeta, VideoSource } from '../types/ContentMeta';
+import { ContentType } from '../types/ContentType';
 
 function sortBy(arr: any[], fn: (item: any) => any) {
   return arr.sort((a, b) => {

@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 
+import ClearableInput from 'meiko/ClearableInput';
 import List from 'meiko/List';
 import LoadingBouncer from 'meiko/LoadingBouncer';
 import RequestMessage from '../RequestMessage';
@@ -9,15 +10,18 @@ import { useAsync } from 'src/hooks/useAsync';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { Group } from 'src/interfaces/Group';
 import sendRequest from 'src/utils/sendRequest';
+import applyGroupFilter from './applyGroupFilter';
 
 import './Groups.scss';
 
 interface GroupsProps {
   endpoint: string;
+  enableFilter?: boolean;
 }
 
 function Groups(props: GroupsProps) {
-  const { endpoint } = props;
+  const { endpoint, enableFilter = false } = props;
+  const [filter, setFilter] = useState('');
 
   const state = useAsync<FykResponse<Group[]>>(
     async () => await sendRequest(endpoint),
@@ -35,19 +39,42 @@ function Groups(props: GroupsProps) {
 
   const isSuccess = state.value && state.value instanceof Array;
   const items = isSuccess ? (state.value as Group[]) : [];
-  const hasNoItems = items.length === 0;
+
+  const filteredItems = enableFilter ? applyGroupFilter(items, filter) : items;
+  const hasNoItems = filteredItems.length === 0;
+  const hasFilter = filter.length > 0;
+  const noSubsMessage = hasFilter
+    ? 'No subreddits for the current filter.'
+    : undefined;
 
   return (
-    <List className="groups" shouldWrap>
-      {hasNoItems && (
-        <li key="NONE" className="groups__item groups__item--no-items">
-          No groups available
-        </li>
+    <div>
+      {enableFilter && (
+        <ClearableInput
+          id="filter"
+          name="filter"
+          value={filter}
+          label="Filter on group and subreddit"
+          onChange={(e) => {
+            const el = e.target as HTMLInputElement;
+            setFilter(el.value);
+          }}
+        />
       )}
-      {items.map((x: Group) => (
-        <GroupItem key={x.id} data={x} />
-      ))}
-    </List>
+
+      <List className="groups" shouldWrap>
+        {hasNoItems && (
+          <li key="NONE" className="groups__item groups__item--no-items">
+            {!hasFilter
+              ? 'No groups available'
+              : 'No groups or subreddits for current filter'}
+          </li>
+        )}
+        {filteredItems.map((x: Group) => (
+          <GroupItem key={x.id} data={x} noSubredditsMessage={noSubsMessage} />
+        ))}
+      </List>
+    </div>
   );
 }
 

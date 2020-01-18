@@ -1,20 +1,20 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 
+import formatDate from 'ayaka/formatDateTimeForDisplay';
+import padNumber from 'ayaka/padNumber';
 import { Button } from 'meiko/Button';
 import Image from 'meiko/Image';
 import NewTabLink from 'meiko/NewTabLink';
-import formatDate from 'ayaka/formatDateTimeForDisplay';
-import padNumber from 'ayaka/padNumber';
 
-import FYKLink from '../FYKLink';
 import AwardsBlock from '../AwardsBlock';
 import Flair from '../FlairBlock';
+import FYKLink from '../FYKLink';
 import PostContent from '../PostContent';
 
 import { Post } from 'src/interfaces/Post';
-import thousandFormat from 'src/utils/thousandFormat';
 import { ContentManager } from 'src/utils/content/manager';
+import thousandFormat from 'src/utils/thousandFormat';
 
 import './PostItem.scss';
 
@@ -130,7 +130,7 @@ function PostItem(props: PostItemProps) {
           </div>
         </div>
       </div>
-      <PostContent isExpanded={isExpanded} data={x} />
+      <PostContent isExpanded={canExpand && isExpanded} data={x} />
     </article>
   );
 }

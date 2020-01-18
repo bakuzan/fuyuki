@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Groups from 'src/components/Groups';
@@ -12,8 +12,9 @@ function Home(props: PageProps) {
         <header className="page__header">
           <h2 className="page__title">Home</h2>
         </header>
+
         <div>
-          <Groups endpoint={'group/getallwithsubreddits'} />
+          <Groups enableFilter endpoint={'group/getallwithsubreddits'} />
         </div>
       </section>
     </div>

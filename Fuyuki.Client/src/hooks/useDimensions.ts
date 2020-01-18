@@ -1,4 +1,4 @@
-import { useState, useCallback, useLayoutEffect } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 
 function addEvent(event: string, cb: EventListenerOrEventListenerObject) {
   window.addEventListener(event, cb);
@@ -13,8 +13,8 @@ export function useDimensions<T extends HTMLElement>(): [
   const [node, setNode] = useState<T | null>(null);
   const [dimensions, setDimensions] = useState<DOMRect | null>(null);
 
-  const ref = useCallback((node) => {
-    setNode(node);
+  const ref = useCallback((element) => {
+    setNode(element);
   }, []);
 
   useLayoutEffect(() => {

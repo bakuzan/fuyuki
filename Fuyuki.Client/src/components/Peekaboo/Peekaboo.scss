@@ -1,8 +1,11 @@
 .peekaboo {
-  position: fixed;
-  left: 0;
-  width: 100%;
   transition: height 0.3s;
-  overflow: hidden;
-  z-index: 1000;
+
+  &--fixed {
+    position: fixed;
+    overflow: hidden;
+    z-index: 1000;
+    // TODO
+    // Introduce a shadow?
+  }
 }

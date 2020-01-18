@@ -39,6 +39,10 @@ $yellow: #f3e29d;
   // fyk link
   --anchor-shadow: var(--accent-colour);
   --anchor-shadow-hover: var(--accent-colour-hover);
+
+  --scroll-top-button--background: var(--primary-colour);
+  --scroll-top-button--background-hover: var(--primary-colour-hover);
+  --scroll-top-button--colour: var(--primary-contrast);
 }
 
 .theme--alt {

@@ -1,24 +1,25 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Route, Switch } from 'react-router';
 import { Helmet } from 'react-helmet';
+import { Route, Switch } from 'react-router';
 
 import { useGlobalStyles } from 'meiko/hooks/useGlobalStyles';
+import ScrollTopButton from 'meiko/ScrollTopButton';
 import HeaderBar from './components/HeaderBar';
 
+import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisationConstants';
 import ApiAuthorisationRoutes from './components/ApiAuthorisation/ApiAuthorisationRoutes';
 import AuthoriseRoute from './components/ApiAuthorisation/AuthoriseRoute';
-import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisationConstants';
 
-import NotFound from './pages/NotFound';
-import Home from './pages/Home';
-import PostsPage from './pages/Posts';
 import CommentsPage from './pages/Comments';
 import GroupManagement from './pages/GroupManagement';
 import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import PostsPage from './pages/Posts';
 
-import { ThemeContext } from './context';
 import { useStorage } from 'src/hooks/useStorage';
+import { ThemeContext } from './context';
 
 import './styles/index.scss';
 import './styles/themes.scss';
@@ -36,8 +37,8 @@ function App() {
   return (
     <div
       className={classNames('theme', {
-        'theme--default': !showAltTheme,
-        'theme--alt': showAltTheme
+        'theme--alt': showAltTheme,
+        'theme--default': !showAltTheme
       })}
     >
       <Helmet defaultTitle="Fuyuki" titleTemplate="%s | Fuyuki" />
@@ -81,6 +82,7 @@ function App() {
           <Route path="*" component={NotFound} />
         </Switch>
       </main>
+      <ScrollTopButton />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 
 import NewTabLink from 'meiko/NewTabLink';
+import Peekaboo from 'src/components/Peekaboo';
 import Posts from 'src/components/Posts';
 
 import { useAsync } from 'src/hooks/useAsync';
@@ -35,20 +36,22 @@ function PostsPage(props: PageProps) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      <header className="page__header page__header--spaced">
-        {(!groupId || (groupId && groupName)) && (
-          <h2 className="page__title">{pageTitle}</h2>
-        )}
-        {subName && (
-          <NewTabLink
-            className="regular-link"
-            href={`https://www.reddit.com/r/${subName}`}
-            aria-label={`View r/${subName} on reddit`}
-          >
-            <span aria-hidden={true}>View r/{subName} on reddit</span>
-          </NewTabLink>
-        )}
-      </header>
+      <Peekaboo>
+        <header className="page__header page__header--spaced">
+          {(!groupId || (groupId && groupName)) && (
+            <h2 className="page__title">{pageTitle}</h2>
+          )}
+          {subName && (
+            <NewTabLink
+              className="regular-link"
+              href={`https://www.reddit.com/r/${subName}`}
+              aria-label={`View r/${subName} on reddit`}
+            >
+              <span aria-hidden={true}>View r/{subName} on reddit</span>
+            </NewTabLink>
+          )}
+        </header>
+      </Peekaboo>
       <Posts endpoint={`${urlBase}${queryUrl}`} />
     </div>
   );
