@@ -1,15 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { Route } from 'react-router';
-import { Login } from './Login';
-import { Logout } from './Logout';
 import {
   ApplicationPaths,
   LoginActions,
   LogoutActions
 } from './ApiAuthorisationConstants';
+import { Login } from './Login';
+import { Logout } from './Logout';
 
 export default class ApiAuthorizationRoutes extends Component {
-  render() {
+  public render() {
     return (
       <Fragment>
         <Route
@@ -23,14 +23,6 @@ export default class ApiAuthorizationRoutes extends Component {
         <Route
           path={ApplicationPaths.LoginCallback}
           render={() => loginAction(LoginActions.LoginCallback)}
-        />
-        <Route
-          path={ApplicationPaths.Profile}
-          render={() => loginAction(LoginActions.Profile)}
-        />
-        <Route
-          path={ApplicationPaths.Register}
-          render={() => loginAction(LoginActions.Register)}
         />
         <Route
           path={ApplicationPaths.LogOut}

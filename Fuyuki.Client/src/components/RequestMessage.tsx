@@ -7,8 +7,18 @@ nano.put('.fyk-request-message', {
   margin: `10px 0`
 });
 
-function RequestMessage({ text }: { text: string }) {
-  return <div className="fyk-request-message">{text}</div>;
+interface RequestMessageProps {
+  text: string;
+  children?: React.ReactNode;
+}
+
+function RequestMessage({ text, children }: RequestMessageProps) {
+  return (
+    <div className="fyk-request-message">
+      <div>{text}</div>
+      {children}
+    </div>
+  );
 }
 
 export default React.memo(RequestMessage);

@@ -1,22 +1,28 @@
 import React from 'react';
 import { Component } from 'react';
+
+import Image from 'meiko/Image';
+import LoadingBouncer from 'meiko/LoadingBouncer';
+
+import RequestMessage from '../RequestMessage';
+import {
+  ApplicationPaths,
+  LogoutActions,
+  QueryParameterNames
+} from './ApiAuthorisationConstants';
 import authService, { AuthState } from './AuthoriseService';
 import { AuthenticationResultStatus } from './AuthoriseService';
-import {
-  QueryParameterNames,
-  LogoutActions,
-  ApplicationPaths
-} from './ApiAuthorisationConstants';
-import RequestMessage from '../RequestMessage';
+
+import logoutImage from 'src/assets/logout-page-image.jpg';
 
 interface LogoutProps {
   action: string;
 }
 
 interface LogoutState {
-  message: undefined | null | string | Error;
-  isReady: boolean;
   authenticated: boolean;
+  isReady: boolean;
+  message: undefined | null | string | Error;
 }
 
 // The main responsibility of this component is to handle the user's logout process.
@@ -29,13 +35,13 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     super(props);
 
     this.state = {
-      message: undefined,
+      authenticated: false,
       isReady: false,
-      authenticated: false
+      message: undefined
     };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     const action = this.props.action;
     switch (action) {
       case LogoutActions.Logout:
@@ -68,13 +74,13 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     );
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     authService.unsubscribe(this.unsubAuthService);
   }
 
-  render() {
+  public render() {
     const { isReady, message } = this.state;
-    console.log('logout page...', this.state, this.props);
+
     if (!isReady) {
       return <div></div>;
     }
@@ -84,24 +90,29 @@ export class Logout extends Component<LogoutProps, LogoutState> {
         ? message
         : message?.message ?? 'Logout error.';
 
-    if (!!message) {
-      return <RequestMessage text={errorMessage} />;
-    } else {
-      const action = this.props.action;
-      switch (action) {
-        case LogoutActions.Logout:
-          return <RequestMessage text="Processing logout..." />;
-        case LogoutActions.LogoutCallback:
-          return <RequestMessage text="Processing logout callback..." />;
-        case LogoutActions.LoggedOut:
-          return <RequestMessage text={errorMessage} />;
-        default:
-          throw new Error(`Invalid action '${action}'`);
-      }
+    const action = this.props.action;
+    switch (action) {
+      case LogoutActions.Logout:
+      case LogoutActions.LogoutCallback:
+        return <LoadingBouncer />;
+      case LogoutActions.LoggedOut:
+        return (
+          <RequestMessage text={errorMessage}>
+            <div>
+              <Image
+                id="fuyuki-logout-image"
+                src={logoutImage}
+                alt={`Minami Fuyuki lying in the snow`}
+              />
+            </div>
+          </RequestMessage>
+        );
+      default:
+        throw new Error(`Invalid action '${action}'`);
     }
   }
 
-  async logout(returnUrl: string) {
+  public async logout(returnUrl: string) {
     const state = { returnUrl };
     const isauthenticated = await authService.isAuthenticated();
 
@@ -125,7 +136,7 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     }
   }
 
-  async processLogoutCallback() {
+  public async processLogoutCallback() {
     const url = window.location.href;
     const result = await authService.completeSignOut(url);
     switch (result.status) {
@@ -144,7 +155,7 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     }
   }
 
-  async populateAuthenticationState() {
+  public async populateAuthenticationState() {
     const authenticated = await authService.isAuthenticated();
 
     this.setState({ isReady: true, authenticated }, () => {
@@ -157,7 +168,7 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     });
   }
 
-  getReturnUrl(state?: AuthState) {
+  public getReturnUrl(state?: AuthState) {
     const params = new URLSearchParams(window.location.search);
     const fromQuery = params.get(QueryParameterNames.ReturnUrl);
     if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -173,7 +184,7 @@ export class Logout extends Component<LogoutProps, LogoutState> {
     );
   }
 
-  navigateToReturnUrl(returnUrl: string) {
+  public navigateToReturnUrl(returnUrl: string) {
     return window.location.replace(returnUrl);
   }
 }

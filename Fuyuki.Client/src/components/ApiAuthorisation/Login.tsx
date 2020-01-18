@@ -1,21 +1,22 @@
+import LoadingBouncer from 'meiko/LoadingBouncer';
 import React from 'react';
 import { Component } from 'react';
+import RequestMessage from '../RequestMessage';
+import {
+  ApplicationPaths,
+  LoginActions,
+  QueryParameterNames
+} from './ApiAuthorisationConstants';
 import authService, { AuthState } from './AuthoriseService';
 import { AuthenticationResultStatus } from './AuthoriseService';
-import {
-  LoginActions,
-  QueryParameterNames,
-  ApplicationPaths
-} from './ApiAuthorisationConstants';
-import RequestMessage from '../RequestMessage';
 
 interface LoginProps {
   action: string;
 }
 
 interface LoginState {
-  message: undefined | null | string | Error;
   error: undefined | null | string;
+  message: undefined | null | string | Error;
 }
 
 // The main responsibility of this component is to handle the user's login process.
@@ -27,12 +28,12 @@ export class Login extends Component<LoginProps, LoginState> {
     super(props);
 
     this.state = {
-      message: undefined,
-      error: undefined
+      error: undefined,
+      message: undefined
     };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     const action = this.props.action;
     switch (action) {
       case LoginActions.Login:
@@ -57,33 +58,30 @@ export class Login extends Component<LoginProps, LoginState> {
     }
   }
 
-  render() {
+  public render() {
     const action = this.props.action;
     const { message } = this.state;
 
-    const errorMessage =
-      typeof message === 'string'
+    const errorMessage = message
+      ? typeof message === 'string'
         ? message
-        : message?.message ?? 'Logout error.';
+        : message?.message ?? 'Login error.'
+      : '';
 
-    if (!!message) {
-      return <RequestMessage text={errorMessage} />;
-    } else {
-      switch (action) {
-        case LoginActions.Login:
-          return <RequestMessage text="Processing login..." />;
-        case LoginActions.LoginCallback:
-          return <RequestMessage text="Processing login callback..." />;
-        case LoginActions.Profile:
-        case LoginActions.Register:
-          return <RequestMessage text="" />;
-        default:
-          throw new Error(`Invalid action '${action}'`);
-      }
+    switch (action) {
+      case LoginActions.Login:
+      case LoginActions.LoginCallback:
+        return (
+          <RequestMessage text={errorMessage}>
+            <LoadingBouncer />
+          </RequestMessage>
+        );
+      default:
+        throw new Error(`Invalid action '${action}'`);
     }
   }
 
-  async login(returnUrl: string) {
+  public async login(returnUrl: string) {
     const state = { returnUrl };
     const result = await authService.signIn(state);
 
@@ -101,7 +99,7 @@ export class Login extends Component<LoginProps, LoginState> {
     }
   }
 
-  async processLoginCallback() {
+  public async processLoginCallback() {
     const url = window.location.href;
     const result = await authService.completeSignIn(url);
 
@@ -123,7 +121,7 @@ export class Login extends Component<LoginProps, LoginState> {
     }
   }
 
-  getReturnUrl(state?: AuthState) {
+  public getReturnUrl(state?: AuthState) {
     const params = new URLSearchParams(window.location.search);
     let fromQuery = params.get(QueryParameterNames.ReturnUrl);
 
@@ -141,7 +139,7 @@ export class Login extends Component<LoginProps, LoginState> {
     );
   }
 
-  redirectToRegister() {
+  public redirectToRegister() {
     this.redirectToApiAuthorizationPath(
       `${ApplicationPaths.IdentityRegisterPath}?${
         QueryParameterNames.ReturnUrl
@@ -149,11 +147,11 @@ export class Login extends Component<LoginProps, LoginState> {
     );
   }
 
-  redirectToProfile() {
+  public redirectToProfile() {
     this.redirectToApiAuthorizationPath(ApplicationPaths.IdentityManagePath);
   }
 
-  redirectToApiAuthorizationPath(apiAuthorizationPath: string) {
+  public redirectToApiAuthorizationPath(apiAuthorizationPath: string) {
     const redirectUrl = `${window.location.origin}${apiAuthorizationPath}`;
     // It's important that we do a replace here so that when the user hits the back arrow on the
     // browser he gets sent back to where it was on the app instead of to an endpoint on this
@@ -161,7 +159,7 @@ export class Login extends Component<LoginProps, LoginState> {
     window.location.replace(redirectUrl);
   }
 
-  navigateToReturnUrl(returnUrl: string) {
+  public navigateToReturnUrl(returnUrl: string) {
     // It's important that we do a replace here so that we remove the callback uri with the
     // fragment containing the tokens from the browser history.
     window.location.replace(returnUrl);
