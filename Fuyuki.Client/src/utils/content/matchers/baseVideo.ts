@@ -5,7 +5,13 @@ import { ContentMeta } from '../types/ContentMeta';
 import { ContentType } from '../types/ContentType';
 
 function match(post: Post) {
-  const embedDomains = ['twitch', 'youtube', 'youtu.be', 'vimeo'];
+  const embedDomains = [
+    'twitch.tv',
+    'youtube.com/watch',
+    'youtu.be',
+    'vimeo.com'
+  ];
+
   return (post.url && embedDomains.some((x) => post.url.includes(x))) || false;
 }
 

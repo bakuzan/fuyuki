@@ -5,12 +5,13 @@ import Iframe from './Iframe';
 import Image from './Image';
 import Video from './Video';
 
-import { Post } from 'src/interfaces/Post';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
+import { Post } from 'src/interfaces/Post';
 import { ContentManager } from 'src/utils/content/manager';
-import { ContentType } from 'src/utils/content/types/ContentType';
 import { ContentMeta } from 'src/utils/content/types/ContentMeta';
+import { ContentType } from 'src/utils/content/types/ContentType';
 import { typeGuard } from './contentGuard';
+import postBodyReplacements from './postBodyReplacements';
 
 import './PostContent.scss';
 
@@ -43,7 +44,7 @@ function PostContent(props: PostContentProps) {
         <div className="post-content__text-body">
           <div
             dangerouslySetInnerHTML={{
-              __html: x.textBody
+              __html: postBodyReplacements(x.textBody)
             }}
           ></div>
         </div>
