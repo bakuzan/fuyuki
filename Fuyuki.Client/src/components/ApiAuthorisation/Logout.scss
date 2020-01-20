@@ -1,0 +1,8 @@
+.logout-image {
+  width: calc(100% + 10px);
+  margin-left: -5px;
+
+  &__image {
+    max-width: 100%;
+  }
+}

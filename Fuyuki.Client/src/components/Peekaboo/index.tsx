@@ -23,18 +23,23 @@ function Peekaboo(props: PeekabooProps) {
       clearTimeout(timer.current);
       timer.current = window.setTimeout(() => {
         const scrollY = window.scrollY || window.pageYOffset;
-        const scrollingUp = scrollY > prevPosition.current;
+        const scrollingUp = scrollY < prevPosition.current;
 
-        if (scrollY === 0 && fixed) {
+        const scrollIsZero = scrollY === 0;
+        const ignorePeek = dimensions
+          ? scrollY < dimensions.height || scrollIsZero
+          : scrollIsZero;
+
+        if (ignorePeek && fixed) {
           setFixed(false);
-        } else if (scrollingUp && !fixed) {
+        } else if (scrollingUp && !ignorePeek && !fixed) {
           setFixed(true);
         } else if (!scrollingUp && fixed) {
           setFixed(false);
         }
 
         prevPosition.current = scrollY;
-      }, 250);
+      }, 100);
     }
 
     window.addEventListener('scroll', handleHide);
@@ -42,7 +47,7 @@ function Peekaboo(props: PeekabooProps) {
   }, [fixed]);
 
   return (
-    <div style={{ height: dimensions?.height }}>
+    <div style={{ height: dimensions?.height || undefined }}>
       <div
         ref={dimRef}
         className={classNames(

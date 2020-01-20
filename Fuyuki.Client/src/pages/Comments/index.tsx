@@ -41,32 +41,34 @@ function CommentsPage(props: PageProps) {
     <div className="page">
       <Helmet title={pageTitle} />
       <Peekaboo>
-        {post && (
-          <PostItem
-            headingTag="h2"
-            className="top-spacing"
-            data={post}
-            defaultExpanded
-          />
-        )}
-        {post && post.permalink && (
-          <div className="post-info">
-            <p>
-              <FYKLink to={props.location.pathname}>
-                {!isNaN(post.numberOfComments)
-                  ? `${post.numberOfComments} comments`
-                  : ''}
-              </FYKLink>
-            </p>
-            <NewTabLink
-              className="regular-link"
-              href={`https://www.reddit.com/${post.permalink}`}
-              aria-label={`View ${post.title ?? 'post'} on reddit`}
-            >
-              <span aria-hidden={true}>View post on reddit</span>
-            </NewTabLink>
-          </div>
-        )}
+        <div>
+          {post && (
+            <PostItem
+              headingTag="h2"
+              className="top-spacing"
+              data={post}
+              defaultExpanded
+            />
+          )}
+          {post && post.permalink && (
+            <div className="post-info">
+              <p>
+                <FYKLink to={props.location.pathname}>
+                  {!isNaN(post.numberOfComments)
+                    ? `${post.numberOfComments} comments`
+                    : ''}
+                </FYKLink>
+              </p>
+              <NewTabLink
+                className="regular-link"
+                href={`https://www.reddit.com/${post.permalink}`}
+                aria-label={`View ${post.title ?? 'post'} on reddit`}
+              >
+                <span aria-hidden={true}>View post on reddit</span>
+              </NewTabLink>
+            </div>
+          )}
+        </div>
       </Peekaboo>
       <PostContext.Provider value={{ postId: post?.fullname }}>
         <Comments endpoint={queryUrl} />

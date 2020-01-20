@@ -14,6 +14,7 @@ import authService, { AuthState } from './AuthoriseService';
 import { AuthenticationResultStatus } from './AuthoriseService';
 
 import logoutImage from 'src/assets/logout-page-image.jpg';
+import './Logout.scss';
 
 interface LogoutProps {
   action: string;
@@ -98,9 +99,10 @@ export class Logout extends Component<LogoutProps, LogoutState> {
       case LogoutActions.LoggedOut:
         return (
           <RequestMessage text={errorMessage}>
-            <div>
+            <div className="logout-image">
               <Image
                 id="fuyuki-logout-image"
+                className="logout-image__image"
                 src={logoutImage}
                 alt={`Minami Fuyuki lying in the snow`}
               />

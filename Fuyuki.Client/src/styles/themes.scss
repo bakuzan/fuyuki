@@ -1,4 +1,5 @@
 @import './_extensions.scss';
+@import './_variables.scss';
 
 $blue: #484e9d;
 $grey: #5b5562; //#736a7b;
@@ -86,7 +87,13 @@ input {
   .application-header {
     background-color: var(--primary-colour);
     color: var(--primary-contrast);
-    box-shadow: 0px 0px 5px 1px var(--highlight);
+    box-shadow: 0px 4px 3px -2px var(--highlight);
+  }
+  .peekaboo--fixed {
+    top: $header--height;
+    background-color: var(--base-background);
+    color: var(--base-colour);
+    box-shadow: 0px 4px 3px -2px var(--highlight);
   }
 
   .application-header__nav-link {
@@ -204,5 +211,9 @@ input {
     &--highlight-exact::before {
       border-color: var(--primary-colour);
     }
+  }
+
+  .scroll-top::before {
+    font-size: 2.8rem;
   }
 }
