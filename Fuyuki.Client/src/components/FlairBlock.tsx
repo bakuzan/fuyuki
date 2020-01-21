@@ -9,10 +9,11 @@ interface FlairProps extends React.HTMLProps<HTMLDivElement> {
 
 nano.put('.flair', {
   backgroundColor: `#ddd`,
-  padding: `1px 3px`,
-  margin: `0 5px`,
+  color: 'initial',
   fontSize: `0.8rem`,
-  fontWeight: 'normal'
+  fontWeight: 'normal',
+  margin: `0 5px`,
+  padding: `1px 3px`
 });
 
 function Flair({ className, text, ...props }: FlairProps) {

@@ -19,15 +19,16 @@
 
   &__distinguished,
   &__submitter {
-    color: #fff;
     padding: 2px 1px;
   }
 
   &__distinguished {
     background-color: var(--highlight);
+    color: #fff;
   }
   &__submitter {
     background-color: var(--primary-colour);
+    color: var(--primary-contrast);
   }
 
   &__posted {

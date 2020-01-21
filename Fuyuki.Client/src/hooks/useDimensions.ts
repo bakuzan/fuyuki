@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 function addEvent(event: string, cb: EventListenerOrEventListenerObject) {
   window.addEventListener(event, cb);

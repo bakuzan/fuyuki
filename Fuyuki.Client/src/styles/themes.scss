@@ -40,10 +40,6 @@ $yellow: #f3e29d;
   // fyk link
   --anchor-shadow: var(--accent-colour);
   --anchor-shadow-hover: var(--accent-colour-hover);
-
-  --scroll-top-button--background: var(--primary-colour);
-  --scroll-top-button--background-hover: var(--primary-colour-hover);
-  --scroll-top-button--colour: var(--primary-contrast);
 }
 
 .theme--alt {
@@ -60,7 +56,7 @@ $yellow: #f3e29d;
   --primary-contrast-hover: #{darken($purple, 10%)};
 
   --accent-colour: #{$pink-dark};
-  --accent-colour-hover: #{lighten($pink-dark, 10%)};
+  --accent-colour-hover: #{lighten($pink-dark, 5%)};
 
   --accent-contrast: #{$blue};
   --accent-contrast-hover: #{darken($blue, 10%)};
@@ -81,6 +77,10 @@ input {
 }
 
 .theme {
+  --scroll-top-button--background: var(--primary-colour);
+  --scroll-top-button--background-hover: var(--primary-colour-hover);
+  --scroll-top-button--colour: var(--primary-contrast);
+
   background-color: var(--base-background);
   color: var(--base-colour);
 
@@ -105,6 +105,7 @@ input {
     &:focus,
     &:hover,
     &.application-header__nav-link--active {
+      box-shadow: 0px 5px 0px 0px var(--base-background);
       background-color: var(--primary-contrast);
       color: var(--primary-colour);
     }
