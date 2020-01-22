@@ -1,3 +1,9 @@
+.groups-widget {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .groups {
   &__item {
     padding: 0 8px;

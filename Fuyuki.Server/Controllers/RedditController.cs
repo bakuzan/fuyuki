@@ -79,7 +79,14 @@ namespace Fuyuki.Controllers
         [Route("[action]")]
         public async Task<RequestVideoResponse> RequestVideo(RequestVideoRequest request)
         {
-            return await _redditService.GetRequestVideo(User, request.Url);
+            return await _redditService.RequestVredditDownload(User, request.Url);
+        }
+
+        [HttpGet]
+        [Route("Subreddit/search")]
+        public async Task<List<RedditSubreddit>> SearchForSubreddits(string searchText)
+        {
+            return await _redditService.SearchSubreddits(User, searchText);
         }
 
     }

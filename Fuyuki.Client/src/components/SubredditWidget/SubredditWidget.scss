@@ -1,0 +1,10 @@
+.subreddit-widget {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 33%;
+
+  &__title {
+    font-size: 1rem;
+    margin: 5px 0;
+  }
+}

@@ -1,4 +1,5 @@
 @import './_variables.scss';
+@import './_mixins.scss';
 
 main {
   min-height: calc(100vh - 5px - #{$header--height});
@@ -9,6 +10,14 @@ main {
 
 // Page
 .page {
+  &--row {
+    display: flex;
+
+    @include respondTo(xs) {
+      flex-direction: column;
+    }
+  }
+
   &__header {
     display: flex;
     align-items: center;

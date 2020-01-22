@@ -48,7 +48,7 @@ function Groups(props: GroupsProps) {
     : undefined;
 
   return (
-    <div>
+    <div className="groups-widget">
       {enableFilter && (
         <ClearableInput
           id="filter"

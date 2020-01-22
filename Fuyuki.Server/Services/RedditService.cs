@@ -123,7 +123,7 @@ namespace Fuyuki.Services
             return result;
         }
 
-        public async Task<RequestVideoResponse> GetRequestVideo(ClaimsPrincipal claim, string url)
+        public async Task<RequestVideoResponse> RequestVredditDownload(ClaimsPrincipal claim, string url)
         {
             var response = new RequestVideoResponse();
 
@@ -148,5 +148,14 @@ namespace Fuyuki.Services
             return response;
         }
 
+        public async Task<List<RedditSubreddit>> SearchSubreddits(ClaimsPrincipal claim, string searchText)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            var subreddits = reddit.SearchSubreddits(searchText);
+
+            return _mapper.Map<List<RedditSubreddit>>(subreddits);
+        }
     }
 }
