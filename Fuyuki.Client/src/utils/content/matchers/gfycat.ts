@@ -1,6 +1,7 @@
 /* tslint:disable:object-literal-sort-keys */
 import { Post } from '../../../interfaces/Post';
 
+import alertService from 'src/utils/alertService';
 import sendRequest from 'src/utils/sendRequest';
 import { ContentMatcher } from '../types/ContentMatcher';
 import { ContentMeta } from '../types/ContentMeta';
@@ -21,8 +22,8 @@ async function meta(post: Post): Promise<ContentMeta> {
   });
 
   if (!response.success) {
-    // TODO
-    // Create a ContentType.isError to handle these nicely...
+    alertService.showError(`Gfycat request failed.`, response.errorMessages[0]);
+    return { type: ContentType.isError };
   }
 
   const { gfyItem } = JSON.parse(response.content);

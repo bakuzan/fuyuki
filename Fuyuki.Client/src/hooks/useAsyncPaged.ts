@@ -17,7 +17,7 @@ export function useAsyncPaged<Result = any, Args extends any[] = any[]>(
 
       if (!isResponseArray) {
         // TODO
-        // is this okay?
+        // is this okay..?
         return response;
       }
 

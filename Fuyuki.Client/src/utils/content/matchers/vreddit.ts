@@ -1,4 +1,5 @@
 /* tslint:disable:object-literal-sort-keys */
+import alertService from 'src/utils/alertService';
 import sendRequest from 'src/utils/sendRequest';
 import { Post } from '../../../interfaces/Post';
 import { ContentMatcher } from '../types/ContentMatcher';
@@ -22,8 +23,12 @@ async function meta(post: Post): Promise<ContentMeta> {
   const response = await sendRequest(`/Content/Vreddit/${id}`);
 
   if (!response.success) {
-    // TODO
-    // Custom error...
+    alertService.showError(
+      `vreddit request failed.`,
+      response.errorMessages[0]
+    );
+
+    return { type: ContentType.isError };
   }
 
   const mpd = response.content;

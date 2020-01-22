@@ -1,4 +1,5 @@
 export enum ContentType {
+  isError,
   isNone,
   isText,
   isImage,

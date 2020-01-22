@@ -7,7 +7,7 @@ export interface VideoSource {
 
 export type ContentMeta =
   | {
-      type: ContentType.isNone | ContentType.isText;
+      type: ContentType.isError | ContentType.isNone | ContentType.isText;
     }
   | {
       type: ContentType.isVideo;

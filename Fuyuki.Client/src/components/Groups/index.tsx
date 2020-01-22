@@ -9,6 +9,7 @@ import GroupItem from './GroupItem';
 import { useAsync } from 'src/hooks/useAsync';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { Group } from 'src/interfaces/Group';
+import guardList from 'src/utils/guardList';
 import sendRequest from 'src/utils/sendRequest';
 import applyGroupFilter from './applyGroupFilter';
 
@@ -37,9 +38,7 @@ function Groups(props: GroupsProps) {
     return <RequestMessage text="Failed to fetch groups" />;
   }
 
-  const isSuccess = state.value && state.value instanceof Array;
-  const items = isSuccess ? (state.value as Group[]) : [];
-
+  const items = guardList(state);
   const filteredItems = enableFilter ? applyGroupFilter(items, filter) : items;
   const hasNoItems = filteredItems.length === 0;
   const hasFilter = filter.length > 0;

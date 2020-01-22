@@ -1,18 +1,25 @@
 import classNames from 'classnames';
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import Icons from 'meiko/constants/icons';
-import { Button } from 'meiko/Button';
-import FC from 'meiko/FormControls';
 import AutocompleteInput from 'meiko/AutocompleteInput';
+import { Button } from 'meiko/Button';
+import Icons from 'meiko/constants/icons';
+import FC from 'meiko/FormControls';
+import { useDebounce } from 'meiko/hooks/useDebounce';
+import { usePrevious } from 'meiko/hooks/usePrevious';
 import List from 'meiko/List';
+import LoadingBouncer from 'meiko/LoadingBouncer';
 import tagChipStyle from 'meiko/styles/TagChip';
 
 import { useAsync } from 'src/hooks/useAsync';
-import { PageProps } from 'src/interfaces/PageProps';
+import { useAsyncFn } from 'src/hooks/useAsyncFn';
+import { FykResponse } from 'src/interfaces/ApiResponse';
 import { Group } from 'src/interfaces/Group';
-import { Subreddit } from 'src/interfaces/Subreddit';
+import { PageProps } from 'src/interfaces/PageProps';
+import { RedditSubreddit, Subreddit } from 'src/interfaces/Subreddit';
+import alertService from 'src/utils/alertService';
+import guardList from 'src/utils/guardList';
 import sendRequest from 'src/utils/sendRequest';
 
 import './CreateUpdate.scss';
@@ -30,19 +37,39 @@ const defaultGroup: Group = {
 function GroupCreateUpdate(props: PageProps) {
   const { id = 0 } = props.match.params as GroupCreateUpdateParams;
 
-  const [searchString, setSearchString] = React.useState('');
-  const [state, setState] = React.useState<Group>(defaultGroup);
+  const [searchString, setSearchString] = useState('');
+  const [state, setState] = useState<Group>(defaultGroup);
   const { loading, value } = useAsync<Group>(
     async () => (id ? await sendRequest(`group/${id}`) : Promise.resolve()),
     [id]
   );
 
-  const subState = useAsync<Subreddit[]>(
+  const grpSubState = useAsync<Subreddit[]>(
     async () => await sendRequest(`subreddit/getall`),
     []
   );
 
-  React.useEffect(() => {
+  const [subState, fetchSubreddits] = useAsyncFn<
+    FykResponse<RedditSubreddit[]>,
+    any
+  >(
+    async (searchTerm: string) =>
+      await sendRequest(`/Reddit/Subreddit/search?searchText=${searchTerm}`)
+  );
+
+  const debouncedSearchTerm = useDebounce(searchString, 500);
+  const prevSearchTerm = usePrevious(debouncedSearchTerm);
+
+  const subloading = subState.loading;
+  useEffect(() => {
+    const newSearchTerm = debouncedSearchTerm !== prevSearchTerm;
+
+    if (debouncedSearchTerm && newSearchTerm && !subloading) {
+      fetchSubreddits(debouncedSearchTerm);
+    }
+  }, [subloading, prevSearchTerm, debouncedSearchTerm, fetchSubreddits]);
+
+  useEffect(() => {
     if (!loading && value) {
       setState(value);
     }
@@ -50,22 +77,10 @@ function GroupCreateUpdate(props: PageProps) {
 
   const item = state as Group;
   const isEdit = id > 0;
-  const subreddits: Subreddit[] = subState.value || [];
   const pageTitle = isEdit ? `Edit ${item.name}` : 'Create new group';
 
-  function handleCreateNew() {
-    const data = {
-      id: -item.subreddits.filter((x: Subreddit) => x.id < 0).length - 1,
-      name: searchString
-    };
-
-    setState((p: Group) => ({
-      ...p,
-      subreddits: [...p.subreddits, data]
-    }));
-
-    setSearchString('');
-  }
+  const grpSubreddits: Subreddit[] = guardList(grpSubState);
+  const subreddits: RedditSubreddit[] = guardList(subState);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -79,16 +94,17 @@ function GroupCreateUpdate(props: PageProps) {
     };
 
     const result = await sendRequest(`group`, {
-      method: isEdit ? 'PUT' : 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      method: isEdit ? 'PUT' : 'POST'
     });
 
     if (result.success) {
       props.history.push('/groups');
     } else {
-      console.log('Failed', result);
-      // TODO
-      // Handle and display result.errorMessages...
+      alertService.showError(
+        result.errorMessages[0],
+        `Failed to save Group(Name: ${item.name})`
+      );
     }
   }
 
@@ -100,9 +116,10 @@ function GroupCreateUpdate(props: PageProps) {
     if (result.success) {
       props.history.push('/groups');
     } else {
-      console.log('Failed', result);
-      // TODO
-      // Handle and display result.errorMessages...
+      alertService.showError(
+        result.errorMessages[0],
+        `Failed to delete Group(Name: ${item.name})`
+      );
     }
   }
 
@@ -143,12 +160,21 @@ function GroupCreateUpdate(props: PageProps) {
             }
             onSelect={(itemId) => {
               const data = subreddits.find((x) => x.id === itemId);
+
               if (!data) {
-                return handleCreateNew();
+                return;
               }
 
+              const subName = data.name.toLowerCase();
+              const existing = grpSubreddits.find((x) => x.name === subName);
+
               setState((p: Group) => {
-                const items = [...p.subreddits, data];
+                const addedItem = existing ?? {
+                  id: -p.subreddits.filter((x) => x.id < 0).length - 1,
+                  name: subName
+                };
+
+                const items = [...p.subreddits, addedItem];
                 const uniqueItems = items.filter(
                   (x, i, a) => a.findIndex((y) => y.name === x.name) === i
                 );
@@ -158,14 +184,13 @@ function GroupCreateUpdate(props: PageProps) {
 
               setSearchString('');
             }}
-            disableLocalFilter={subreddits.length === 0}
+            disableLocalFilter={true}
             noSuggestionsItem={
-              <Button
-                className="create-new-subreddit"
-                onClick={handleCreateNew}
-              >
-                Add new subreddit
-              </Button>
+              subState.loading ? (
+                <LoadingBouncer />
+              ) : (
+                <div>No matches found...</div>
+              )
             }
           />
           <List className="subreddits" shouldWrap>

@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import List from 'meiko/List';
-import LoadingBouncer from 'meiko/LoadingBouncer';
 import { usePrevious } from 'meiko/hooks/usePrevious';
 import { useProgressiveLoading } from 'meiko/hooks/useProgressiveLoading';
+import List from 'meiko/List';
+import LoadingBouncer from 'meiko/LoadingBouncer';
 import RequestMessage from '../RequestMessage';
 import PostItem from './PostItem';
 
 import { useAsyncPaged } from 'src/hooks/useAsyncPaged';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { Post } from 'src/interfaces/Post';
+import guardList from 'src/utils/guardList';
 
 import './Posts.scss';
 
@@ -36,7 +37,7 @@ function Posts(props: PostsProps) {
   }, [postsAfter]);
 
   const currentlyLoading = state.loading;
-  const items = state.value instanceof Array ? state.value : [];
+  const items = guardList(state);
   const itemCount = items.length;
   const hasNoItems = itemCount === 0;
   const lastPostId = items[itemCount - 1]?.fullname ?? '';

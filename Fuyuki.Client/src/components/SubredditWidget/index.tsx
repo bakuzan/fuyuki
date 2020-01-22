@@ -8,14 +8,10 @@ import { usePrevious } from 'meiko/hooks/usePrevious';
 import LoadingBouncer from 'meiko/LoadingBouncer';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
+import { RedditSubreddit } from 'src/interfaces/Subreddit';
 import sendRequest from 'src/utils/sendRequest';
 import FYKLink from '../FYKLink';
 import RequestMessage from '../RequestMessage';
-
-interface Subreddit {
-  id: string;
-  name: string;
-}
 
 interface SubredditWidgetProps {}
 
@@ -25,7 +21,10 @@ function SubredditWidget(props: SubredditWidgetProps) {
   const debouncedSearchTerm = useDebounce(searchText, 750);
   const prevSearchTerm = usePrevious(debouncedSearchTerm);
 
-  const [state, fetchSubreddits] = useAsyncFn<FykResponse<Subreddit[]>, any>(
+  const [state, fetchSubreddits] = useAsyncFn<
+    FykResponse<RedditSubreddit[]>,
+    any
+  >(
     async (searchTerm: string) =>
       await sendRequest(`/Reddit/Subreddit/search?searchText=${searchTerm}`)
   );
@@ -43,7 +42,7 @@ function SubredditWidget(props: SubredditWidgetProps) {
   const hasError = state.error || badResponse?.error;
   const subredditResults = hasError
     ? []
-    : ((state.value ? state.value : []) as Subreddit[]);
+    : ((state.value ? state.value : []) as RedditSubreddit[]);
 
   return (
     <section className="subreddit-widget">

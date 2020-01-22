@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router';
 
 import { useGlobalStyles } from 'meiko/hooks/useGlobalStyles';
 import ScrollTopButton from 'meiko/ScrollTopButton';
+import Alert from './components/Alert';
 import HeaderBar from './components/HeaderBar';
 
 import { ApplicationPaths } from './components/ApiAuthorisation/ApiAuthorisationConstants';
@@ -45,6 +46,7 @@ function App() {
       <ThemeContext.Provider value={themeState}>
         <HeaderBar />
       </ThemeContext.Provider>
+      <Alert />
       <main>
         <Switch>
           <AuthoriseRoute exact path="/" component={Home} />

@@ -8,6 +8,7 @@ import CommentItem from './CommentItem';
 import { useAsyncPaged } from 'src/hooks/useAsyncPaged';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { Comment } from 'src/interfaces/Comment';
+import guardList from 'src/utils/guardList';
 
 import './Comments.scss';
 
@@ -25,7 +26,7 @@ function Comments(props: CommentsProps) {
     fetchPage();
   }, []);
 
-  const items = state.value instanceof Array ? state.value : [];
+  const items = guardList(state);
   const hasNoItems = items.length === 0;
 
   const badResponse = state.value as ApiResponse;

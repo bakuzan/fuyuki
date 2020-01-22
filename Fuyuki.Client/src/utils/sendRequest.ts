@@ -3,6 +3,7 @@ import {
   QueryParameterNames
 } from 'src/components/ApiAuthorisation/ApiAuthorisationConstants';
 import authService from '../components/ApiAuthorisation/AuthoriseService';
+import alertService from './alertService';
 
 const UNAUTHOURISED_ERROR = 401;
 
@@ -59,6 +60,11 @@ export default async function sendRequest(
           fromQuery || `${window.location.origin}${ApplicationPaths.LoggedOut}`;
 
         await authService.signOut({ returnUrl });
+      } else {
+        alertService.showError(
+          `Request failed.`,
+          `${response.status}: ${response.statusText}`
+        );
       }
 
       return {
@@ -67,13 +73,10 @@ export default async function sendRequest(
       };
     }
 
-    const result = await response.json();
-
-    // TODO
-    // Generic error display if result.success === false
-
-    return result;
+    return await response.json();
   } catch (error) {
+    alertService.showError(`Request failed.`, error.message);
+
     return { error, success: false };
   }
 }
