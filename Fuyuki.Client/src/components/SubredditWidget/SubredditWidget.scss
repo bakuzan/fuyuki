@@ -1,10 +1,71 @@
+@import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
+
+%remove-button {
+  flex: unset;
+
+  &::before {
+    color: $danger-colour;
+    font-size: 1rem;
+  }
+}
+
+.subreddit-widget-toggle {
+  padding: 5px;
+  margin: 5px 0;
+
+  &::before {
+    align-items: flex-end;
+  }
+}
+
 .subreddit-widget {
   display: flex;
   flex-direction: column;
-  flex-basis: 33%;
+  position: fixed;
+  top: $header--height;
+  right: 0;
+  height: calc(100vh - #{$header--height} - #{$subreddit-widget--padding});
+  min-width: $subreddit-widget--width;
+  padding: $subreddit-widget--padding;
+  background: var(--primary-colour);
+  color: var(--primary-contrast);
+  box-shadow: 0px 5px 5px 1px var(--highlight);
+  z-index: 100;
+  overflow: hidden;
+
+  @include respondTo(xxs) {
+    width: calc(100% - #{$subreddit-widget--padding * 2});
+  }
+
+  &--hidden {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  &__close {
+    @extend %remove-button;
+    margin: 0;
+  }
 
   &__title {
-    font-size: 1rem;
-    margin: 5px 0;
+    margin: 0.9rem 0;
+    text-align: center;
   }
+
+  // Overrides
+  .has-float-label input:focus,
+  .has-float-label select:focus {
+    border-color: var(--primary-contrast) !important;
+  }
+
+  .loading-bouncer__orb {
+    background-color: var(--accent-colour) !important;
+  }
+}
+
+// Overrides
+.subreddit-widget__subreddit {
+  --base-colour: var(--primary-contrast);
 }

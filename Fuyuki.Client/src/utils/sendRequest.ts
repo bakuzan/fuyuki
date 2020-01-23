@@ -61,8 +61,9 @@ export default async function sendRequest(
 
         await authService.signOut({ returnUrl });
       } else {
+        console.log('Bad response, Not 401', response);
         alertService.showError(
-          `Request failed.`,
+          `Request was unsuccessful.`,
           `${response.status}: ${response.statusText}`
         );
       }
@@ -75,6 +76,7 @@ export default async function sendRequest(
 
     return await response.json();
   } catch (error) {
+    console.log('Request error', error);
     alertService.showError(`Request failed.`, error.message);
 
     return { error, success: false };
