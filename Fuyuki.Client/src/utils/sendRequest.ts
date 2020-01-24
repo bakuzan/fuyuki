@@ -46,9 +46,10 @@ export default async function sendRequest(
     if (!response.ok) {
       const errorResponse = await response.body?.getReader().read();
       const error = uintToString(errorResponse?.value) || `Request failed.`;
+      const isUnauthorised = response.status === UNAUTHOURISED_ERROR;
 
       // Just force a signout if you get a 401...
-      if (response.status === UNAUTHOURISED_ERROR && !ignoreUnauthorised) {
+      if (isUnauthorised && !ignoreUnauthorised) {
         const params = new URLSearchParams(window.location.search);
         let fromQuery = params.get(QueryParameterNames.ReturnUrl);
 
@@ -60,7 +61,7 @@ export default async function sendRequest(
           fromQuery || `${window.location.origin}${ApplicationPaths.LoggedOut}`;
 
         await authService.signOut({ returnUrl });
-      } else {
+      } else if (!isUnauthorised) {
         console.log('Bad response, Not 401', response);
         alertService.showError(
           `Request was unsuccessful.`,

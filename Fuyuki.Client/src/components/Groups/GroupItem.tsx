@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import orderBy from 'ayaka/orderBy';
 
 import { Group } from 'src/interfaces/Group';
+import { Subreddit } from 'src/interfaces/Subreddit';
 import FYKLink from '../FYKLink';
 
 interface GroupItemProps {
@@ -14,7 +15,7 @@ interface GroupItemProps {
 function GroupItem(props: GroupItemProps) {
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const x = props.data;
-  const subs = orderBy(x.subreddits || [], ['name']);
+  const subs: Subreddit[] = orderBy(x.subreddits || [], ['name']);
   const subsExist = !!x.subreddits;
   const subsEmpty = subs.length === 0;
   const groupItemLink = subsEmpty ? `/group/${x.id}` : `/fyk/posts/${x.id}`;
@@ -27,6 +28,10 @@ function GroupItem(props: GroupItemProps) {
           {subs.map((s, i) => {
             const highlight = i <= highlightIndex;
             const highlightExact = i === highlightIndex;
+
+            if (s.isHidden) {
+              return null;
+            }
 
             return (
               <li
