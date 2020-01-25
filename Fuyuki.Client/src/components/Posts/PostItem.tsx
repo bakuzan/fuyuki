@@ -14,10 +14,12 @@ import PostContent from '../PostContent';
 
 import { Post } from 'src/interfaces/Post';
 import { ContentManager } from 'src/utils/content/manager';
+import hasImageExtension from 'src/utils/hasImageExtension';
 import thousandFormat from 'src/utils/thousandFormat';
 
 import './PostItem.scss';
 
+const fykIcon = '/icon-96x96.png';
 const OPEN = `\uD83D\uDDC1\uFE0E`;
 
 interface PostItemProps {
@@ -25,11 +27,14 @@ interface PostItemProps {
   index?: number;
   data: Post;
   defaultExpanded?: boolean;
+  lazyThumbnail?: boolean;
   headingTag: keyof Pick<
     JSX.IntrinsicElements,
     'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   >;
 }
+
+const isUrl = hasImageExtension;
 
 function PostItem(props: PostItemProps) {
   const [isExpanded, setExpanded] = useState(props.defaultExpanded ?? false);
@@ -42,6 +47,8 @@ function PostItem(props: PostItemProps) {
   const postLabel = `Post ${rankNum}${x.stickied ? ', stickied.' : ''}`;
   const postLink = `/post/${x.fullname}/comments`;
   const canExpand = ContentManager.isExpandable(x);
+
+  const hasThumbnail = isUrl(x.thumbnail);
 
   return (
     <article
@@ -62,11 +69,11 @@ function PostItem(props: PostItemProps) {
         <div className="post__image-wrapper">
           <Image
             className="post__thumbnail"
-            src={x.thumbnail}
+            src={hasThumbnail ? x.thumbnail : fykIcon}
             alt={x.title}
             height={70}
             width={70}
-            isLazy
+            isLazy={props.lazyThumbnail ?? true}
           />
           {x.nsfw && (
             <div className="post__nsfw" aria-label="Not safe for work">

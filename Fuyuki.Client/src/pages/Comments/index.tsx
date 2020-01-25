@@ -48,6 +48,7 @@ function CommentsPage(props: PageProps) {
               className="top-spacing"
               data={post}
               defaultExpanded
+              lazyThumbnail={false}
             />
           )}
           {post && post.permalink && (
