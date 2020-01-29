@@ -34,7 +34,9 @@ namespace Fuyuki.Mapping
                 .ForMember(x => x.Replies, opts => opts.MapFrom(x => x.Replies.Comments))
                 .ForMember(x => x.More, opts => opts.MapFrom(x => x.Replies.MoreData));
 
-            CreateMap<Reddit.Controllers.Subreddit, RedditSubreddit>();
+            CreateMap<Reddit.Controllers.Subreddit, RedditSearchResult>();
+            CreateMap<Reddit.Controllers.Post, RedditSearchResult>()
+                .ForMember(x => x.Name, opts => opts.MapFrom(x => x.Title));
         }
     }
 }

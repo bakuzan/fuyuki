@@ -10,7 +10,7 @@
   }
 }
 
-.subreddit-widget-toggle {
+.search-widget-toggle {
   padding: 5px;
   margin: 5px 0;
 
@@ -19,15 +19,15 @@
   }
 }
 
-.subreddit-widget {
+.search-widget {
   display: flex;
   flex-direction: column;
   position: fixed;
   top: $header--height;
   right: 0;
-  height: calc(100vh - #{$header--height} - #{$subreddit-widget--padding});
-  min-width: $subreddit-widget--width;
-  padding: $subreddit-widget--padding;
+  height: calc(100vh - #{$header--height} - #{$search-widget--padding});
+  min-width: $search-widget--width;
+  padding: $search-widget--padding;
   background: var(--primary-colour);
   color: var(--primary-contrast);
   box-shadow: 0px 5px 5px 1px var(--highlight);
@@ -35,7 +35,7 @@
   overflow: hidden;
 
   @include respondTo(xxs) {
-    width: calc(100% - #{$subreddit-widget--padding * 2});
+    width: calc(100% - #{$search-widget--padding * 2});
   }
 
   &--hidden {
@@ -54,6 +54,23 @@
     text-align: center;
   }
 
+  &__sort-label {
+    font-size: 0.8rem;
+  }
+  &__sort-options {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  &__result {
+    max-width: 350px;
+    white-space: pre-line;
+
+    @include respondTo(xs) {
+      max-width: 100%;
+    }
+  }
+
   // Overrides
   .has-float-label input:focus,
   .has-float-label select:focus {
@@ -66,6 +83,6 @@
 }
 
 // Overrides
-.subreddit-widget__subreddit {
+.search-widget__content {
   --base-colour: var(--primary-contrast);
 }

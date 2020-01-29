@@ -13,7 +13,7 @@ $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
   border: 1px solid var(--primary-colour);
   border-radius: 3px;
 
-  @include respondTo(xs) {
+  @include respondToAll((xxs, xs)) {
     margin: 20px 5px;
   }
 

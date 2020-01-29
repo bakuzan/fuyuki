@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Fuyuki.Data;
+using Fuyuki.Enums;
 using Fuyuki.Managers;
 using Fuyuki.ViewModels;
+
 
 namespace Fuyuki.Services
 {
@@ -148,14 +150,42 @@ namespace Fuyuki.Services
             return response;
         }
 
-        public async Task<List<RedditSubreddit>> SearchSubreddits(ClaimsPrincipal claim, string searchText)
+        public async Task<List<RedditSearchResult>> SearchSubreddits(ClaimsPrincipal claim, string searchText)
         {
             var user = await _userService.GetCurrentUser(claim);
             var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
 
             var subreddits = reddit.SearchSubreddits(searchText);
 
-            return _mapper.Map<List<RedditSubreddit>>(subreddits);
+            return _mapper.Map<List<RedditSearchResult>>(subreddits);
+        }
+
+        public async Task<List<RedditSearchResult>> SearchPosts(ClaimsPrincipal claim,
+                                                                string subreddit,
+                                                                string searchText,
+                                                                RedditSort sort)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            var searchParams = new Reddit.Inputs.Search.SearchGetSearchInput(q: searchText, sort: TranslateSortEnum(sort));
+            var posts = reddit.Subreddit(subreddit)
+                              .Search(searchParams);
+
+            return _mapper.Map<List<RedditSearchResult>>(posts);
+        }
+
+
+        private string TranslateSortEnum(RedditSort sort)
+        {
+            switch (sort)
+            {
+                case RedditSort.New:
+                    return Constants.RedditSort.New;
+                case RedditSort.Relevance:
+                default:
+                    return Constants.RedditSort.Relevance;
+            }
         }
     }
 }

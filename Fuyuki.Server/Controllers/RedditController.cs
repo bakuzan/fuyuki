@@ -5,6 +5,7 @@ using Fuyuki.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Fuyuki.Enums;
 
 namespace Fuyuki.Controllers
 {
@@ -84,9 +85,18 @@ namespace Fuyuki.Controllers
 
         [HttpGet]
         [Route("Subreddit/search")]
-        public async Task<List<RedditSubreddit>> SearchForSubreddits(string searchText)
+        public async Task<List<RedditSearchResult>> SearchForSubreddits(string searchText)
         {
             return await _redditService.SearchSubreddits(User, searchText);
+        }
+
+        [HttpGet]
+        [Route("Post/search/{subredditName}")]
+        public async Task<List<RedditSearchResult>> SearchForPosts(string subredditName,
+                                                                   string searchText,
+                                                                   RedditSort sort = RedditSort.Default)
+        {
+            return await _redditService.SearchPosts(User, subredditName, searchText, sort);
         }
 
     }

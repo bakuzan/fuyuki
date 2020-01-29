@@ -1,6 +1,6 @@
 namespace Fuyuki.ViewModels
 {
-    public class RedditSubreddit
+    public class RedditSearchResult
     {
         public string Id { get; set; }
         public string Name { get; set; }

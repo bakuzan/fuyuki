@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Fuyuki.Enums;
 using Fuyuki.ViewModels;
 
 namespace Fuyuki.Services
@@ -14,6 +15,8 @@ namespace Fuyuki.Services
         Task<List<RedditComment>> GetPostCommentsPaged(ClaimsPrincipal claim, string postId, string lastPostId);
         Task<List<RedditComment>> GetMoreComments(ClaimsPrincipal claim, string postId, List<string> commentIds);
         Task<RequestVideoResponse> RequestVredditDownload(ClaimsPrincipal claim, string url);
-        Task<List<RedditSubreddit>> SearchSubreddits(ClaimsPrincipal claim, string searchText);
+        Task<List<RedditSearchResult>> SearchSubreddits(ClaimsPrincipal claim, string searchText);
+        Task<List<RedditSearchResult>> SearchPosts(ClaimsPrincipal claim, string subredditName, string searchText, RedditSort sort);
+
     }
 }

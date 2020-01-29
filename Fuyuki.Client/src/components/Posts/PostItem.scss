@@ -9,7 +9,7 @@
   &__inner {
     display: flex;
 
-    @include respondTo(xs) {
+    @include respondToAll((xxs, xs)) {
       flex-wrap: wrap;
     }
   }
@@ -26,7 +26,7 @@
     padding: 0 $post--score-spacing;
     border-right: 1px dashed var(--primary-colour);
 
-    @include respondTo(xs) {
+    @include respondToAll((xxs, xs)) {
       flex: 1;
       justify-content: center;
     }
@@ -59,7 +59,7 @@
     width: 100%;
     margin: 0 5px;
 
-    @include respondTo(xs) {
+    @include respondToAll((xxs, xs)) {
       margin: 20px 5px;
     }
   }

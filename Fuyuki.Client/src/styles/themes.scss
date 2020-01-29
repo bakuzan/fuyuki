@@ -217,4 +217,8 @@ input {
   .scroll-top::before {
     font-size: 2.8rem;
   }
+
+  .radio__input:checked::after {
+    color: var(--accent-colour);
+  }
 }

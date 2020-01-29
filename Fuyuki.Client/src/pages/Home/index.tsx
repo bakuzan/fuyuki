@@ -4,8 +4,9 @@ import { Helmet } from 'react-helmet';
 
 import { useWindowSize } from 'meiko/hooks/useWindowSize';
 
+import FYKLink from 'src/components/FYKLink';
 import Groups from 'src/components/Groups';
-import SubredditWidget from 'src/components/SubredditWidget';
+import SearchWidget from 'src/components/SearchWidget';
 import { PageProps } from 'src/interfaces/PageProps';
 import { isXS } from 'src/utils/media';
 
@@ -24,14 +25,26 @@ function Home(props: PageProps) {
       <section className={classNames('home', { 'home--margin': isExpanded })}>
         <header className="page__header">
           <h2 className="page__title">Home</h2>
-          <div id="subreddit-toggle"></div>
+          <div id="search-toggle"></div>
         </header>
 
         <Groups enableFilter endpoint={'group/getallwithsubreddits'} />
       </section>
-      <SubredditWidget
-        isLocked={notASmallWindow}
+      <SearchWidget
+        endpoint="/Reddit/Subreddit/search"
         isExpanded={isExpanded}
+        isLocked={notASmallWindow}
+        itemName="subreddit"
+        renderContent={({ data }) => (
+          <FYKLink
+            id={`search-${data.id}`}
+            className="search-widget__content"
+            noShadow
+            to={`/r/posts/${data.name}`}
+          >
+            r/{data.name}
+          </FYKLink>
+        )}
         setExpanded={setExpanded}
       />
     </div>
