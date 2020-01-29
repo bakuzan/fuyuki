@@ -17,7 +17,8 @@ import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { FykResponse } from 'src/interfaces/ApiResponse';
 import { Group } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
-import { RedditSubreddit, Subreddit } from 'src/interfaces/Subreddit';
+import { SearchResult } from 'src/interfaces/SearchResult';
+import { Subreddit } from 'src/interfaces/Subreddit';
 import alertService from 'src/utils/alertService';
 import guardList from 'src/utils/guardList';
 import sendRequest from 'src/utils/sendRequest';
@@ -50,7 +51,7 @@ function GroupCreateUpdate(props: PageProps) {
   );
 
   const [subState, fetchSubreddits] = useAsyncFn<
-    FykResponse<RedditSubreddit[]>,
+    FykResponse<SearchResult[]>,
     any
   >(
     async (searchTerm: string) =>
@@ -80,7 +81,7 @@ function GroupCreateUpdate(props: PageProps) {
   const pageTitle = isEdit ? `Edit ${item.name}` : 'Create new group';
 
   const grpSubreddits: Subreddit[] = guardList(grpSubState);
-  const subreddits: RedditSubreddit[] = guardList(subState);
+  const subreddits: SearchResult[] = guardList(subState);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
