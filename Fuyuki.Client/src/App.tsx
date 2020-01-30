@@ -13,7 +13,6 @@ import ApiAuthorisationRoutes from './components/ApiAuthorisation/ApiAuthorisati
 import AuthoriseRoute from './components/ApiAuthorisation/AuthoriseRoute';
 
 import CommentsPage from './pages/Comments';
-import GroupManagement from './pages/GroupManagement';
 import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -70,7 +69,6 @@ function App() {
             component={CommentsPage}
           />
 
-          <AuthoriseRoute path="/groups" component={GroupManagement} />
           <AuthoriseRoute
             path="/group/:id(\d*)?"
             component={GroupManagementCreateUpdate}

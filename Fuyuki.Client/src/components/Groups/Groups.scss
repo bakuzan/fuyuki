@@ -1,3 +1,5 @@
+@import '../../styles/_extensions.scss';
+
 .groups-widget {
   display: flex;
   flex-direction: column;
@@ -8,12 +10,28 @@
   &__item {
     padding: 0 8px;
   }
+
+  &__subreddit-count {
+    margin: 0 2px;
+    font-size: 0.8rem;
+    color: var(--faded-colour);
+  }
+
+  &__edit-link {
+    font-size: 0.8rem;
+  }
 }
 
 .tree {
   list-style-type: none;
   padding-inline-start: 20px;
   margin: 8px 0;
+
+  &__expander {
+    @extend %reset-button-styles;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
 
   &__item {
     position: relative;

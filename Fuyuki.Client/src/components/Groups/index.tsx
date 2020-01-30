@@ -71,7 +71,12 @@ function Groups(props: GroupsProps) {
           </li>
         )}
         {filteredItems.map((x: Group) => (
-          <GroupItem key={x.id} data={x} noSubredditsMessage={noSubsMessage} />
+          <GroupItem
+            key={x.id}
+            data={x}
+            filtered={hasFilter}
+            noSubredditsMessage={noSubsMessage}
+          />
         ))}
       </List>
     </div>

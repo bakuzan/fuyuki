@@ -7,3 +7,8 @@
     box-shadow: inset 0 -1.2em 0 var(--anchor-shadow-hover, #ddd);
   }
 }
+
+%reset-button-styles {
+  background: none;
+  border: none;
+}

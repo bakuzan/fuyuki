@@ -2,34 +2,66 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 
 import orderBy from 'ayaka/orderBy';
+import MkoIcons from 'meiko/constants/icons';
 
+import FYKLink from 'src/components/FYKLink';
 import { Group } from 'src/interfaces/Group';
 import { Subreddit } from 'src/interfaces/Subreddit';
-import FYKLink from '../FYKLink';
 
 interface GroupItemProps {
   data: Group;
   noSubredditsMessage?: string;
+  filtered?: boolean;
 }
+
+const MIN_SUBREDDIT_DISPLAY = 5;
 
 function GroupItem(props: GroupItemProps) {
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [expanded, setExpanded] = useState(false);
+
+  const { filtered = false } = props;
   const x = props.data;
   const subs: Subreddit[] = orderBy(x.subreddits || [], ['name']);
   const subsExist = !!x.subreddits;
   const subsEmpty = subs.length === 0;
   const groupItemLink = subsEmpty ? `/group/${x.id}` : `/fyk/posts/${x.id}`;
 
+  const showExpander =
+    !expanded &&
+    subsExist &&
+    !subsEmpty &&
+    !filtered &&
+    subs.length > MIN_SUBREDDIT_DISPLAY;
+
   return (
     <li className="groups__item">
-      <FYKLink to={groupItemLink}>{x.name}</FYKLink>
+      <div>
+        <FYKLink to={groupItemLink}>{x.name}</FYKLink>
+        <span
+          className="groups__subreddit-count"
+          aria-label={`${subs.length} subreddits`}
+        >
+          <span aria-hidden={true}>({subs.length})</span>
+        </span>
+        <FYKLink
+          className="groups__edit-link"
+          to={`/group/${x.id}`}
+          aria-label="Edit group"
+        >
+          <span aria-hidden={true}>{MkoIcons.editable}</span>
+        </FYKLink>
+      </div>
       {!subsEmpty && (
         <ul className="tree">
           {subs.map((s, i) => {
             const highlight = i <= highlightIndex;
             const highlightExact = i === highlightIndex;
 
-            if (s.isHidden) {
+            const reduceList =
+              !filtered && !expanded && i + 1 > MIN_SUBREDDIT_DISPLAY;
+
+            if (s.isHidden || reduceList) {
               return null;
             }
 
@@ -49,6 +81,17 @@ function GroupItem(props: GroupItemProps) {
               </li>
             );
           })}
+          {showExpander && (
+            <li key="EXPANDER" className="tree__item tree__item--expander">
+              <button
+                type="button"
+                className="fyk-link fyk-link--shadowless tree__expander"
+                onClick={() => setExpanded(true)}
+              >
+                <span aria-hidden={true}>+</span> show more
+              </button>
+            </li>
+          )}
         </ul>
       )}
       {subsExist && subsEmpty && (

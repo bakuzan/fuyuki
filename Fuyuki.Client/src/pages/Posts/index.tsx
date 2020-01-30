@@ -8,7 +8,9 @@ import NewTabLink from 'meiko/NewTabLink';
 import FYKLink from 'src/components/FYKLink';
 import Peekaboo from 'src/components/Peekaboo';
 import Posts from 'src/components/Posts';
-import SearchWidget from 'src/components/SearchWidget';
+import SearchWidget, {
+  SearchWidgetToggleZone
+} from 'src/components/SearchWidget';
 
 import { useAsync } from 'src/hooks/useAsync';
 import { Group } from 'src/interfaces/Group';
@@ -40,6 +42,8 @@ function PostsPage(props: PageProps) {
   );
 
   const isSubreddit = !groupId && !!subName;
+  const shouldMargin = isSubreddit && isExpanded;
+
   const groupName = value?.name ?? subName ?? '';
   const pageTitle = groupName ? `${groupName} Posts` : 'All Posts';
   const queryUrl = groupId
@@ -51,13 +55,17 @@ function PostsPage(props: PageProps) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      <section className={classNames('posts', { 'posts--margin': isExpanded })}>
-        <Peekaboo>
+      <section
+        className={classNames('posts', {
+          'posts--margin': shouldMargin
+        })}
+      >
+        <Peekaboo className={classNames({ 'peekaboo--margin': shouldMargin })}>
           <header className="page__header page__header--spaced">
             {(!groupId || (groupId && groupName)) && (
               <h2 className="page__title">{pageTitle}</h2>
             )}
-            <div id="search-toggle"></div>
+            <SearchWidgetToggleZone />
             {subName && (
               <NewTabLink
                 className="regular-link"

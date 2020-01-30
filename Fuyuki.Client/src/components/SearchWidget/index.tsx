@@ -49,6 +49,10 @@ const exceptionClasses = [
   'search-widget__search-clear'
 ];
 
+export const SearchWidgetToggleZone = () => (
+  <div id="search-toggle" className="search-widget-toggle-zone"></div>
+);
+
 function SearchWidget(props: SearchWidgetProps) {
   const {
     endpoint,
@@ -84,7 +88,7 @@ function SearchWidget(props: SearchWidgetProps) {
   const prevSearchTerm = usePrevious(debouncedSearchTerm);
   const prevSort = usePrevious(sort);
 
-  const [state, fetchSearchResults] = useAsyncFn<
+  const [state, fetchSearchResults, resetSearchResults] = useAsyncFn<
     FykResponse<SearchResult[]>,
     any
   >(
@@ -93,7 +97,8 @@ function SearchWidget(props: SearchWidgetProps) {
         `${endpoint}?searchText=${searchTerm}${
           isSortable ? `&sort=${sortNum}` : ''
         }`
-      )
+      ),
+    [endpoint, isSortable]
   );
 
   const loading = state.loading;
@@ -105,6 +110,8 @@ function SearchWidget(props: SearchWidgetProps) {
 
     if (debouncedSearchTerm && hasChange && !loading) {
       fetchSearchResults(debouncedSearchTerm, sort);
+    } else if (!debouncedSearchTerm && newSearchTerm) {
+      resetSearchResults();
     }
   }, [
     loading,
@@ -112,11 +119,13 @@ function SearchWidget(props: SearchWidgetProps) {
     debouncedSearchTerm,
     sort,
     prevSort,
-    fetchSearchResults
+    fetchSearchResults,
+    resetSearchResults
   ]);
 
   const badResponse = state.value as ApiResponse;
   const hasError = state.error || badResponse?.error;
+
   const searchResults = hasError
     ? []
     : ((state.value ? state.value : []) as SearchResult[]);

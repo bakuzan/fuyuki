@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Header from 'meiko/Header';
-import NavigationMenu from './NavigationMenu';
 import HeaderLink from './HeaderLink';
+import NavigationMenu from './NavigationMenu';
 
 import './HeaderBar.scss';
 
@@ -17,7 +17,7 @@ function HeaderBar() {
             to="/"
             aria-label="Home"
           >
-            Fuyuki
+            <span aria-hidden={true}>Fuyuki</span>
           </HeaderLink>
         </h1>
       }

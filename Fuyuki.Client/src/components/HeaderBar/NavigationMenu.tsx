@@ -5,9 +5,9 @@ import { Button } from 'meiko/Button';
 import Icons from 'meiko/constants/icons';
 import HeaderLink from './HeaderLink';
 
-import { LoginMenu } from '../ApiAuthorisation/LoginMenu';
-import authService from '../ApiAuthorisation/AuthoriseService';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
+import authService from '../ApiAuthorisation/AuthoriseService';
+import { LoginMenu } from '../ApiAuthorisation/LoginMenu';
 
 function NavigationMenu() {
   const history = useHistory();
@@ -51,9 +51,7 @@ function NavigationMenu() {
       <HeaderLink to="/r/all" aria-label="View posts on r/all">
         r/all
       </HeaderLink>
-      <HeaderLink to="/groups" aria-label="Manage subreddit groups">
-        Groups
-      </HeaderLink>
+
       <LoginMenu />
     </React.Fragment>
   );

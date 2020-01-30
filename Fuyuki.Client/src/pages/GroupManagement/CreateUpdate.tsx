@@ -100,7 +100,7 @@ function GroupCreateUpdate(props: PageProps) {
     });
 
     if (result.success) {
-      props.history.push('/groups');
+      props.history.push('/');
     } else {
       alertService.showError(
         result.errorMessages[0],
@@ -115,7 +115,7 @@ function GroupCreateUpdate(props: PageProps) {
     });
 
     if (result.success) {
-      props.history.push('/groups');
+      props.history.push('/');
     } else {
       alertService.showError(
         result.errorMessages[0],
@@ -237,7 +237,7 @@ function GroupCreateUpdate(props: PageProps) {
             <Button type="submit" btnStyle="primary">
               Save
             </Button>
-            <Button type="button" onClick={() => props.history.push('/groups')}>
+            <Button type="button" onClick={() => props.history.push('/')}>
               Cancel
             </Button>
           </div>

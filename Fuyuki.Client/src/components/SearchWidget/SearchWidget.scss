@@ -26,7 +26,7 @@
   top: $header--height;
   right: 0;
   height: calc(100vh - #{$header--height} - #{$search-widget--padding});
-  min-width: $search-widget--width;
+  width: $search-widget--width;
   padding: $search-widget--padding;
   background: var(--primary-colour);
   color: var(--primary-contrast);
@@ -63,12 +63,7 @@
   }
 
   &__result {
-    max-width: 350px;
-    white-space: pre-line;
-
-    @include respondTo(xs) {
-      max-width: 100%;
-    }
+    margin: 5px 0;
   }
 
   // Overrides
@@ -80,6 +75,10 @@
   .loading-bouncer__orb {
     background-color: var(--accent-colour) !important;
   }
+}
+
+.search-widget-toggle-zone {
+  margin: 0 5px;
 }
 
 // Overrides

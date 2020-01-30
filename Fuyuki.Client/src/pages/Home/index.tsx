@@ -4,9 +4,12 @@ import { Helmet } from 'react-helmet';
 
 import { useWindowSize } from 'meiko/hooks/useWindowSize';
 
+import { LinkAsButton } from 'src/components/Buttons';
 import FYKLink from 'src/components/FYKLink';
 import Groups from 'src/components/Groups';
-import SearchWidget from 'src/components/SearchWidget';
+import SearchWidget, {
+  SearchWidgetToggleZone
+} from 'src/components/SearchWidget';
 import { PageProps } from 'src/interfaces/PageProps';
 import { isXS } from 'src/utils/media';
 
@@ -25,7 +28,12 @@ function Home(props: PageProps) {
       <section className={classNames('home', { 'home--margin': isExpanded })}>
         <header className="page__header">
           <h2 className="page__title">Home</h2>
-          <div id="search-toggle"></div>
+          <SearchWidgetToggleZone />
+          <div>
+            <LinkAsButton className="add-link" btnStyle="primary" to={`group/`}>
+              Add new group
+            </LinkAsButton>
+          </div>
         </header>
 
         <Groups enableFilter endpoint={'group/getallwithsubreddits'} />
