@@ -1,3 +1,7 @@
+# cd's process to its own location.
+Set-Location -LiteralPath $PSScriptRoot
+
+# Helper functions
 function Get-ScriptDirectory { Split-Path $MyInvocation.ScriptName }
 function Get-OuputColour($v) { if ($v) { return "Blue" } else { return "Green" } }
 
@@ -37,4 +41,10 @@ if ($release) {
     Write-Host "";
 }
 
-Read-Host -Prompt "Press Enter to exit";
+# If running in the console, wait for input before closing.
+if ($Host.Name -eq "ConsoleHost")
+{
+    Write-Host "Press any key to continue..."
+    $Host.UI.RawUI.FlushInputBuffer()   # Make sure buffered input doesn't "press a key" and skip the ReadKey().
+    $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp") > $null
+}
