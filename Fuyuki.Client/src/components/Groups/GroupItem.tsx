@@ -82,13 +82,27 @@ function GroupItem(props: GroupItemProps) {
             );
           })}
           {showExpander && (
-            <li key="EXPANDER" className="tree__item tree__item--expander">
+            <li
+              key="EXPANDER"
+              className={classNames(
+                'tree__item',
+                'tree__item--expander',
+                MIN_SUBREDDIT_DISPLAY === highlightIndex && [
+                  'tree__item--highlight',
+                  'tree__item--highlight-exact'
+                ]
+              )}
+              onMouseEnter={() => setHighlightIndex(MIN_SUBREDDIT_DISPLAY)}
+              onMouseLeave={() => setHighlightIndex(-1)}
+            >
               <button
                 type="button"
                 className="fyk-link fyk-link--shadowless tree__expander"
+                aria-label={`show ${subs.length -
+                  MIN_SUBREDDIT_DISPLAY} hidden subreddits`}
                 onClick={() => setExpanded(true)}
               >
-                <span aria-hidden={true}>+</span> show more
+                <span aria-hidden={true}>+ show more</span>
               </button>
             </li>
           )}

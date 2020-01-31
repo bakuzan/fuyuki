@@ -10,7 +10,7 @@ import Portal from 'meiko/Portal';
 import RadioButton, { RadioButtonProps } from 'meiko/RadioButton';
 import TabTrap from 'meiko/TabTrap';
 
-import { KeyCodes } from 'meiko/constants/enums';
+import { EventCodes } from 'meiko/constants/enums';
 import MkoIcons from 'meiko/constants/icons';
 import { useDebounce } from 'meiko/hooks/useDebounce';
 import { useOutsideClick } from 'meiko/hooks/useOutsideClick';
@@ -39,6 +39,7 @@ enum SearchSort {
   Relevance = 2
 }
 
+const EventCodeS = 'KeyS';
 const sortOptions: RadioButtonProps[] = [
   { id: 'newSort', label: 'New', value: SearchSort.New },
   { id: 'relevanceSort', label: 'Relevance', value: SearchSort.Relevance }
@@ -72,9 +73,24 @@ function SearchWidget(props: SearchWidgetProps) {
   const isHidden = !isExpanded;
   const toggleBtnId = `toggle-${widgetId}`;
 
+  useEffect(() => {
+    function listenShortcut(event: KeyboardEvent) {
+      if (event.code === EventCodeS) {
+        const el = document.getElementById('searchWidgetInput');
+
+        if (el) {
+          requestAnimationFrame(() => el.focus());
+        }
+      }
+    }
+
+    window.addEventListener('keypress', listenShortcut);
+    return () => window.removeEventListener('keypress', listenShortcut);
+  }, []);
+
   useOutsideClick(ref.current, (e) => {
     const t = e.target;
-    const isEscape = e.key === KeyCodes.escape;
+    const isEscape = e.code === EventCodes.Escape;
     const noTarget = !t;
     const isNotException =
       t && !exceptionClasses.some((s) => t.className.includes(s));
