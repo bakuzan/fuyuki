@@ -30,8 +30,8 @@
   padding: $search-widget--padding;
   background: var(--primary-colour);
   color: var(--primary-contrast);
-  box-shadow: 0px 5px 5px 1px var(--highlight);
-  z-index: 100;
+  box-shadow: -1px 0px 6px 2px var(--highlight);
+  z-index: 25;
   overflow: hidden;
 
   @include respondTo(xxs) {

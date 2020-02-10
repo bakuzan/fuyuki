@@ -10,6 +10,7 @@ import { useDebounce } from 'meiko/hooks/useDebounce';
 import { usePrevious } from 'meiko/hooks/usePrevious';
 import List from 'meiko/List';
 import LoadingBouncer from 'meiko/LoadingBouncer';
+import { CSSLikeObject } from 'meiko/styles/CSSLikeObject';
 import tagChipStyle from 'meiko/styles/TagChip';
 
 import { useAsync } from 'src/hooks/useAsync';
@@ -24,6 +25,8 @@ import guardList from 'src/utils/guardList';
 import sendRequest from 'src/utils/sendRequest';
 
 import './CreateUpdate.scss';
+
+const tagStyle = tagChipStyle as CSSLikeObject;
 
 interface GroupCreateUpdateParams {
   id?: number;
@@ -201,18 +204,15 @@ function GroupCreateUpdate(props: PageProps) {
               return (
                 <li
                   key={x.id}
-                  className={classNames(
-                    'subreddits__item',
-                    tagChipStyle.tagChip
-                  )}
+                  className={classNames('subreddits__item', tagStyle.tagChip)}
                 >
-                  <div className={classNames(tagChipStyle.tagChip__text)}>
+                  <div className={classNames(tagStyle.tagChip__text)}>
                     {x.name}
                   </div>
                   <Button
                     className={classNames(
                       'subreddits__remove',
-                      tagChipStyle.tagChip__delete
+                      tagStyle.tagChip__delete
                     )}
                     title={removeLabel}
                     aria-label={removeLabel}
