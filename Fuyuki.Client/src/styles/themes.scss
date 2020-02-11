@@ -1,5 +1,6 @@
 @import './_extensions.scss';
 @import './_variables.scss';
+@import './_mixins.scss';
 
 $blue: #484e9d;
 $grey: #5b5562; //#736a7b;
@@ -89,20 +90,30 @@ input {
     color: var(--primary-contrast);
 
     &::after {
-      box-shadow: 0 4px 3px -2px var(--highlight);
+      box-shadow: 0px 5px 4px -1px var(--highlight);
       content: '';
       position: absolute;
       left: -10px;
-      right: #{$search-widget--width + $search-widget--padding};
-      bottom: -1px;
+      right: #{$search-widget--width + $search-widget--padding * 2};
+      bottom: 0px;
       height: 8px;
+    }
+
+    &--full-shadow::after {
+      right: -10px;
+    }
+
+    @include respondTo(xxs) {
+      &:not(.application-header--full-shadow)::after {
+        visibility: hidden;
+      }
     }
   }
   .peekaboo--fixed {
     top: $header--height;
     background-color: var(--base-background);
     color: var(--base-colour);
-    box-shadow: 0px 4px 3px -2px var(--highlight);
+    box-shadow: 0px 5px 4px -1px var(--highlight);
   }
 
   .application-header__nav-link {

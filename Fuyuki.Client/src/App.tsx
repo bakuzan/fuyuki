@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router';
 
@@ -19,12 +19,13 @@ import NotFound from './pages/NotFound';
 import PostsPage from './pages/Posts';
 
 import { useStorage } from 'src/hooks/useStorage';
-import { ThemeContext } from './context';
+import { ThemeContext, WithSearchContext } from './context';
 
 import './styles/index.scss';
 import './styles/themes.scss';
 
 function App() {
+  const [withSearch, setWithSearch] = useState(false);
   const [isDarkTheme, setTheme] = useStorage('isDarkTheme');
   useGlobalStyles();
 
@@ -43,45 +44,47 @@ function App() {
     >
       <Helmet defaultTitle="Fuyuki" titleTemplate="%s | Fuyuki" />
       <ThemeContext.Provider value={themeState}>
-        <HeaderBar />
+        <HeaderBar fullShadow={!withSearch} />
       </ThemeContext.Provider>
       <Alert />
-      <main>
-        <Switch>
-          <AuthoriseRoute exact path="/" component={Home} />
-          <AuthoriseRoute
-            key="sub"
-            path="/r/posts/:subName(.*)"
-            component={PostsPage}
-          />
-          <AuthoriseRoute
-            key="sublink"
-            path="/r/:subName(.*)"
-            component={PostsPage}
-          />
-          <AuthoriseRoute
-            key="group"
-            path="/fyk/posts/:groupId(\d*)"
-            component={PostsPage}
-          />
-          <AuthoriseRoute
-            path="/post/:postId/comments"
-            component={CommentsPage}
-          />
+      <WithSearchContext.Provider value={setWithSearch}>
+        <main>
+          <Switch>
+            <AuthoriseRoute exact path="/" component={Home} />
+            <AuthoriseRoute
+              key="sub"
+              path="/r/posts/:subName(.*)"
+              component={PostsPage}
+            />
+            <AuthoriseRoute
+              key="sublink"
+              path="/r/:subName(.*)"
+              component={PostsPage}
+            />
+            <AuthoriseRoute
+              key="group"
+              path="/fyk/posts/:groupId(\d*)"
+              component={PostsPage}
+            />
+            <AuthoriseRoute
+              path="/post/:postId/comments"
+              component={CommentsPage}
+            />
 
-          <AuthoriseRoute
-            path="/group/:id(\d*)?"
-            component={GroupManagementCreateUpdate}
-          />
+            <AuthoriseRoute
+              path="/group/:id(\d*)?"
+              component={GroupManagementCreateUpdate}
+            />
 
-          <Route
-            path={ApplicationPaths.ApiAuthorisationPrefix}
-            component={ApiAuthorisationRoutes}
-          />
+            <Route
+              path={ApplicationPaths.ApiAuthorisationPrefix}
+              component={ApiAuthorisationRoutes}
+            />
 
-          <Route path="*" component={NotFound} />
-        </Switch>
-      </main>
+            <Route path="*" component={NotFound} />
+          </Switch>
+        </main>
+      </WithSearchContext.Provider>
       <ScrollTopButton />
     </div>
   );

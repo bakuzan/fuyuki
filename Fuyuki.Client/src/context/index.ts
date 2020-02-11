@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React, { createContext } from 'react';
 
 interface PostContextProps {
   postId?: string;
@@ -12,3 +12,7 @@ export const ThemeContext = createContext<ThemeContextProps>([
   false,
   () => null
 ]);
+
+export const WithSearchContext = createContext<
+  React.Dispatch<React.SetStateAction<boolean>>
+>(() => null);

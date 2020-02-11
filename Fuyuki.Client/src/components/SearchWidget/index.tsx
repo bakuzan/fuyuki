@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import generateUniqueId from 'ayaka/generateUniqueId';
 import { Button } from 'meiko/Button';
@@ -17,6 +17,7 @@ import { useOutsideClick } from 'meiko/hooks/useOutsideClick';
 import { usePrevious } from 'meiko/hooks/usePrevious';
 
 import RequestMessage from 'src/components/RequestMessage';
+import { WithSearchContext } from 'src/context';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { SearchResult } from 'src/interfaces/SearchResult';
@@ -65,6 +66,7 @@ function SearchWidget(props: SearchWidgetProps) {
     setExpanded
   } = props;
 
+  const setSearchWidget = useContext(WithSearchContext);
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLDivElement>;
   const [widgetId] = useState(generateUniqueId());
   const [searchText, setSearchText] = useState('');
@@ -72,6 +74,11 @@ function SearchWidget(props: SearchWidgetProps) {
 
   const isHidden = !isExpanded;
   const toggleBtnId = `toggle-${widgetId}`;
+
+  useEffect(() => {
+    setSearchWidget(isLocked ? true : isExpanded);
+    return () => setSearchWidget((p) => (isLocked ? false : p));
+  }, [isExpanded, isLocked]);
 
   useEffect(() => {
     function listenShortcut(event: KeyboardEvent) {

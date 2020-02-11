@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 
 import Header from 'meiko/Header';
@@ -6,10 +7,11 @@ import NavigationMenu from './NavigationMenu';
 
 import './HeaderBar.scss';
 
-function HeaderBar() {
+function HeaderBar({ fullShadow }: { fullShadow: boolean }) {
   return (
     <Header
       id="fuyuki-header"
+      className={classNames({ 'application-header--full-shadow': fullShadow })}
       navLeft={
         <h1 className="application-header__title">
           <HeaderLink
