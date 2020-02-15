@@ -1,12 +1,15 @@
-import { Group } from 'src/interfaces/Group';
+import { GroupWithSubreddits } from 'src/interfaces/Group';
 
-export default function applyGroupFilter(items: Group[], filter: string) {
+export default function applyGroupFilter(
+  items: GroupWithSubreddits[],
+  filter: string
+) {
   if (!filter) {
     return items;
   }
 
-  return items.reduce<Group[]>((p, g) => {
-    const item: Group = {
+  return items.reduce<GroupWithSubreddits[]>((p, g) => {
+    const item: GroupWithSubreddits = {
       ...g,
       subreddits: g.subreddits.map((s) => ({
         ...s,

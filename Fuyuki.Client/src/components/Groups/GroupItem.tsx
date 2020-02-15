@@ -5,11 +5,11 @@ import orderBy from 'ayaka/orderBy';
 import MkoIcons from 'meiko/constants/icons';
 
 import FYKLink from 'src/components/FYKLink';
-import { Group } from 'src/interfaces/Group';
+import { GroupWithSubreddits } from 'src/interfaces/Group';
 import { Subreddit } from 'src/interfaces/Subreddit';
 
 interface GroupItemProps {
-  data: Group;
+  data: GroupWithSubreddits;
   noSubredditsMessage?: string;
   filtered?: boolean;
 }

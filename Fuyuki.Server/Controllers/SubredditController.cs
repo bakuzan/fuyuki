@@ -30,5 +30,12 @@ namespace Fuyuki.Controllers
             return await _subredditService.GetSubreddits();
         }
 
+        [HttpGet]
+        [Route("[action]/{subredditName}")]
+        public async Task<List<GroupModel>> GetMemberships(string subredditName)
+        {
+            return await _subredditService.GetMemberships(subredditName);
+        }
+
     }
 }

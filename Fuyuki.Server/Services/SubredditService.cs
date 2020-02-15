@@ -23,5 +23,11 @@ namespace Fuyuki.Services
             return _mapper.Map<List<SubredditModel>>(items);
         }
 
+        public async Task<List<GroupModel>> GetMemberships(string subredditName)
+        {
+            var items = await _subredditDataService.GetGroupsSubredditBelongsTo(subredditName);
+            return _mapper.Map<List<GroupModel>>(items);
+        }
+
     }
 }

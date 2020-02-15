@@ -12,49 +12,33 @@ import SearchWidget, {
   SearchWidgetToggleZone
 } from 'src/components/SearchWidget';
 
-import { useAsync } from 'src/hooks/useAsync';
-import { Group } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
 import { isXS } from 'src/utils/media';
-import sendRequest from 'src/utils/sendRequest';
 
 import './Posts.scss';
 
 const urlBase = `/reddit/posts`;
 
-interface PostsPageParams {
-  groupId?: string;
-  subName?: string;
+interface PostsPageProps extends PageProps {
+  pageTitle: string;
+  queryUrl: string;
+  subredditName?: string;
 }
 
-function PostsPage(props: PageProps) {
-  const { groupId = '', subName = '' } = props.match.params as PostsPageParams;
+function PostsPage(props: PostsPageProps) {
   const [expanded, setExpanded] = useState(false);
 
   const size = useWindowSize();
   const notASmallWindow = !isXS(size.width);
   const isExpanded = notASmallWindow || expanded;
 
-  const { value } = useAsync<Group>(
-    async () =>
-      groupId ? await sendRequest(`group/${groupId}`) : Promise.resolve(),
-    [groupId]
-  );
-
-  const isSubreddit = !groupId && !!subName;
+  const subName = props.subredditName;
+  const isSubreddit = props.subredditName !== undefined;
   const shouldMargin = isSubreddit && isExpanded;
-
-  const groupName = value?.name ?? subName ?? '';
-  const pageTitle = groupName ? `${groupName} Posts` : 'All Posts';
-  const queryUrl = groupId
-    ? `/group/${groupId}`
-    : subName
-    ? `/subreddit/${subName}`
-    : '';
 
   return (
     <div className="page">
-      <Helmet title={pageTitle} />
+      <Helmet title={props.pageTitle} />
       <section
         className={classNames('posts', {
           'posts--margin': shouldMargin
@@ -62,9 +46,7 @@ function PostsPage(props: PageProps) {
       >
         <Peekaboo className={classNames({ 'peekaboo--margin': shouldMargin })}>
           <header className="page__header page__header--spaced">
-            {(!groupId || (groupId && groupName)) && (
-              <h2 className="page__title">{pageTitle}</h2>
-            )}
+            <h2 className="page__title">{props.pageTitle}</h2>
             <SearchWidgetToggleZone />
             {subName && (
               <NewTabLink
@@ -77,7 +59,7 @@ function PostsPage(props: PageProps) {
             )}
           </header>
         </Peekaboo>
-        <Posts endpoint={`${urlBase}${queryUrl}`} />
+        <Posts endpoint={`${urlBase}${props.queryUrl}`} />
       </section>
       {isSubreddit && (
         <SearchWidget

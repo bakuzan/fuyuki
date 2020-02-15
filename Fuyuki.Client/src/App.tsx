@@ -16,7 +16,8 @@ import CommentsPage from './pages/Comments';
 import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
-import PostsPage from './pages/Posts';
+import GroupPosts from './pages/Posts/GroupPosts';
+import SubPosts from './pages/Posts/SubPosts';
 
 import { useStorage } from 'src/hooks/useStorage';
 import { ThemeContext, WithSearchContext } from './context';
@@ -54,17 +55,17 @@ function App() {
             <AuthoriseRoute
               key="sub"
               path="/r/posts/:subName(.*)"
-              component={PostsPage}
+              component={SubPosts}
             />
             <AuthoriseRoute
               key="sublink"
               path="/r/:subName(.*)"
-              component={PostsPage}
+              component={SubPosts}
             />
             <AuthoriseRoute
               key="group"
               path="/fyk/posts/:groupId(\d*)"
-              component={PostsPage}
+              component={GroupPosts}
             />
             <AuthoriseRoute
               path="/post/:postId/comments"

@@ -8,7 +8,7 @@ import GroupItem from './GroupItem';
 
 import { useAsync } from 'src/hooks/useAsync';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
-import { Group } from 'src/interfaces/Group';
+import { GroupWithSubreddits } from 'src/interfaces/Group';
 import guardList from 'src/utils/guardList';
 import sendRequest from 'src/utils/sendRequest';
 import applyGroupFilter from './applyGroupFilter';
@@ -24,7 +24,7 @@ function Groups(props: GroupsProps) {
   const { endpoint, enableFilter = false } = props;
   const [filter, setFilter] = useState('');
 
-  const state = useAsync<FykResponse<Group[]>>(
+  const state = useAsync<FykResponse<GroupWithSubreddits[]>>(
     async () => await sendRequest(endpoint),
     [endpoint]
   );
@@ -70,7 +70,7 @@ function Groups(props: GroupsProps) {
               : 'No groups or subreddits for current filter'}
           </li>
         )}
-        {filteredItems.map((x: Group) => (
+        {filteredItems.map((x: GroupWithSubreddits) => (
           <GroupItem
             key={x.id}
             data={x}

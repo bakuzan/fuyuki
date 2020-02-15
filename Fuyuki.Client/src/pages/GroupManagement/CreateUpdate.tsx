@@ -16,7 +16,7 @@ import tagChipStyle from 'meiko/styles/TagChip';
 import { useAsync } from 'src/hooks/useAsync';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { FykResponse } from 'src/interfaces/ApiResponse';
-import { Group } from 'src/interfaces/Group';
+import { GroupWithSubreddits } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
 import { SearchResult } from 'src/interfaces/SearchResult';
 import { Subreddit } from 'src/interfaces/Subreddit';
@@ -32,7 +32,7 @@ interface GroupCreateUpdateParams {
   id?: number;
 }
 
-const defaultGroup: Group = {
+const defaultGroup: GroupWithSubreddits = {
   id: 0,
   name: '',
   subreddits: []
@@ -42,8 +42,8 @@ function GroupCreateUpdate(props: PageProps) {
   const { id = 0 } = props.match.params as GroupCreateUpdateParams;
 
   const [searchString, setSearchString] = useState('');
-  const [state, setState] = useState<Group>(defaultGroup);
-  const { loading, value } = useAsync<Group>(
+  const [state, setState] = useState<GroupWithSubreddits>(defaultGroup);
+  const { loading, value } = useAsync<GroupWithSubreddits>(
     async () => (id ? await sendRequest(`group/${id}`) : Promise.resolve()),
     [id]
   );
@@ -79,7 +79,7 @@ function GroupCreateUpdate(props: PageProps) {
     }
   }, [loading, value]);
 
-  const item = state as Group;
+  const item = state as GroupWithSubreddits;
   const isEdit = id > 0;
   const pageTitle = isEdit ? `Edit ${item.name}` : 'Create new group';
 
@@ -143,9 +143,9 @@ function GroupCreateUpdate(props: PageProps) {
             onChange={(e) => {
               const inp = e.target as HTMLInputElement;
 
-              setState((p: Group | null) => {
+              setState((p: GroupWithSubreddits | null) => {
                 if (p === null) {
-                  return {} as Group;
+                  return {} as GroupWithSubreddits;
                 }
 
                 return { ...p, name: inp.value };
@@ -172,7 +172,7 @@ function GroupCreateUpdate(props: PageProps) {
               const subName = data.name.toLowerCase();
               const existing = grpSubreddits.find((x) => x.name === subName);
 
-              setState((p: Group) => {
+              setState((p: GroupWithSubreddits) => {
                 const addedItem = existing ?? {
                   id: -p.subreddits.filter((x) => x.id < 0).length - 1,
                   name: subName
@@ -218,7 +218,7 @@ function GroupCreateUpdate(props: PageProps) {
                     aria-label={removeLabel}
                     icon={Icons.cross}
                     onClick={() => {
-                      setState((p: Group) => ({
+                      setState((p: GroupWithSubreddits) => ({
                         ...p,
                         subreddits: [
                           ...p.subreddits.filter(

@@ -7,5 +7,6 @@ namespace Fuyuki.Services
     public interface ISubredditService
     {
         Task<List<SubredditModel>> GetSubreddits();
+        Task<List<GroupModel>> GetMemberships(string subredditName);
     }
 }
