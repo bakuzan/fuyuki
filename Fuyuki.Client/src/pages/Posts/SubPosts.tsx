@@ -1,10 +1,14 @@
 import React from 'react';
 
+import List from 'meiko/List';
+
+import FYKLink from 'src/components/FYKLink';
+import BasePosts from './BasePosts';
+
 import { useAsync } from 'src/hooks/useAsync';
 import { Group } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
 import sendRequest from 'src/utils/sendRequest';
-import BasePosts from './BasePosts';
 
 interface PostsPageParams {
   subName: string;
@@ -14,7 +18,10 @@ export default function GroupPosts(props: PageProps) {
   const { subName = '' } = props.match.params as PostsPageParams;
 
   const { value } = useAsync<Group[]>(
-    async () => await sendRequest(`subreddit/GetMemberships/${subName}`),
+    async () =>
+      subName !== 'all'
+        ? await sendRequest(`subreddit/GetMemberships/${subName}`)
+        : Promise.resolve(),
     [subName]
   );
 
@@ -27,6 +34,28 @@ export default function GroupPosts(props: PageProps) {
       pageTitle={pageTitle}
       queryUrl={queryUrl}
       subredditName={subName}
-    />
+    >
+      {value && (
+        <div>
+          <Accordion
+            heading={
+              value.length
+                ? `${subName} belongs to ${value.length} group${
+                    value.length > 1 ? 's' : ''
+                  }`
+                : `${subName} is not currently part of any groups.`
+            }
+          >
+            <List>
+              {value.map((x) => (
+                <li key={x.id}>
+                  <FYKLink to={`/fyk/posts/${x.id}`}>{x.name}</FYKLink>
+                </li>
+              ))}
+            </List>
+          </Accordion>
+        </div>
+      )}
+    </BasePosts>
   );
 }

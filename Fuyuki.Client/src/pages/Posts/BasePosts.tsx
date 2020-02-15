@@ -23,6 +23,7 @@ interface PostsPageProps extends PageProps {
   pageTitle: string;
   queryUrl: string;
   subredditName?: string;
+  children?: React.ReactNode;
 }
 
 function PostsPage(props: PostsPageProps) {
@@ -58,6 +59,7 @@ function PostsPage(props: PostsPageProps) {
               </NewTabLink>
             )}
           </header>
+          {props.children}
         </Peekaboo>
         <Posts endpoint={`${urlBase}${props.queryUrl}`} />
       </section>
