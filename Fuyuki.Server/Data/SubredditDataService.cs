@@ -14,12 +14,18 @@ namespace Fuyuki.Data
             _context = context;
         }
 
-        public async Task<List<Group>> GetGroupsSubredditBelongsTo(string subredditName)
+        public async Task<List<GroupDto>> GetGroupsSubredditDtos(string userId)
         {
             return await _context.Groups.Include(x => x.GroupSubreddits)
                                         .ThenInclude(x => x.Subreddit)
-                                        .Where(x =>
-                                            x.GroupSubreddits.Any(g => g.Subreddit.Name == subredditName))
+                                        .Where(x => x.ApplicationUserId == userId)
+                                        .Select(x => new GroupDto
+                                        {
+                                            Id = x.Id,
+                                            Name = x.Name,
+                                            SubredditNames = x.GroupSubreddits.Select(x => x.Subreddit.Name)
+                                                                              .ToList()
+                                        })
                                         .ToListAsync();
         }
 

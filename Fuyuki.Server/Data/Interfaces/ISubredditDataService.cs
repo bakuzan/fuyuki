@@ -5,6 +5,6 @@ namespace Fuyuki.Data
 {
     public interface ISubredditDataService : IDataService
     {
-        Task<List<Group>> GetGroupsSubredditBelongsTo(string subredditName);
+        Task<List<GroupDto>> GetGroupsSubredditDtos(string userId);
     }
 }

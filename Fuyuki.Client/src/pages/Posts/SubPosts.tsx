@@ -6,7 +6,7 @@ import FYKLink from 'src/components/FYKLink';
 import BasePosts from './BasePosts';
 
 import { useAsync } from 'src/hooks/useAsync';
-import { Group } from 'src/interfaces/Group';
+import { GroupMembership } from 'src/interfaces/Group';
 import { PageProps } from 'src/interfaces/PageProps';
 import sendRequest from 'src/utils/sendRequest';
 
@@ -17,10 +17,10 @@ interface PostsPageParams {
 export default function GroupPosts(props: PageProps) {
   const { subName = '' } = props.match.params as PostsPageParams;
 
-  const { value } = useAsync<Group[]>(
+  const { value } = useAsync<GroupMembership[]>(
     async () =>
       subName !== 'all'
-        ? await sendRequest(`subreddit/GetMemberships/${subName}`)
+        ? await sendRequest(`subreddit/GetGroupMemberships/${subName}`)
         : Promise.resolve(),
     [subName]
   );

@@ -32,9 +32,9 @@ namespace Fuyuki.Controllers
 
         [HttpGet]
         [Route("[action]/{subredditName}")]
-        public async Task<List<GroupModel>> GetMemberships(string subredditName)
+        public async Task<List<GroupMembershipModel>> GetGroupMemberships(string subredditName)
         {
-            return await _subredditService.GetMemberships(subredditName);
+            return await _subredditService.GetGroupMemberships(User, subredditName);
         }
 
     }

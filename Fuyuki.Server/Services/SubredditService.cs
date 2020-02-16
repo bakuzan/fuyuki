@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Fuyuki.Data;
@@ -8,11 +10,15 @@ namespace Fuyuki.Services
 {
     public class SubredditService : ISubredditService
     {
+        private readonly IUserService _userService;
         private readonly ISubredditDataService _subredditDataService;
         private readonly IMapper _mapper;
 
-        public SubredditService(ISubredditDataService subredditDataService, IMapper mapper)
+        public SubredditService(IUserService userService,
+                                ISubredditDataService subredditDataService,
+                                IMapper mapper)
         {
+            _userService = userService;
             _subredditDataService = subredditDataService;
             _mapper = mapper;
         }
@@ -23,10 +29,21 @@ namespace Fuyuki.Services
             return _mapper.Map<List<SubredditModel>>(items);
         }
 
-        public async Task<List<GroupModel>> GetMemberships(string subredditName)
+        public async Task<List<GroupMembershipModel>> GetGroupMemberships(ClaimsPrincipal claim, string subredditName)
         {
-            var items = await _subredditDataService.GetGroupsSubredditBelongsTo(subredditName);
-            return _mapper.Map<List<GroupModel>>(items);
+            var user = await _userService.GetCurrentUser(claim);
+
+            var items = await _subredditDataService.GetGroupsSubredditDtos(user.Id);
+            var mapped = _mapper.Map<List<GroupMembershipModel>>(items);
+
+            foreach (var item in mapped)
+            {
+                item.IsMember = items.First(x => x.Id == item.Id)
+                                     .SubredditNames
+                                     .Any(name => name == subredditName);
+            }
+
+            return mapped;
         }
 
     }

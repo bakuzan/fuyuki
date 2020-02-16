@@ -8,3 +8,7 @@ export interface Group {
 export interface GroupWithSubreddits extends Group {
   subreddits: Subreddit[];
 }
+
+export interface GroupMembership extends Group {
+  isMember: boolean;
+}
