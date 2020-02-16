@@ -1,7 +1,7 @@
 import React from 'react';
 
 import List from 'meiko/List';
-
+import Accordion from 'src/components/Accordion';
 import FYKLink from 'src/components/FYKLink';
 import BasePosts from './BasePosts';
 
