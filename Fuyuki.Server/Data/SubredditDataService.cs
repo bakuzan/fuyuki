@@ -29,5 +29,11 @@ namespace Fuyuki.Data
                                         .ToListAsync();
         }
 
+        public async Task<Subreddit> GetSubredditByName(string subredditName)
+        {
+            return await _context.Subreddits.Where(x => x.Name == subredditName)
+                                            .FirstOrDefaultAsync();
+        }
+
     }
 }

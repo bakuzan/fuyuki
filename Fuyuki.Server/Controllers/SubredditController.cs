@@ -37,5 +37,12 @@ namespace Fuyuki.Controllers
             return await _subredditService.GetGroupMemberships(User, subredditName);
         }
 
+        [HttpPut]
+        [Route("[action]/{groupId}/{subredditName}")]
+        public async Task<ToggleGroupMembershipResponse> ToggleGroupMembership(int groupId, string subredditName)
+        {
+            return await _subredditService.ToggleGroupMembership(User, groupId, subredditName);
+        }
+
     }
 }

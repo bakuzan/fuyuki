@@ -9,5 +9,6 @@ namespace Fuyuki.Services
     {
         Task<List<SubredditModel>> GetSubreddits();
         Task<List<GroupMembershipModel>> GetGroupMemberships(ClaimsPrincipal claim, string subredditName);
+        Task<ToggleGroupMembershipResponse> ToggleGroupMembership(ClaimsPrincipal claim, int groupId, string subredditName);
     }
 }

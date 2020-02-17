@@ -11,14 +11,17 @@ namespace Fuyuki.Services
     public class SubredditService : ISubredditService
     {
         private readonly IUserService _userService;
+        private readonly IGroupDataService _groupDataService;
         private readonly ISubredditDataService _subredditDataService;
         private readonly IMapper _mapper;
 
         public SubredditService(IUserService userService,
+                                IGroupDataService groupDataService,
                                 ISubredditDataService subredditDataService,
                                 IMapper mapper)
         {
             _userService = userService;
+            _groupDataService = groupDataService;
             _subredditDataService = subredditDataService;
             _mapper = mapper;
         }
@@ -44,6 +47,48 @@ namespace Fuyuki.Services
             }
 
             return mapped;
+        }
+
+        public async Task<ToggleGroupMembershipResponse> ToggleGroupMembership(ClaimsPrincipal claim,
+                                                                               int groupId,
+                                                                               string subredditName)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+
+            var response = new ToggleGroupMembershipResponse();
+            var group = await _groupDataService.GetGroupAsync(groupId);
+
+            if (group.ApplicationUserId != user.Id)
+            {
+                response.ErrorMessages.Add("The group selected is not associated to the current user.");
+                return response;
+            }
+
+            var subreddit = await _subredditDataService.GetSubredditByName(subredditName);
+
+            if (subreddit == null)
+            {
+                subreddit = new Subreddit { Name = subredditName };
+            }
+
+            if (!group.GroupSubreddits.Any(g => g.SubredditId == subreddit.Id))
+            {
+                group.GroupSubreddits.Add(new GroupSubreddit
+                {
+                    GroupId = group.Id,
+                    Subreddit = subreddit
+                });
+            }
+            else
+            {
+                group.GroupSubreddits.RemoveAll(g => g.SubredditId == subreddit.Id);
+            }
+
+            _subredditDataService.SetToPersist(group);
+
+            await _subredditDataService.SaveAsync();
+
+            return response;
         }
 
     }
