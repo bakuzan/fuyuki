@@ -241,4 +241,13 @@ input {
   .radio__input:checked::after {
     color: var(--accent-colour);
   }
+
+  .accordion__heading {
+    border-color: var(--primary-colour);
+  }
+
+  .tickbox input::before,
+  .accordion__toggle {
+    color: var(--base-colour);
+  }
 }

@@ -5,11 +5,9 @@ function addEvent(event: string, cb: EventListenerOrEventListenerObject) {
   return () => window.removeEventListener(event, cb);
 }
 
-export function useDimensions<T extends HTMLElement>(): [
-  (node: T) => void,
-  DOMRect | null,
-  T | null
-] {
+export function useDimensions<T extends HTMLElement>(
+  key?: string
+): [(node: T) => void, DOMRect | null, T | null] {
   const timer = useRef<number>(0);
   const [node, setNode] = useState<T | null>(null);
   const [dimensions, setDimensions] = useState<DOMRect | null>(null);
@@ -60,7 +58,7 @@ export function useDimensions<T extends HTMLElement>(): [
         ob.disconnect();
       };
     }
-  }, [node]);
+  }, [node, key]);
 
   return [ref, dimensions, node];
 }

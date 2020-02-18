@@ -12,3 +12,19 @@
   width: calc(100% - #{$search-widget--required-margin} - 5px);
   margin-right: $search-widget--required-margin;
 }
+
+.memberships {
+  &__heading .accordion__toggle {
+    font-size: 0.8rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+  }
+
+  &__tickbox:not(:checked):disabled::before {
+    content: '☐︎';
+  }
+}

@@ -1,9 +1,11 @@
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import { useDimensions } from '../../hooks/useDimensions';
 
 import './Peekaboo.scss';
+
+export const PeekabooContext = React.createContext('');
 
 interface PeekabooProps {
   className?: string;
@@ -16,7 +18,9 @@ function Peekaboo(props: PeekabooProps) {
   const timer = useRef<number>();
   const prevPosition = useRef<number>(0);
   const [fixed, setFixed] = useState(false);
-  const [dimRef, dimensions] = useDimensions<HTMLDivElement>();
+
+  const refreshKey = useContext(PeekabooContext);
+  const [dimRef, dimensions] = useDimensions<HTMLDivElement>(refreshKey);
 
   useEffect(() => {
     function handleHide() {

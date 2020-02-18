@@ -19,6 +19,8 @@ namespace Fuyuki.Mapping
 
             CreateMap<GroupRequest, Group>()
                 .ForMember(x => x.Name, opts => opts.MapFrom(x => x.Name.Trim()));
+
+            CreateMap<GroupDto, GroupMembershipModel>();
         }
     }
 }
