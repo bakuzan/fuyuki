@@ -247,7 +247,9 @@ input {
     color: var(--base-colour);
   }
 
-  .tickbox input:checked::before,
+  .tickbox input:checked::before {
+    color: var(--primary-colour);
+  }
   .radio__input:checked::after {
     color: var(--accent-colour);
   }
