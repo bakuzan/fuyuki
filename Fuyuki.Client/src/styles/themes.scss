@@ -238,10 +238,6 @@ input {
     font-size: 2.8rem;
   }
 
-  .radio__input:checked::after {
-    color: var(--accent-colour);
-  }
-
   .accordion__heading {
     border-color: var(--primary-colour);
   }
@@ -249,5 +245,10 @@ input {
   .tickbox input::before,
   .accordion__toggle {
     color: var(--base-colour);
+  }
+
+  .tickbox input:checked::before,
+  .radio__input:checked::after {
+    color: var(--accent-colour);
   }
 }

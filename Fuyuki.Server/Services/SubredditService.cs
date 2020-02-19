@@ -36,6 +36,7 @@ namespace Fuyuki.Services
         {
             var user = await _userService.GetCurrentUser(claim);
 
+            var subredditNameLower = subredditName.ToLower();
             var items = await _subredditDataService.GetGroupsSubredditDtos(user.Id);
             var mapped = _mapper.Map<List<GroupMembershipModel>>(items);
 
@@ -43,7 +44,7 @@ namespace Fuyuki.Services
             {
                 item.IsMember = items.First(x => x.Id == item.Id)
                                      .SubredditNames
-                                     .Any(name => name == subredditName);
+                                     .Any(name => name == subredditNameLower);
             }
 
             return mapped;
@@ -64,11 +65,12 @@ namespace Fuyuki.Services
                 return response;
             }
 
-            var subreddit = await _subredditDataService.GetSubredditByName(subredditName);
+            var subredditNameLower = subredditName.ToLower();
+            var subreddit = await _subredditDataService.GetSubredditByName(subredditNameLower);
 
             if (subreddit == null)
             {
-                subreddit = new Subreddit { Name = subredditName };
+                subreddit = new Subreddit { Name = subredditNameLower };
             }
 
             if (!group.GroupSubreddits.Any(g => g.SubredditId == subreddit.Id))
