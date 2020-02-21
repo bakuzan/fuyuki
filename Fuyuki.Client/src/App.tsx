@@ -13,7 +13,7 @@ import ApiAuthorisationRoutes from './components/ApiAuthorisation/ApiAuthorisati
 import AuthoriseRoute from './components/ApiAuthorisation/AuthoriseRoute';
 
 import CommentsPage from './pages/Comments';
-import GroupManagementCreateUpdate from './pages/GroupManagement/CreateUpdate';
+import GroupManagement from './pages/GroupManagement';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import GroupPosts from './pages/Posts/GroupPosts';
@@ -34,7 +34,8 @@ function App() {
     isDarkTheme as boolean,
     setTheme as (newValue: boolean) => void
   ];
-  const showAltTheme = themeState[0];
+
+  const showAltTheme = themeState[0] ?? false;
 
   return (
     <div
@@ -74,7 +75,7 @@ function App() {
 
             <AuthoriseRoute
               path="/group/:id(\d*)?"
-              component={GroupManagementCreateUpdate}
+              component={GroupManagement}
             />
 
             <Route

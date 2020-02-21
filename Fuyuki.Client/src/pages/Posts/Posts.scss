@@ -28,3 +28,42 @@
     content: '☐︎';
   }
 }
+
+// Overrides!!
+
+.group-management-widget {
+  .autocomplete__menu.autocomplete__menu {
+    background-color: var(--primary-colour);
+    color: var(--primary-contrast);
+  }
+
+  .autocomplete-suggestion--active.autocomplete-suggestion--active {
+    border-color: var(--accent-colour);
+  }
+
+  .autocomplete-suggestion__button.autocomplete-suggestion__button,
+  .clearable-input__clear.clearable-input__clear,
+  .cancel-group-button.cancel-group-button {
+    background-color: var(--primary-colour);
+    color: var(--primary-contrast);
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: var(--primary-colour-hover);
+      color: var(--primary-contrast-hover);
+    }
+  }
+
+  .save-group-button.save-group-button {
+    background-color: var(--accent-colour);
+    color: var(--accent-contrast);
+
+    &:active,
+    &:focus,
+    &:hover {
+      background-color: var(--accent-colour-hover);
+      color: var(--accent-contrast-hover);
+    }
+  }
+}

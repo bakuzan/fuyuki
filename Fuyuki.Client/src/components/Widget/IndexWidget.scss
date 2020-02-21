@@ -53,6 +53,16 @@
     margin: 0.9rem 0;
     text-align: center;
   }
+
+  // Overrides
+  .has-float-label input:focus,
+  .has-float-label select:focus {
+    border-color: var(--primary-contrast) !important;
+  }
+
+  .loading-bouncer__orb {
+    background-color: var(--accent-colour) !important;
+  }
 }
 
 .widget-toggle-zone {

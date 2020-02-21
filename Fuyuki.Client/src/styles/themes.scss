@@ -170,7 +170,8 @@ input {
     }
   }
 
-  .button:not(.button--primary):not(.button--accent):not(.delete-button) {
+  .button--standard,
+  .button--icon {
     background-color: var(--base-background);
     color: var(--base-contrast);
 

@@ -5,10 +5,14 @@ import slugify from 'ayaka/slugify';
 import Accordion from 'meiko/Accordion';
 import Icons from 'meiko/constants/icons';
 import List from 'meiko/List';
+import NewTabLink from 'meiko/NewTabLink';
 import Tickbox from 'meiko/Tickbox';
 
 import FYKLink from 'src/components/FYKLink';
 import { PeekabooContext } from 'src/components/Peekaboo';
+import SearchWidget, {
+  SearchWidgetToggleZone
+} from 'src/components/Widget/SearchWidget';
 import BasePosts from './BasePosts';
 
 import { useAsync } from 'src/hooks/useAsync';
@@ -114,14 +118,44 @@ export default function GroupPosts(props: PageProps) {
     dispatch({ type: 'ToggleLoading' });
   }
 
-  console.log('RENDER', memberships, refreshKey);
   return (
     <PeekabooContext.Provider value={refreshKey}>
       <BasePosts
         {...props}
         pageTitle={pageTitle}
         queryUrl={queryUrl}
-        subredditName={subName}
+        header={
+          <React.Fragment>
+            <SearchWidgetToggleZone />
+            {subName && (
+              <NewTabLink
+                className="regular-link"
+                href={`https://www.reddit.com/r/${subName}`}
+                aria-label={`View r/${subName} on reddit`}
+              >
+                <span aria-hidden={true}>View r/{subName} on reddit</span>
+              </NewTabLink>
+            )}
+          </React.Fragment>
+        }
+        renderWidget={(wProps) => (
+          <SearchWidget
+            endpoint={`/Reddit/Post/search/${subName}`}
+            isSortable
+            itemName="post"
+            renderContent={({ data }) => (
+              <FYKLink
+                id={`search-${data.id}`}
+                className="search-widget__content"
+                noShadow
+                to={`/post/${data.fullname}/comments`}
+              >
+                {data.name}
+              </FYKLink>
+            )}
+            {...wProps}
+          />
+        )}
       >
         {hasMemberships && (
           <Accordion

@@ -78,13 +78,24 @@ namespace Fuyuki.Services
                 group.GroupSubreddits = new List<GroupSubreddit>();
             }
 
-            var subreddits = request.Subreddits.Where(x => !string.IsNullOrEmpty(x.Name));
+            var requestSubreddits = _mapper.Map<List<Subreddit>>(request.Subreddits);
+            var requestNames = requestSubreddits.Select(x => x.Name);
+
+            var existingSubreddits = await _groupDataService
+                .GetListAsync<Subreddit>(x => requestNames.Any(r => r == x.Name));
+
+            var newSubreddits = requestSubreddits.Where(x =>
+                !existingSubreddits.Any(e => e.Name == x.Name)
+                && !string.IsNullOrEmpty(x.Name));
+
+            var subreddits = existingSubreddits.Concat(newSubreddits);
+
             foreach (var sub in subreddits)
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
                 {
                     Group = group,
-                    Subreddit = _mapper.Map<Subreddit>(sub)
+                    Subreddit = sub
                 });
             }
 
@@ -124,15 +135,23 @@ namespace Fuyuki.Services
             }
 
             var requestSubreddits = _mapper.Map<List<Subreddit>>(request.Subreddits);
+            var requestNames = requestSubreddits.Select(x => x.Name);
 
             group.GroupSubreddits.RemoveAll(g =>
-                !requestSubreddits.Any(r => g.SubredditId == r.Id && g.Subreddit.Name == r.Name));
+                !requestSubreddits.Any(r => g.Subreddit.Name == r.Name));
+
+            var existingSubreddits = await _groupDataService
+                .GetListAsync<Subreddit>(x => requestNames.Any(r => r == x.Name));
 
             var newSubreddits = requestSubreddits.Where(x =>
-                !group.GroupSubreddits.Any(g => g.SubredditId == x.Id && g.Subreddit.Name == x.Name));
+                !existingSubreddits.Any(e => e.Name == x.Name)
+                && !string.IsNullOrEmpty(x.Name));
 
-            var subreddits = newSubreddits.Where(x => !string.IsNullOrEmpty(x.Name));
-            foreach (var sub in newSubreddits)
+            var subreddits = existingSubreddits
+                .Concat(newSubreddits)
+                .Where(x => !group.GroupSubreddits.Any(g => g.Subreddit.Name == x.Name));
+
+            foreach (var sub in subreddits)
             {
                 group.GroupSubreddits.Add(new GroupSubreddit
                 {
@@ -168,5 +187,14 @@ namespace Fuyuki.Services
 
             return new GroupResponse();
         }
+
+        #region Private methods
+
+        private void UpdateGroupSubreddits()
+        {
+
+        }
+
+        #endregion
     }
 }
