@@ -4,6 +4,6 @@
   flex: 1;
 
   &--margin {
-    margin-right: #{$search-widget--width + $search-widget--padding + 10px};
+    margin-right: #{$widget--width + $widget--padding + 10px};
   }
 }

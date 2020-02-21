@@ -4,13 +4,13 @@
   flex: 1;
 
   &--margin {
-    margin-right: $search-widget--required-margin;
+    margin-right: $widget--required-margin;
   }
 }
 
 .peekaboo--fixed.peekaboo--margin {
-  width: calc(100% - #{$search-widget--required-margin} - 5px);
-  margin-right: $search-widget--required-margin;
+  width: calc(100% - #{$widget--required-margin} - 5px);
+  margin-right: $widget--required-margin;
 }
 
 .memberships {

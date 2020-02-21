@@ -10,7 +10,7 @@ import Peekaboo from 'src/components/Peekaboo';
 import Posts from 'src/components/Posts';
 import SearchWidget, {
   SearchWidgetToggleZone
-} from 'src/components/SearchWidget';
+} from 'src/components/Widget/SearchWidget';
 
 import { PageProps } from 'src/interfaces/PageProps';
 import { isXS } from 'src/utils/media';

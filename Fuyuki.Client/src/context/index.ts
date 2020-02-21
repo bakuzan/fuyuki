@@ -13,6 +13,6 @@ export const ThemeContext = createContext<ThemeContextProps>([
   () => null
 ]);
 
-export const WithSearchContext = createContext<
+export const WidgetContext = createContext<
   React.Dispatch<React.SetStateAction<boolean>>
 >(() => null);

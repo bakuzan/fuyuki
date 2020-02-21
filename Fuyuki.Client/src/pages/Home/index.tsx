@@ -9,7 +9,7 @@ import FYKLink from 'src/components/FYKLink';
 import Groups from 'src/components/Groups';
 import SearchWidget, {
   SearchWidgetToggleZone
-} from 'src/components/SearchWidget';
+} from 'src/components/Widget/SearchWidget';
 import { PageProps } from 'src/interfaces/PageProps';
 import { isXS } from 'src/utils/media';
 

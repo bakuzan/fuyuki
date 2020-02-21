@@ -20,7 +20,7 @@ import GroupPosts from './pages/Posts/GroupPosts';
 import SubPosts from './pages/Posts/SubPosts';
 
 import { useStorage } from 'src/hooks/useStorage';
-import { ThemeContext, WithSearchContext } from './context';
+import { ThemeContext, WidgetContext } from './context';
 
 import './styles/index.scss';
 import './styles/themes.scss';
@@ -48,7 +48,7 @@ function App() {
         <HeaderBar fullShadow={!withSearch} />
       </ThemeContext.Provider>
       <Alert />
-      <WithSearchContext.Provider value={setWithSearch}>
+      <WidgetContext.Provider value={setWithSearch}>
         <main>
           <Switch>
             <AuthoriseRoute exact path="/" component={Home} />
@@ -85,7 +85,7 @@ function App() {
             <Route path="*" component={NotFound} />
           </Switch>
         </main>
-      </WithSearchContext.Provider>
+      </WidgetContext.Provider>
       <ScrollTopButton />
     </div>
   );

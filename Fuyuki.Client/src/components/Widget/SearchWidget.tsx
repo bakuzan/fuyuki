@@ -1,23 +1,17 @@
-import classNames from 'classnames';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import generateUniqueId from 'ayaka/generateUniqueId';
-import { Button } from 'meiko/Button';
 import ClearableInput from 'meiko/ClearableInput';
 import List from 'meiko/List';
 import LoadingBouncer from 'meiko/LoadingBouncer';
-import Portal from 'meiko/Portal';
 import RadioButton, { RadioButtonProps } from 'meiko/RadioButton';
-import TabTrap from 'meiko/TabTrap';
 
 import { EventCodes } from 'meiko/constants/enums';
-import MkoIcons from 'meiko/constants/icons';
 import { useDebounce } from 'meiko/hooks/useDebounce';
-import { useOutsideClick } from 'meiko/hooks/useOutsideClick';
+import { useFocusShortcut } from 'meiko/hooks/useFocusShortcut';
 import { usePrevious } from 'meiko/hooks/usePrevious';
 
 import RequestMessage from 'src/components/RequestMessage';
-import { WithSearchContext } from 'src/context';
+import Widget, { WidgetProps, WidgetToggleZone } from 'src/components/Widget';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { ApiResponse, FykResponse } from 'src/interfaces/ApiResponse';
 import { SearchResult } from 'src/interfaces/SearchResult';
@@ -25,14 +19,12 @@ import sendRequest from 'src/utils/sendRequest';
 
 import './SearchWidget.scss';
 
-interface SearchWidgetProps {
+interface SearchWidgetProps
+  extends Pick<WidgetProps, 'isExpanded' | 'isLocked' | 'setExpanded'> {
   endpoint: string;
-  isExpanded: boolean;
-  isLocked?: boolean;
   isSortable?: boolean;
   itemName: string;
   renderContent: React.FunctionComponent<{ data: SearchResult }>;
-  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 enum SearchSort {
@@ -40,72 +32,30 @@ enum SearchSort {
   Relevance = 2
 }
 
-const EventCodeS = 'KeyS';
 const sortOptions: RadioButtonProps[] = [
   { id: 'newSort', label: 'New', value: SearchSort.New },
   { id: 'relevanceSort', label: 'Relevance', value: SearchSort.Relevance }
 ];
 
-const exceptionClasses = [
-  'search-widget-toggle',
-  'search-widget__search-clear'
-];
+const TOGGLE_ZONE_ID = 'search-toggle';
 
 export const SearchWidgetToggleZone = () => (
-  <div id="search-toggle" className="search-widget-toggle-zone"></div>
+  <WidgetToggleZone id={TOGGLE_ZONE_ID} />
 );
 
 function SearchWidget(props: SearchWidgetProps) {
   const {
     endpoint,
-    isExpanded,
-    isLocked = false,
     isSortable = false,
     itemName,
     renderContent: ItemContent,
-    setExpanded
+    ...wProps
   } = props;
 
-  const setSearchWidget = useContext(WithSearchContext);
-  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLDivElement>;
-  const [widgetId] = useState(generateUniqueId());
   const [searchText, setSearchText] = useState('');
   const [sort, setSort] = useState(SearchSort.Relevance);
 
-  const isHidden = !isExpanded;
-  const toggleBtnId = `toggle-${widgetId}`;
-
-  useEffect(() => {
-    setSearchWidget(isLocked ? true : isExpanded);
-    return () => setSearchWidget((p) => (isLocked ? false : p));
-  }, [isExpanded, isLocked]);
-
-  useEffect(() => {
-    function listenShortcut(event: KeyboardEvent) {
-      if (event.code === EventCodeS) {
-        const el = document.getElementById('searchWidgetInput');
-
-        if (el) {
-          requestAnimationFrame(() => el.focus());
-        }
-      }
-    }
-
-    window.addEventListener('keypress', listenShortcut);
-    return () => window.removeEventListener('keypress', listenShortcut);
-  }, []);
-
-  useOutsideClick(ref.current, (e) => {
-    const t = e.target;
-    const isEscape = e.code === EventCodes.Escape;
-    const noTarget = !t;
-    const isNotException =
-      t && !exceptionClasses.some((s) => t.className.includes(s));
-
-    if (noTarget || isEscape || isNotException) {
-      setExpanded(false);
-    }
-  });
+  const focusRef = useFocusShortcut(EventCodes.KeyS);
 
   const debouncedSearchTerm = useDebounce(searchText, 750);
   const prevSearchTerm = usePrevious(debouncedSearchTerm);
@@ -161,52 +111,19 @@ function SearchWidget(props: SearchWidgetProps) {
     : 'searchWidgetInput';
 
   return (
-    <TabTrap
-      ref={ref}
-      isActive={isExpanded && !isLocked}
-      element="section"
-      firstId="closeButton"
+    <Widget
+      className="search-widget"
+      name="search"
+      title={`Search for ${itemName}s`}
+      firstId="searchWidgetInput"
       lastId={lastId}
-      onDeactivate={() => {
-        // TODO, make mko Button forwardRef
-        const target = document.getElementById(toggleBtnId);
-        if (target) {
-          target.focus();
-        }
-      }}
-      aria-hidden={isHidden}
-      className={classNames('search-widget', {
-        'search-widget--hidden': isHidden
-      })}
+      toggleZoneId={TOGGLE_ZONE_ID}
+      exceptionClasses={['search-widget__search-clear']}
+      {...wProps}
     >
-      {!isLocked && (
-        <Portal querySelector="#search-toggle">
-          <Button
-            id={toggleBtnId}
-            className="search-widget-toggle"
-            aria-label={`Toggle ${itemName} search widget`}
-            title={`Toggle ${itemName} search widget`}
-            icon={`\uD83D\uDD0D\uFE0E`}
-            onClick={() => setExpanded((p) => !p)}
-          />
-        </Portal>
-      )}
-      <header className="search-widget__header">
-        {!isLocked && (
-          <Button
-            id="closeButton"
-            className="search-widget__close"
-            btnStyle="primary"
-            aria-label={`Collapse ${itemName} search widget`}
-            title={`Collapse ${itemName} search widget`}
-            icon={MkoIcons.cross}
-            onClick={() => setExpanded(false)}
-          />
-        )}
-        <h3 className="search-widget__title">Search for {itemName}s</h3>
-      </header>
       <div>
         <ClearableInput
+          ref={focusRef}
           id="searchWidgetInput"
           label={`Search ${itemName}s`}
           aria-label={`Enter keywords to search for related ${itemName}s`}
@@ -251,7 +168,7 @@ function SearchWidget(props: SearchWidgetProps) {
           </List>
         )}
       </div>
-    </TabTrap>
+    </Widget>
   );
 }
 

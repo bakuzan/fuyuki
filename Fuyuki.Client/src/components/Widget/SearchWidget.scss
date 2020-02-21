@@ -1,0 +1,28 @@
+.search-widget {
+  &__sort-label {
+    font-size: 0.8rem;
+  }
+  &__sort-options {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  &__result {
+    margin: 5px 0;
+  }
+
+  // Overrides
+  .has-float-label input:focus,
+  .has-float-label select:focus {
+    border-color: var(--primary-contrast) !important;
+  }
+
+  .loading-bouncer__orb {
+    background-color: var(--accent-colour) !important;
+  }
+}
+
+// Overrides
+.search-widget__content {
+  --base-colour: var(--primary-contrast);
+}
