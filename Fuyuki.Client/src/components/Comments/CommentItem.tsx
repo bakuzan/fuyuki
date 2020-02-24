@@ -59,10 +59,19 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
 
   const isSeeMoreLink = !x.permalink;
   const isTopLevel = x.depth === 0;
+
+  console.log(moreState);
+
   if (isSeeMoreLink && isTopLevel) {
-    // TODO FIX
-    // This doesn't work...
-    // I don't know how to get more "top-level" comments.
+    if (replies) {
+      return (
+        <React.Fragment>
+          {replies.map((reply, j) => (
+            <CommentItem key={reply.id} index={j} data={reply} />
+          ))}
+        </React.Fragment>
+      );
+    }
 
     return (
       <li className="comments__item">
