@@ -10,8 +10,8 @@ import { Post } from 'src/interfaces/Post';
 import { ContentManager } from 'src/utils/content/manager';
 import { ContentMeta } from 'src/utils/content/types/ContentMeta';
 import { ContentType } from 'src/utils/content/types/ContentType';
+import htmlBodyReplacements from 'src/utils/htmlBodyReplacements';
 import { typeGuard } from './contentGuard';
-import postBodyReplacements from './postBodyReplacements';
 
 import './PostContent.scss';
 
@@ -44,7 +44,7 @@ function PostContent(props: PostContentProps) {
         <div className="post-content__text-body">
           <div
             dangerouslySetInnerHTML={{
-              __html: postBodyReplacements(x.textBody)
+              __html: htmlBodyReplacements(x.textBody)
             }}
           ></div>
         </div>

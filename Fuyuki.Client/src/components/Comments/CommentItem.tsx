@@ -1,27 +1,28 @@
 import classNames from 'classnames';
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
+import formatDateTimeForDisplay from 'ayaka/formatDateTimeForDisplay';
 import { Button } from 'meiko/Button';
-import NewTabLink from 'meiko/NewTabLink';
 import List from 'meiko/List';
 import LoadingBouncer from 'meiko/LoadingBouncer';
+import NewTabLink from 'meiko/NewTabLink';
 
 import AwardsBlock from '../AwardsBlock';
-import Flair from '../FlairBlock';
 import { SeeMoreButton } from '../Buttons';
+import Flair from '../FlairBlock';
 
 import { PostContext } from 'src/context';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { Comment } from 'src/interfaces/Comment';
+import formatDateTimeAgo from 'src/utils/formatDateTimeAgo';
+import htmlBodyReplacements from 'src/utils/htmlBodyReplacements';
 import sendRequest from 'src/utils/sendRequest';
 import thousandFormat from 'src/utils/thousandFormat';
-import formatDateTimeForDisplay from 'ayaka/formatDateTimeForDisplay';
-import formatDateTimeAgo from 'src/utils/formatDateTimeAgo';
 
 import './CommentItem.scss';
 
 const BAD_DATE = '0001-01-01T00:00:00';
-const stickyMessage = "selected by this subreddit's moderators";
+const stickyMessage = `selected by this subreddit's moderators`;
 
 interface CommentItemProps {
   index: number;
@@ -35,8 +36,8 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
   const [moreState, fetchMore] = useAsyncFn<Comment[], any>(
     async (commentIds: string[]) =>
       await sendRequest(`reddit/morecomments`, {
-        method: 'POST',
-        body: JSON.stringify({ postId, commentIds })
+        body: JSON.stringify({ postId, commentIds }),
+        method: 'POST'
       }),
     [postId]
   );
@@ -150,7 +151,7 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
                 <div
                   dangerouslySetInnerHTML={{
                     __html: !x.removed
-                      ? x.bodyHTML
+                      ? htmlBodyReplacements(x.bodyHTML)
                       : '<p>[Removed for some reason]</p>'
                   }}
                 ></div>

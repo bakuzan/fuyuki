@@ -1,4 +1,4 @@
-export default function postBodyReplacements(html: string) {
+export default function htmlBodyReplacements(html: string) {
   if (!html) {
     return html;
   }

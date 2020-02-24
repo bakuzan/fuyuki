@@ -22,6 +22,7 @@ export default function GroupPosts(props: PageProps) {
   const { groupId = '' } = props.match.params as PostsPageParams;
 
   const [resetKey, setResetKey] = useState('');
+  const [reQuery, setReQuery] = useState('');
   const [{ value }, fetchGroup] = useAsyncFn<GroupWithSubreddits>(
     async () => await sendRequest(`group/${groupId}`),
     [groupId]
@@ -33,7 +34,7 @@ export default function GroupPosts(props: PageProps) {
 
   const groupName = value?.name ?? '';
   const pageTitle = groupName ? `${groupName} Posts` : 'All Posts';
-  const queryUrl = `/group/${groupId}`;
+  const queryUrl = `/group/${groupId}${reQuery ? `?fyk=${reQuery}` : ''}`;
 
   return (
     <BasePosts
@@ -62,19 +63,16 @@ export default function GroupPosts(props: PageProps) {
               key={resetKey}
               data={value}
               onSubmitSuccess={(payload) => {
-                fetchGroup();
-
                 const noSubredditChanges =
                   payload.subreddits.length === value.subreddits.length &&
                   payload.subreddits.every((x) =>
                     value.subreddits.some((y) => y.name === x.name)
                   );
 
+                fetchGroup();
+
                 if (!noSubredditChanges) {
-                  console.log(
-                    '%c Has subreddit changes...requery the posts not implemented yet!',
-                    'color: magenta; font-size: 16px;'
-                  );
+                  setReQuery(generateUniqueId());
                 }
               }}
               onCancel={() => setResetKey(generateUniqueId())}

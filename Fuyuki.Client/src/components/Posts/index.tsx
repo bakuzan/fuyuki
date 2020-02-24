@@ -28,9 +28,13 @@ function Posts(props: PostsProps) {
 
   useEffect(() => {
     if (prevEndpoint && endpoint && endpoint !== prevEndpoint) {
-      setPostsAfter('');
+      if (postsAfter) {
+        setPostsAfter('');
+      } else {
+        fetchPage(postsAfter);
+      }
     }
-  }, [endpoint, prevEndpoint]);
+  }, [endpoint, prevEndpoint, postsAfter]);
 
   useEffect(() => {
     fetchPage(postsAfter);
