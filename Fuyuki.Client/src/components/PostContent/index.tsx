@@ -8,10 +8,11 @@ import Video from './Video';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { Post } from 'src/interfaces/Post';
 import { ContentManager } from 'src/utils/content/manager';
-import { ContentMeta } from 'src/utils/content/types/ContentMeta';
-import { ContentType } from 'src/utils/content/types/ContentType';
+import {
+  ContentMeta,
+  isContentBase
+} from 'src/utils/content/types/ContentMeta';
 import htmlBodyReplacements from 'src/utils/htmlBodyReplacements';
-import { typeGuard } from './contentGuard';
 
 import './PostContent.scss';
 
@@ -40,7 +41,7 @@ function PostContent(props: PostContentProps) {
   return (
     <div className="post-content">
       {state.loading && <LoadingBouncer />}
-      {typeGuard(ContentType.isText, meta) && (
+      {isContentBase(meta) && (
         <div className="post-content__text-body">
           <div
             dangerouslySetInnerHTML={{

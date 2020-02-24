@@ -1,11 +1,13 @@
 import React from 'react';
 
+import {
+  isContentVideo,
+  VideoSource
+} from 'src/utils/content/types/ContentMeta';
 import { ContentProps } from './ContentProps';
-import { VideoSource } from 'src/utils/content/types/ContentMeta';
-import { ContentType } from 'src/utils/content/types/ContentType';
 
 function ContentVideo({ data }: ContentProps) {
-  if (data?.type !== ContentType.isVideo) {
+  if (!isContentVideo(data)) {
     return null;
   }
 

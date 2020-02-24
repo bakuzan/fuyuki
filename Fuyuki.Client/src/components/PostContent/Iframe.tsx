@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Button } from 'meiko/Button';
 import LoadingBouncer from 'meiko/LoadingBouncer';
 
-import { ContentProps } from './ContentProps';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
-import { ContentType } from 'src/utils/content/types/ContentType';
+import { isContentIframe } from 'src/utils/content/types/ContentMeta';
 import sendRequest from 'src/utils/sendRequest';
+import { ContentProps } from './ContentProps';
 
 interface IframeSizes {
   [key: string]: any;
@@ -26,22 +26,21 @@ function ContentIframe({ data }: ContentProps) {
   const [videoResponse, requestVreddit] = useAsyncFn<RequestVideoResponse, any>(
     async (url: string) =>
       await sendRequest('/Reddit/RequestVideo', {
-        method: 'POST',
-        body: JSON.stringify({ url })
+        body: JSON.stringify({ url }),
+        method: 'POST'
       })
   );
 
   useEffect(() => {
     function onMessage(event: MessageEvent) {
-      const { data } = event;
       if (event.origin === window.location.origin) {
         return;
       }
-
+      const eData = event.data;
       // Responsive third-party iframe (note: imgur albums trigger this, others may too who knows.)
       // This is a crude solution to an "impossible" problem.
-      if (data.includes('height') || data.includes('width')) {
-        setIframeSizes(JSON.parse(data));
+      if (eData.includes('height') || eData.includes('width')) {
+        setIframeSizes(JSON.parse(eData));
       }
     }
 
@@ -49,7 +48,7 @@ function ContentIframe({ data }: ContentProps) {
     return () => window.removeEventListener('message', onMessage);
   }, []);
 
-  if (data?.type !== ContentType.isIframe) {
+  if (!isContentIframe(data)) {
     return null;
   }
 

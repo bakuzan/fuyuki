@@ -2,11 +2,11 @@ import React from 'react';
 
 import Image from 'meiko/Image';
 
+import { isContentImage } from 'src/utils/content/types/ContentMeta';
 import { ContentProps } from './ContentProps';
-import { ContentType } from 'src/utils/content/types/ContentType';
 
 function ContentImage({ data }: ContentProps) {
-  if (data?.type !== ContentType.isImage) {
+  if (!isContentImage(data)) {
     return null;
   }
 
