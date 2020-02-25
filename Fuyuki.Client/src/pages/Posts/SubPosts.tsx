@@ -64,8 +64,8 @@ function reducer(state: GroupPostsState, action: GroupPostsAction) {
   }
 }
 
-export default function GroupPosts(props: PageProps) {
-  const { subName = '' } = props.match.params as PostsPageParams;
+export default function GroupPosts(props: PageProps<PostsPageParams>) {
+  const { subName = '' } = props.match.params;
 
   const [refreshKey, setRefreshkey] = useState('');
   const [{ loading, memberships }, dispatch] = useReducer(reducer, {

@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react';
 
 import DropdownMenu from 'meiko/DropdownMenu';
-import ThemeToggler from '../ThemeToggler';
-import authService from './AuthoriseService';
-import { ApplicationPaths } from './ApiAuthorisationConstants';
+import NewTabLink from 'meiko/NewTabLink';
 import { LinkAsButton, NewTabLinkAsButton } from '../Buttons';
+import FYKLink from '../FYKLink';
+import ThemeToggler from '../ThemeToggler';
+import { ApplicationPaths } from './ApiAuthorisationConstants';
+import authService from './AuthoriseService';
 
 import './LoginMenu.scss';
-import NewTabLink from 'meiko/NewTabLink';
 
 const TEN_MINUTES = 1000 * 60 * 10;
 
@@ -31,9 +32,9 @@ interface LogoutPath {
 }
 
 export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
-  private _subscription: number = 0;
-  private _mounted: boolean = true;
-  private _interval: number = 0;
+  private subscription: number = 0;
+  private mounted: boolean = true;
+  private interval: number = 0;
 
   constructor(props: LoginMenuProps) {
     super(props);
@@ -44,19 +45,19 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
     };
   }
 
-  componentDidMount() {
-    this._subscription = authService.subscribe(() => this.populateState());
+  public componentDidMount() {
+    this.subscription = authService.subscribe(() => this.populateState());
     this.populateState();
     this.pollingUserState(true);
   }
 
-  componentWillUnmount() {
-    this._mounted = false;
-    authService.unsubscribe(this._subscription);
+  public componentWillUnmount() {
+    this.mounted = false;
+    authService.unsubscribe(this.subscription);
     this.pollingUserState(false);
   }
 
-  async populateState() {
+  public async populateState() {
     let user = null;
     const isAuthenticated = await authService.isAuthenticated();
 
@@ -64,7 +65,7 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
       user = await authService.getUserObject();
     }
 
-    if (this._mounted) {
+    if (this.mounted) {
       this.setState({
         isAuthenticated: !!isAuthenticated,
         user
@@ -72,18 +73,18 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
     }
   }
 
-  pollingUserState(init: boolean) {
-    clearInterval(this._interval);
+  public pollingUserState(init: boolean) {
+    clearInterval(this.interval);
 
     if (init) {
-      this._interval = window.setInterval(
+      this.interval = window.setInterval(
         () => this.populateState(),
         TEN_MINUTES
       );
     }
   }
 
-  render() {
+  public render() {
     const { isAuthenticated, user } = this.state;
     let DropdownView: React.FunctionComponent;
 
@@ -105,17 +106,14 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
         <div className="account-mail">
           {(user?.hasMail || user?.hasNewModmail) && (
             <div className="account-mail__icon">
-              <NewTabLink
-                href={
-                  user.hasMail
-                    ? 'https://www.reddit.com/message/unread/'
-                    : user.hasNewModmail
-                    ? 'https://mod.reddit.com/mail/all'
-                    : '#'
-                }
-              >
-                {user.inboxCount || '!'}
-              </NewTabLink>
+              {user.hasMail && (
+                <FYKLink to={'/messages/unread'}>{user.inboxCount}</FYKLink>
+              )}
+              {!user.hasMail && user.hasNewModmail && (
+                <NewTabLink href={'https://mod.reddit.com/mail/all'}>
+                  !
+                </NewTabLink>
+              )}
             </div>
           )}
         </div>
@@ -133,7 +131,7 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
     );
   }
 
-  authenticatedView(user: RedditUser | null, logoutPath: LogoutPath) {
+  public authenticatedView(user: RedditUser | null, logoutPath: LogoutPath) {
     const clickableAccount = user && user.name;
     const userName = user?.name ?? 'Loading...';
 
@@ -144,13 +142,22 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
         </div>
         <div>
           {clickableAccount ? (
-            <NewTabLinkAsButton
-              className="account-action"
-              btnStyle="accent"
-              href={`https://www.reddit.com/user/${userName}/`}
-            >
-              {userName}
-            </NewTabLinkAsButton>
+            <React.Fragment>
+              <LinkAsButton
+                className="account-action"
+                btnStyle="accent"
+                to="/messages/inbox"
+              >
+                Messages
+              </LinkAsButton>
+              <NewTabLinkAsButton
+                className="account-action"
+                btnStyle="accent"
+                href={`https://www.reddit.com/user/${userName}/`}
+              >
+                {userName}
+              </NewTabLinkAsButton>
+            </React.Fragment>
           ) : (
             <div className="account-placeholder">{userName}</div>
           )}
@@ -168,7 +175,7 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
     );
   }
 
-  anonymousView(loginPath: string) {
+  public anonymousView(loginPath: string) {
     return (
       <Fragment>
         <div>

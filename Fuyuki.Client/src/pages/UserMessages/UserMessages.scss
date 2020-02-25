@@ -1,0 +1,60 @@
+.mailbox {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__links > * {
+    margin: 0 2px;
+  }
+}
+
+.mailbox-reddit-link {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mail {
+  padding: 5px 0;
+  margin: 5px 0;
+  border-top: 1px dashed var(--primary-colour);
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__time {
+    color: var(--faded-colour);
+    font-size: 0.9rem;
+  }
+
+  &__mark-button {
+    $size: 1.5rem;
+    flex: unset;
+    width: $size;
+    height: $size;
+
+    &::before {
+      margin-top: -3px;
+    }
+  }
+
+  &__origin {
+    color: var(--faded-colour);
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    &:focus,
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__footer {
+    margin: 5px 0;
+    border-top: 1px solid var(--primary-colour);
+  }
+}

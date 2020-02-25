@@ -175,6 +175,18 @@ namespace Fuyuki.Services
             return _mapper.Map<List<RedditSearchResult>>(posts);
         }
 
+        public async Task<List<UserMessage>> GetUserMessages(ClaimsPrincipal claim, string where)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            var input = new Reddit.Inputs.PrivateMessages.PrivateMessagesGetMessagesInput();
+            var container = reddit.Models.PrivateMessages.GetMessages(where, input);
+
+            var messages = container.Data.Children.Select(x => x.Data);
+
+            return _mapper.Map<List<UserMessage>>(messages);
+        }
 
         private string TranslateSortEnum(RedditSort sort)
         {

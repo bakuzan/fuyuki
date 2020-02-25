@@ -18,6 +18,7 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import GroupPosts from './pages/Posts/GroupPosts';
 import SubPosts from './pages/Posts/SubPosts';
+import UserMessages from './pages/UserMessages';
 
 import { useStorage } from 'src/hooks/useStorage';
 import { ThemeContext, WidgetContext } from './context';
@@ -76,6 +77,11 @@ function App() {
             <AuthoriseRoute
               path="/group/:id(\d*)?"
               component={GroupManagement}
+            />
+
+            <AuthoriseRoute
+              path="/messages/:mailbox"
+              component={UserMessages}
             />
 
             <Route

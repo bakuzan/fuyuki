@@ -18,8 +18,8 @@ interface PostsPageParams {
 
 const widgetToggleZoneId = 'group-management-widget';
 
-export default function GroupPosts(props: PageProps) {
-  const { groupId = '' } = props.match.params as PostsPageParams;
+export default function GroupPosts(props: PageProps<PostsPageParams>) {
+  const { groupId = '' } = props.match.params;
 
   const [resetKey, setResetKey] = useState('');
   const [reQuery, setReQuery] = useState('');

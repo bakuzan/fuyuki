@@ -99,5 +99,12 @@ namespace Fuyuki.Controllers
             return await _redditService.SearchPosts(User, subredditName, searchText, sort);
         }
 
+        [HttpGet]
+        [Route("UserMessages/{where}")]
+        public async Task<List<UserMessage>> GetUserMessages(string where)
+        {
+            return await _redditService.GetUserMessages(User, where);
+        }
+
     }
 }

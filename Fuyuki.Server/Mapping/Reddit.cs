@@ -37,6 +37,9 @@ namespace Fuyuki.Mapping
             CreateMap<Reddit.Controllers.Subreddit, RedditSearchResult>();
             CreateMap<Reddit.Controllers.Post, RedditSearchResult>()
                 .ForMember(x => x.Name, opts => opts.MapFrom(x => x.Title));
+
+            CreateMap<Reddit.Things.Message, UserMessage>()
+                .ForMember(x => x.Created, opts => opts.MapFrom(x => x.CreatedUTC));
         }
     }
 }

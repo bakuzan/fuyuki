@@ -19,8 +19,8 @@ const defaultGroup: GroupWithSubreddits = {
   subreddits: []
 };
 
-function GroupManagementPage(props: PageProps) {
-  const { id = 0 } = props.match.params as GroupManagementPageParams;
+function GroupManagementPage(props: PageProps<GroupManagementPageParams>) {
+  const { id = 0 } = props.match.params;
 
   const [state, setState] = useState<GroupWithSubreddits | null>(null);
   const { loading, value } = useAsync<GroupWithSubreddits>(

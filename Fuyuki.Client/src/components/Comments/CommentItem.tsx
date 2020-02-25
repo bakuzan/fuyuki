@@ -60,8 +60,6 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
   const isSeeMoreLink = !x.permalink;
   const isTopLevel = x.depth === 0;
 
-  console.log(moreState);
-
   if (isSeeMoreLink && isTopLevel) {
     if (replies) {
       return (

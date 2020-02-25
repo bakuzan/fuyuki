@@ -20,8 +20,8 @@ interface CommentsPageParams {
   postId?: string;
 }
 
-function CommentsPage(props: PageProps) {
-  const { postId } = props.match.params as CommentsPageParams;
+function CommentsPage(props: PageProps<CommentsPageParams>) {
+  const { postId } = props.match.params;
   const { value } = useAsync<Post>(
     async () =>
       postId ? await sendRequest(`/reddit/post/${postId}`) : Promise.resolve(),
