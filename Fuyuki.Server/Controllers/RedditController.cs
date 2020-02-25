@@ -106,5 +106,11 @@ namespace Fuyuki.Controllers
             return await _redditService.GetUserMessages(User, where);
         }
 
+        [HttpPost]
+        [Route("UserMessages/MarkAsRead")]
+        public async Task<MarkAsReadResponse> MarkUserMessageAsRead(MarkAsReadRequest request)
+        {
+            return await _redditService.MarkUserMessageAsRead(User, request);
+        }
     }
 }

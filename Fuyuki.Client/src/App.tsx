@@ -1,8 +1,9 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router';
 
+import generateUniqueId from 'ayaka/generateUniqueId';
 import { useGlobalStyles } from 'meiko/hooks/useGlobalStyles';
 import ScrollTopButton from 'meiko/ScrollTopButton';
 import Alert from './components/Alert';
@@ -21,22 +22,21 @@ import SubPosts from './pages/Posts/SubPosts';
 import UserMessages from './pages/UserMessages';
 
 import { useStorage } from 'src/hooks/useStorage';
-import { ThemeContext, WidgetContext } from './context';
+import { HeaderContext, MainContext } from './context';
 
 import './styles/index.scss';
 import './styles/themes.scss';
 
+const ONE_SECOND = 1000;
+
 function App() {
+  const timer = useRef(0);
+  const [messageKey, setMessageKey] = useState('');
   const [withSearch, setWithSearch] = useState(false);
   const [isDarkTheme, setTheme] = useStorage('isDarkTheme');
   useGlobalStyles();
 
-  const themeState: [boolean, (newValue: boolean) => void] = [
-    isDarkTheme as boolean,
-    setTheme as (newValue: boolean) => void
-  ];
-
-  const showAltTheme = themeState[0] ?? false;
+  const showAltTheme = isDarkTheme === true;
 
   return (
     <div
@@ -46,11 +46,29 @@ function App() {
       })}
     >
       <Helmet defaultTitle="Fuyuki" titleTemplate="%s | Fuyuki" />
-      <ThemeContext.Provider value={themeState}>
+      <HeaderContext.Provider
+        value={{
+          isDarkTheme: isDarkTheme as boolean,
+          messageKey,
+          onThemeToggle: setTheme as (newValue: boolean) => void
+        }}
+      >
         <HeaderBar fullShadow={!withSearch} />
-      </ThemeContext.Provider>
+      </HeaderContext.Provider>
       <Alert />
-      <WidgetContext.Provider value={setWithSearch}>
+      <MainContext.Provider
+        value={{
+          onMessageRefresh: () => {
+            clearTimeout(timer.current);
+
+            timer.current = window.setTimeout(
+              () => setMessageKey(generateUniqueId()),
+              ONE_SECOND * 30
+            );
+          },
+          onSetSearch: setWithSearch
+        }}
+      >
         <main>
           <Switch>
             <AuthoriseRoute exact path="/" component={Home} />
@@ -92,7 +110,7 @@ function App() {
             <Route path="*" component={NotFound} />
           </Switch>
         </main>
-      </WidgetContext.Provider>
+      </MainContext.Provider>
       <ScrollTopButton />
     </div>
   );

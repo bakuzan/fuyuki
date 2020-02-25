@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import { Button } from 'meiko/Button';
 import LoadingBouncer from 'meiko/LoadingBouncer';
 
+import { MainContext } from 'src/context';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import { isContentIframe } from 'src/utils/content/types/ContentMeta';
 import sendRequest from 'src/utils/sendRequest';
@@ -20,6 +21,7 @@ interface RequestVideoResponse {
 }
 
 function ContentIframe({ data }: ContentProps) {
+  const { onMessageRefresh } = useContext(MainContext);
   const [iframeSizes, setIframeSizes] = useState<IframeSizes | undefined>();
   const iframeRef = useRef(null);
 
@@ -30,6 +32,13 @@ function ContentIframe({ data }: ContentProps) {
         method: 'POST'
       })
   );
+
+  const triggerRefresh = videoResponse.value?.success ?? false;
+  useEffect(() => {
+    if (triggerRefresh) {
+      onMessageRefresh();
+    }
+  }, [triggerRefresh]);
 
   useEffect(() => {
     function onMessage(event: MessageEvent) {

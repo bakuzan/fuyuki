@@ -9,7 +9,7 @@ import TabTrap from 'meiko/TabTrap';
 import { EventCodes } from 'meiko/constants/enums';
 import MkoIcons from 'meiko/constants/icons';
 import { useOutsideClick } from 'meiko/hooks/useOutsideClick';
-import { WidgetContext } from 'src/context';
+import { MainContext } from 'src/context';
 
 import './IndexWidget.scss';
 
@@ -47,7 +47,7 @@ function Widget(props: WidgetProps) {
     exceptionClasses = []
   } = props;
 
-  const setWidget = useContext(WidgetContext);
+  const { onSetSearch } = useContext(MainContext);
   const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
   const toggleRef = useRef() as React.MutableRefObject<HTMLButtonElement>;
   const [widgetId] = useState(generateUniqueId());
@@ -58,8 +58,8 @@ function Widget(props: WidgetProps) {
   const allExceptionClasses = ['widget-toggle', ...exceptionClasses];
 
   useEffect(() => {
-    setWidget(isLocked ? true : isExpanded);
-    return () => setWidget((p) => (isLocked ? false : p));
+    onSetSearch(isLocked ? true : isExpanded);
+    return () => onSetSearch((p) => (isLocked ? false : p));
   }, [isExpanded, isLocked]);
 
   useOutsideClick(ref.current, (e) => {

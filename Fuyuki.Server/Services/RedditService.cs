@@ -188,6 +188,18 @@ namespace Fuyuki.Services
             return _mapper.Map<List<UserMessage>>(messages);
         }
 
+        public async Task<MarkAsReadResponse> MarkUserMessageAsRead(ClaimsPrincipal claim, MarkAsReadRequest request)
+        {
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            await reddit.Models.PrivateMessages.ReadMessageAsync(request.MessageId);
+
+            return new MarkAsReadResponse();
+        }
+
+        #region Private methods
+
         private string TranslateSortEnum(RedditSort sort)
         {
             switch (sort)
@@ -199,5 +211,8 @@ namespace Fuyuki.Services
                     return Constants.RedditSort.Relevance;
             }
         }
+
+        #endregion
+
     }
 }

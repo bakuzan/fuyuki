@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Button } from 'meiko/Button';
 import Icons from 'meiko/constants/icons';
 import HeaderLink from './HeaderLink';
 
+import { HeaderContext } from 'src/context';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
 import authService from '../ApiAuthorisation/AuthoriseService';
 import { LoginMenu } from '../ApiAuthorisation/LoginMenu';
 
 function NavigationMenu() {
   const history = useHistory();
+  const { messageKey } = useContext(HeaderContext);
+
   const [state, refreshAuthState] = useAsyncFn(
     () => authService.isAuthenticated(),
     []
@@ -52,7 +55,7 @@ function NavigationMenu() {
         r/all
       </HeaderLink>
 
-      <LoginMenu />
+      <LoginMenu key={messageKey} />
     </React.Fragment>
   );
 }

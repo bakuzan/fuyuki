@@ -1,39 +1,59 @@
-import React, { useState } from 'react';
+import classNames from 'classnames';
+import React, { useContext, useState } from 'react';
 
 import formatDateTimeForDisplay from 'ayaka/formatDateTimeForDisplay';
 import NewTabLink from 'meiko/NewTabLink';
 
 import { Button } from 'meiko/Button';
+import { MainContext } from 'src/context';
 import { UserMessage } from 'src/interfaces/UserMessage';
 import htmlBodyReplacements from 'src/utils/htmlBodyReplacements';
+import sendRequest from 'src/utils/sendRequest';
+
+import './UserMessageItem.scss';
 
 interface UserMessageItemProps {
   data: UserMessage;
 }
 
 function UserMessageItem({ data }: UserMessageItemProps) {
+  const { onMessageRefresh } = useContext(MainContext);
   const [read, setRead] = useState(!data.new);
   const x = data;
-  const showFooter = !!x.context;
 
-  function onMarkRead() {
-    // TODO
-    // Make api call to set it as read...
+  const showFooter = !!x.context;
+  const markReadLabel = read ? 'Read' : 'Mark as read';
+
+  async function onMarkRead() {
     setRead(true);
+
+    const response = await sendRequest(`/reddit/usermessages/markasread`, {
+      body: JSON.stringify({ messageId: x.name }),
+      method: 'POST'
+    });
+
+    if (response.success) {
+      onMessageRefresh();
+    } else {
+      setRead(false);
+    }
   }
 
   return (
-    <li className="mail">
+    <li className={classNames('mail', { 'mail--unread': !read })}>
       <div className="mail__top">
         <time className="mail__time" dateTime={x.created} title={x.created}>
           {formatDateTimeForDisplay(x.created)}
         </time>
-        {!read && (
+        {data.new && (
           <Button
             className="mail__mark-button"
-            btnStyle="primary"
+            btnStyle={read ? undefined : 'primary'}
             btnSize="small"
+            aria-label={markReadLabel}
+            title={markReadLabel}
             icon={`\u2709\uFE0E`}
+            disabled={read}
             onClick={onMarkRead}
           />
         )}

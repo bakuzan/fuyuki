@@ -6,13 +6,24 @@ interface PostContextProps {
 
 export const PostContext = createContext<PostContextProps>({});
 
-type ThemeContextProps = [boolean, (newValue: boolean) => void];
+interface HeaderContextProps {
+  messageKey: string;
+  isDarkTheme: boolean;
+  onThemeToggle: (newValue: boolean) => void;
+}
 
-export const ThemeContext = createContext<ThemeContextProps>([
-  false,
-  () => null
-]);
+export const HeaderContext = createContext<HeaderContextProps>({
+  isDarkTheme: false,
+  messageKey: '',
+  onThemeToggle: () => null
+});
 
-export const WidgetContext = createContext<
-  React.Dispatch<React.SetStateAction<boolean>>
->(() => null);
+interface MainContextProps {
+  onMessageRefresh: React.Dispatch<React.SetStateAction<void>>;
+  onSetSearch: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const MainContext = createContext<MainContextProps>({
+  onMessageRefresh: () => null,
+  onSetSearch: () => null
+});
