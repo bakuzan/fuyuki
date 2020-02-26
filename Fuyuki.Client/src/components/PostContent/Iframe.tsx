@@ -36,7 +36,7 @@ function ContentIframe({ data }: ContentProps) {
   const triggerRefresh = videoResponse.value?.success ?? false;
   useEffect(() => {
     if (triggerRefresh) {
-      onMessageRefresh();
+      onMessageRefresh(60);
     }
   }, [triggerRefresh]);
 

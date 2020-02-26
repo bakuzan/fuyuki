@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router';
 
@@ -37,6 +37,17 @@ function App() {
   useGlobalStyles();
 
   const showAltTheme = isDarkTheme === true;
+  const onMessageRefresh = useCallback(
+    (secondsDelay = 0) => {
+      clearTimeout(timer.current);
+
+      timer.current = window.setTimeout(
+        () => setMessageKey(generateUniqueId()),
+        ONE_SECOND * secondsDelay
+      );
+    },
+    [timer.current]
+  );
 
   return (
     <div
@@ -58,14 +69,7 @@ function App() {
       <Alert />
       <MainContext.Provider
         value={{
-          onMessageRefresh: () => {
-            clearTimeout(timer.current);
-
-            timer.current = window.setTimeout(
-              () => setMessageKey(generateUniqueId()),
-              ONE_SECOND * 30
-            );
-          },
+          onMessageRefresh,
           onSetSearch: setWithSearch
         }}
       >

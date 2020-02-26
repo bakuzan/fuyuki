@@ -19,7 +19,7 @@ export const HeaderContext = createContext<HeaderContextProps>({
 });
 
 interface MainContextProps {
-  onMessageRefresh: React.Dispatch<React.SetStateAction<void>>;
+  onMessageRefresh: (secondsDelay?: number) => void;
   onSetSearch: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
