@@ -19,5 +19,6 @@ namespace Fuyuki.Services
         Task<List<RedditSearchResult>> SearchPosts(ClaimsPrincipal claim, string subredditName, string searchText, RedditSort sort);
         Task<List<UserMessage>> GetUserMessages(ClaimsPrincipal claim, string where);
         Task<MarkAsReadResponse> MarkUserMessageAsRead(ClaimsPrincipal claim, MarkAsReadRequest request);
+        Task<RequestReminderResponse> RequestReminder(ClaimsPrincipal claim, RequestReminderRequest request);
     }
 }

@@ -1,0 +1,14 @@
+.remind-me {
+  &__button {
+    height: 100%;
+    padding: 0 5px;
+    margin: 0;
+  }
+
+  &__row {
+    display: flex;
+    > * {
+      width: 50%;
+    }
+  }
+}

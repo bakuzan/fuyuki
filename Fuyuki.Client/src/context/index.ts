@@ -9,12 +9,14 @@ export const PostContext = createContext<PostContextProps>({});
 interface HeaderContextProps {
   messageKey: string;
   isDarkTheme: boolean;
+  onMessageRefresh: (secondsDelay?: number) => void;
   onThemeToggle: (newValue: boolean) => void;
 }
 
 export const HeaderContext = createContext<HeaderContextProps>({
   isDarkTheme: false,
   messageKey: '',
+  onMessageRefresh: () => null,
   onThemeToggle: () => null
 });
 

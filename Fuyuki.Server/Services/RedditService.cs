@@ -8,7 +8,7 @@ using Fuyuki.Data;
 using Fuyuki.Enums;
 using Fuyuki.Managers;
 using Fuyuki.ViewModels;
-
+using PluralizeService.Core;
 
 namespace Fuyuki.Services
 {
@@ -198,6 +198,49 @@ namespace Fuyuki.Services
             return new MarkAsReadResponse();
         }
 
+        public async Task<RequestReminderResponse> RequestReminder(ClaimsPrincipal claim, RequestReminderRequest request)
+        {
+            var response = new RequestReminderResponse();
+
+            var user = await _userService.GetCurrentUser(claim);
+            var reddit = await _redditManager.GetRedditInstance(user.RefreshToken, user.AccessToken);
+
+            if (string.IsNullOrEmpty(request.Message))
+            {
+                response.ErrorMessages.Add("Reminder message is required.");
+            }
+
+            if (request.Duration < 1)
+            {
+                response.ErrorMessages.Add("Reminder duration must be a number greater than 0.");
+            }
+
+            var remindWhen = BuildReminderTime(request.Duration, request.Period);
+            var reminderMessage = string.Join(" :: ",
+                new List<string> { request.Location, request.Message, remindWhen });
+
+            var message = new Reddit.Inputs.PrivateMessages.PrivateMessagesComposeInput(
+                subject: "Reminder",
+                text: reminderMessage,
+                to: "kzreminderbot"
+            );
+
+            if (!response.ErrorMessages.Any())
+            {
+                try
+                {
+                    await reddit.Models.PrivateMessages.ComposeAsync(message);
+                }
+                catch (Exception e)
+                {
+                    response.ErrorMessages.Add(e.Message);
+                }
+            }
+
+            return response;
+        }
+
+
         #region Private methods
 
         private string TranslateSortEnum(RedditSort sort)
@@ -210,6 +253,16 @@ namespace Fuyuki.Services
                 default:
                     return Constants.RedditSort.Relevance;
             }
+        }
+
+        private string BuildReminderTime(int duration, TimePeriod period)
+        {
+            var periodStr = period.ToString();
+            var word = duration > 1
+                ? PluralizationProvider.Pluralize(periodStr)
+                : PluralizationProvider.Singularize(periodStr);
+
+            return $"kminder {duration} {word}";
         }
 
         #endregion

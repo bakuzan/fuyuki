@@ -3,12 +3,14 @@ import { useHistory } from 'react-router-dom';
 
 import { Button } from 'meiko/Button';
 import Icons from 'meiko/constants/icons';
+
+import authService from 'src/components/ApiAuthorisation/AuthoriseService';
+import { LoginMenu } from 'src/components/ApiAuthorisation/LoginMenu';
+import RemindMe from 'src/components/RemindMe';
 import HeaderLink from './HeaderLink';
 
 import { HeaderContext } from 'src/context';
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
-import authService from '../ApiAuthorisation/AuthoriseService';
-import { LoginMenu } from '../ApiAuthorisation/LoginMenu';
 
 function NavigationMenu() {
   const history = useHistory();
@@ -55,6 +57,7 @@ function NavigationMenu() {
         r/all
       </HeaderLink>
 
+      <RemindMe />
       <LoginMenu key={messageKey} />
     </React.Fragment>
   );

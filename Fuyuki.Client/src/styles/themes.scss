@@ -32,6 +32,7 @@ $yellow: #f3e29d;
 
   --highlight: #{$red};
   --faded-colour: #999;
+  --danger-colour: #ff0000;
 
   --danger-colour: #{$red};
   --danger-colour-hover: #{darken($red, 10%)};
@@ -252,5 +253,9 @@ input {
   }
   .radio__input:checked::after {
     color: var(--accent-colour);
+  }
+
+  .error-block {
+    color: var(--danger-colour);
   }
 }

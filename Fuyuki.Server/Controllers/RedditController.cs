@@ -112,5 +112,12 @@ namespace Fuyuki.Controllers
         {
             return await _redditService.MarkUserMessageAsRead(User, request);
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<RequestReminderResponse> RequestReminder(RequestReminderRequest request)
+        {
+            return await _redditService.RequestReminder(User, request);
+        }
     }
 }

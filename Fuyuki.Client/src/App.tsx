@@ -61,6 +61,7 @@ function App() {
         value={{
           isDarkTheme: isDarkTheme as boolean,
           messageKey,
+          onMessageRefresh,
           onThemeToggle: setTheme as (newValue: boolean) => void
         }}
       >
