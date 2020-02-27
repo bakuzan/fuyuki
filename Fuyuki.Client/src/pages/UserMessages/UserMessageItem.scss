@@ -1,4 +1,6 @@
 .mail {
+  $self: &;
+
   padding: 5px;
   margin: 5px 0;
   border-top: 1px dashed var(--primary-colour);
@@ -18,7 +20,7 @@
     font-size: 0.9rem;
   }
 
-  &__mark-button {
+  &__mark-button#{$self}__mark-button {
     $size: 1.5rem;
     flex: unset;
     width: $size;
