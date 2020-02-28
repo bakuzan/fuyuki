@@ -37,6 +37,7 @@
   }
 
   &__thumbnail {
+    max-height: $post--thumbnail-width;
     max-width: $post--thumbnail-width;
     overflow: hidden;
   }

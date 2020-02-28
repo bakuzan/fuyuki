@@ -71,12 +71,15 @@ function PostItem(props: PostItemProps) {
             className="post__thumbnail"
             src={hasThumbnail ? x.thumbnail : fykIcon}
             alt={x.title}
-            height={70}
             width={70}
             isLazy={props.lazyThumbnail ?? true}
           />
           {x.nsfw && (
-            <div className="post__nsfw" aria-label="Not safe for work">
+            <div
+              className="post__nsfw"
+              aria-label="Not safe for work"
+              title="Not safe for work"
+            >
               <span aria-hidden={true}>NSFW</span>
             </div>
           )}

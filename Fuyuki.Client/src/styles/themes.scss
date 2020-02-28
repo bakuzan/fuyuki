@@ -6,6 +6,8 @@ $blue: #484e9d;
 $grey: #5b5562; //#736a7b;
 $pink: #fac6d5;
 $pink-dark: #fabdcc; //#f589a8;
+
+$black-blue: #383d69;
 $purple: #582251;
 $red: #eb516d;
 $white: #fff;
@@ -45,8 +47,8 @@ $yellow: #f3e29d;
 }
 
 .theme--alt {
-  --base-background: #{$purple};
-  --base-background-hover: #{lighten($purple, 10%)};
+  --base-background: #{$black-blue};
+  --base-background-hover: #{lighten($black-blue, 10%)};
 
   --base-colour: #{white};
   --base-colour-hover: #{darken(white, 10%)};
@@ -54,8 +56,8 @@ $yellow: #f3e29d;
   --primary-colour: #{$yellow};
   --primary-colour-hover: #{lighten($yellow, 10%)};
 
-  --primary-contrast: #{$purple};
-  --primary-contrast-hover: #{darken($purple, 10%)};
+  --primary-contrast: #{$black-blue};
+  --primary-contrast-hover: #{darken($black-blue, 10%)};
 
   --accent-colour: #{$pink-dark};
   --accent-colour-hover: #{lighten($pink-dark, 5%)};
@@ -69,8 +71,8 @@ $yellow: #f3e29d;
   --regular-link--colour: #f8c4f8;
 
   // fyk link
-  --anchor-shadow: #{$blue};
-  --anchor-shadow-hover: #{darken($blue, 10%)};
+  --anchor-shadow: var(--highlight);
+  --anchor-shadow-hover: #{darken($red, 15%)};
 }
 
 input {

@@ -137,12 +137,13 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
 
     return (
       <Fragment>
-        <div>
+        <li className="account-menu__option">
           <ThemeToggler />
-        </div>
-        <div>
-          {clickableAccount ? (
-            <React.Fragment>
+        </li>
+
+        {clickableAccount ? (
+          <React.Fragment>
+            <li className="account-menu__option">
               <LinkAsButton
                 className="account-action"
                 btnStyle="accent"
@@ -150,6 +151,8 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
               >
                 Messages
               </LinkAsButton>
+            </li>
+            <li className="account-menu__option">
               <NewTabLinkAsButton
                 className="account-action"
                 btnStyle="accent"
@@ -157,12 +160,15 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
               >
                 {userName}
               </NewTabLinkAsButton>
-            </React.Fragment>
-          ) : (
+            </li>
+          </React.Fragment>
+        ) : (
+          <li className="account-menu__option">
             <div className="account-placeholder">{userName}</div>
-          )}
-        </div>
-        <div>
+          </li>
+        )}
+
+        <li className="account-menu__option">
           <LinkAsButton
             className="account-action"
             btnStyle="accent"
@@ -170,7 +176,7 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
           >
             Logout
           </LinkAsButton>
-        </div>
+        </li>
       </Fragment>
     );
   }
