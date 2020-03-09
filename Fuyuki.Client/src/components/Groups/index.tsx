@@ -55,6 +55,7 @@ function Groups(props: GroupsProps) {
           value={filter}
           label="Filter on group and subreddit"
           aria-label="Enter text to filter on group name and/or subreddit name"
+          onKeyPress={(e) => e.stopPropagation()}
           onChange={(e) => {
             const el = e.target as HTMLInputElement;
             setFilter(el.value);

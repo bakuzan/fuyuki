@@ -74,4 +74,31 @@ blockquote {
   padding: 10px;
 }
 
+.code-wrapper {
+  background-color: #ddd;
+  color: #000;
+  padding: 0.66rem;
+  border-radius: 1rem;
+  border: 1px dotted var(--primary-colour);
+
+  p {
+    display: none;
+  }
+}
+
+code {
+  background: none;
+  font-family: Consolas, Menlo, Monaco, source-code-pro, Courier New, monospace;
+  font-feature-settings: normal;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  margin-bottom: 0;
+  tab-size: 4;
+  hyphens: none;
+}
+
 /* Reddit Markdown Style END */

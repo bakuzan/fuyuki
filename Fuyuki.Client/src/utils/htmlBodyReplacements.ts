@@ -6,8 +6,13 @@ export default function htmlBodyReplacements(html: string) {
   const codeBlocks = html.match(/```([^```]*)```/g);
   if (codeBlocks) {
     codeBlocks.forEach((m) => {
-      html.replace(m, `<code>${m.replace(/`/g, '')}</code>`);
+      html = html.replace(m, `<code>${m.replace(/`/g, '')}</code>`);
     });
+  }
+
+  if (html.includes('<code>')) {
+    html = html.replace(/<code>/g, '<div class="code-wrapper"><code>');
+    html = html.replace(/<\/code>/g, '</code></div>');
   }
 
   const parser = new DOMParser();
@@ -25,12 +30,11 @@ export default function htmlBodyReplacements(html: string) {
         .split('/');
 
       const isPost = comment === 'comments';
-
       const preferredUrl = isPost
-        ? `/r/${subname}/t3_${postId}/comments`
+        ? `/post/t3_${postId}/comments`
         : `/r/${subname}`;
 
-      html = html.replace(href, preferredUrl);
+      html = html.replace(href.replace(/&/g, '&amp;'), preferredUrl);
     }
   });
 
