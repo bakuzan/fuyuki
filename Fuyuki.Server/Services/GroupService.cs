@@ -34,7 +34,11 @@ namespace Fuyuki.Services
                 throw new Exception("User is not authourised to view this group.");
             }
 
-            return _mapper.Map<GroupSubsModel>(group);
+            var model = _mapper.Map<GroupSubsModel>(group);
+            model.Subreddits = model.Subreddits.OrderBy(x => x.Name)
+                                               .ToList();
+
+            return model;
         }
 
         public async Task<List<GroupModel>> GetGroups(ClaimsPrincipal claim)

@@ -170,14 +170,15 @@ export default function GroupPosts(props: PageProps<PostsPageParams>) {
             headingProps={{ className: 'memberships__heading' }}
             onToggle={() => setRefreshkey(generateUniqueId())}
           >
-            <List shouldWrap>
+            <List className="memberships__list" shouldWrap>
               {memberships.map((x) => {
                 const uid = `group_${slugify(x.name)}`;
                 return (
                   <li key={x.id} className="memberships__item">
                     <Tickbox
                       id={uid}
-                      className="memberships__tickbox"
+                      containerClassName="memberships__tickbox"
+                      className="memberships__tickbox-input"
                       name={uid}
                       text={x.name}
                       aria-label={`Toggle ${subName} as a member of ${x.name}`}

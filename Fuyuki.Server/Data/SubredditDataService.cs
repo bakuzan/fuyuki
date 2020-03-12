@@ -26,6 +26,7 @@ namespace Fuyuki.Data
                                             SubredditNames = x.GroupSubreddits.Select(x => x.Subreddit.Name)
                                                                               .ToList()
                                         })
+                                        .OrderBy(x => x.Name)
                                         .ToListAsync();
         }
 
