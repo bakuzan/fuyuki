@@ -7,8 +7,16 @@
 }
 
 .groups {
+  $self: &;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1px;
+
+  &#{$self}--empty {
+    display: block;
+  }
+
   &__item {
-    padding: 0 8px;
+    padding: 4px;
   }
 
   &__subreddit-count {
@@ -20,6 +28,10 @@
   &__edit-link {
     font-size: 0.8rem;
   }
+}
+
+.groups-no-subreddits {
+  margin: 5px 0;
 }
 
 .tree {

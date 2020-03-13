@@ -1,7 +1,8 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 
 import ClearableInput from 'meiko/ClearableInput';
-import List from 'meiko/List';
+import Grid from 'meiko/Grid';
 import LoadingBouncer from 'meiko/LoadingBouncer';
 import RequestMessage from '../RequestMessage';
 import GroupItem from './GroupItem';
@@ -40,12 +41,11 @@ function Groups(props: GroupsProps) {
 
   const items = guardList(state);
   const filteredItems = enableFilter ? applyGroupFilter(items, filter) : items;
-  const hasNoItems = filteredItems.length === 0;
   const hasFilter = filter.length > 0;
   const noSubsMessage = hasFilter
     ? 'No subreddits for the current filter.'
     : undefined;
-
+  console.log('GROUPS', filteredItems);
   return (
     <div className="groups-widget">
       {enableFilter && (
@@ -63,23 +63,26 @@ function Groups(props: GroupsProps) {
         />
       )}
 
-      <List className="groups" shouldWrap>
-        {hasNoItems && (
-          <li key="NONE" className="groups__item groups__item--no-items">
-            {!hasFilter
-              ? 'No groups available'
-              : 'No groups or subreddits for current filter'}
-          </li>
-        )}
-        {filteredItems.map((x: GroupWithSubreddits) => (
+      <Grid
+        className={classNames('groups', {
+          'groups--empty': filteredItems.length === 0
+        })}
+        items={filteredItems}
+        noItemsText={
+          !hasFilter
+            ? 'No groups available'
+            : 'No groups or subreddits for current filter'
+        }
+      >
+        {(x: GroupWithSubreddits) => (
           <GroupItem
             key={x.id}
             data={x}
             filtered={hasFilter}
             noSubredditsMessage={noSubsMessage}
           />
-        ))}
-      </List>
+        )}
+      </Grid>
     </div>
   );
 }

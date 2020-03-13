@@ -24,7 +24,7 @@ function GroupItem(props: GroupItemProps) {
   const x = props.data;
   const subs: Subreddit[] = orderBy(x.subreddits || [], ['name']);
   const subsExist = !!x.subreddits;
-  const subsEmpty = subs.length === 0;
+  const subsEmpty = subs.length === 0 || subs.every((s) => s.isHidden);
   const groupItemLink = subsEmpty ? `/group/${x.id}` : `/fyk/posts/${x.id}`;
 
   const showExpander =
@@ -109,7 +109,7 @@ function GroupItem(props: GroupItemProps) {
         </ul>
       )}
       {subsExist && subsEmpty && (
-        <div>
+        <div className="groups-no-subreddits">
           {props.noSubredditsMessage ?? 'This group has no subreddits.'}
         </div>
       )}

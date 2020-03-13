@@ -4,7 +4,7 @@ import generateUniqueId from 'ayaka/generateUniqueId';
 import slugify from 'ayaka/slugify';
 import Accordion from 'meiko/Accordion';
 import Icons from 'meiko/constants/icons';
-import List from 'meiko/List';
+import Grid from 'meiko/Grid';
 import NewTabLink from 'meiko/NewTabLink';
 import Tickbox from 'meiko/Tickbox';
 
@@ -170,8 +170,8 @@ export default function GroupPosts(props: PageProps<PostsPageParams>) {
             headingProps={{ className: 'memberships__heading' }}
             onToggle={() => setRefreshkey(generateUniqueId())}
           >
-            <List className="memberships__list" shouldWrap>
-              {memberships.map((x) => {
+            <Grid className="memberships__list" items={memberships}>
+              {(x) => {
                 const uid = `group_${slugify(x.name)}`;
                 return (
                   <li key={x.id} className="memberships__item">
@@ -194,8 +194,8 @@ export default function GroupPosts(props: PageProps<PostsPageParams>) {
                     </FYKLink>
                   </li>
                 );
-              })}
-            </List>
+              }}
+            </Grid>
           </Accordion>
         )}
       </BasePosts>
