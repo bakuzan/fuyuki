@@ -68,4 +68,10 @@
       height: 75%;
     }
   }
+
+  &__link {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

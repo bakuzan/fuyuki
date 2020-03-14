@@ -75,7 +75,12 @@ function GroupItem(props: GroupItemProps) {
                 onMouseEnter={() => setHighlightIndex(i)}
                 onMouseLeave={() => setHighlightIndex(-1)}
               >
-                <FYKLink noShadow to={`/r/posts/${s.name}`}>
+                <FYKLink
+                  className="tree__link"
+                  to={`/r/posts/${s.name}`}
+                  title={s.name}
+                  noShadow
+                >
                   {s.name}
                 </FYKLink>
               </li>
