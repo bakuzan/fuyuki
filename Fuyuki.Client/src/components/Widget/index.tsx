@@ -78,7 +78,7 @@ function Widget(props: WidgetProps) {
     <TabTrap
       ref={ref}
       isActive={isExpanded && !isLocked}
-      element="section"
+      element="aside"
       firstId={isLocked ? firstId : closeBtnId}
       lastId={lastId ?? closeBtnId}
       onDeactivate={() => {
