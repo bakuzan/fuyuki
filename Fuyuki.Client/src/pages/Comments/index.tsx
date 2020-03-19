@@ -1,6 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 
+import constructObjectFromSearchParams from 'ayaka/constructObjectFromSearchParams';
 import NewTabLink from 'meiko/NewTabLink';
 import Comments from 'src/components/Comments';
 import FYKLink from 'src/components/FYKLink';
@@ -22,6 +23,8 @@ interface CommentsPageParams {
 
 function CommentsPage(props: PageProps<CommentsPageParams>) {
   const { postId } = props.match.params;
+  const queryParams = constructObjectFromSearchParams(props.location.search);
+
   const { value } = useAsync<Post>(
     async () =>
       postId ? await sendRequest(`/reddit/post/${postId}`) : Promise.resolve(),
@@ -36,7 +39,7 @@ function CommentsPage(props: PageProps<CommentsPageParams>) {
   const queryUrl = `/reddit/post/${postId}/comments`;
   const post =
     value && value.hasOwnProperty('permalink') ? (value as Post) : null;
-
+  console.log('COMMETNS', queryParams);
   return (
     <div className="page">
       <Helmet title={pageTitle} />
@@ -72,7 +75,7 @@ function CommentsPage(props: PageProps<CommentsPageParams>) {
         </div>
       </Peekaboo>
       <PostContext.Provider value={{ postId: post?.fullname }}>
-        <Comments endpoint={queryUrl} />
+        <Comments endpoint={queryUrl} focusedComment={queryParams.commentId} />
       </PostContext.Provider>
     </div>
   );

@@ -25,16 +25,26 @@ export default function htmlBodyReplacements(html: string) {
     if (href.startsWith('/u/')) {
       html = html.replace(href, `https://www.reddit.com${href}`);
     } else if (href.startsWith('https://www.reddit.com/r/')) {
-      const [subname, comment, postId] = href
+      const hasSearch = href.includes('?');
+      const [_, search] = href.split('?');
+
+      const [subname, comment, postId, __, commentId] = href
         .replace('https://www.reddit.com/r/', '')
         .split('/');
 
       const isPost = comment === 'comments';
-      const preferredUrl = isPost
+      const isComment = commentId !== undefined;
+      let preferredUrl = isPost
         ? `/post/t3_${postId}/comments`
         : `/r/${subname}`;
 
+      preferredUrl += isComment ? `?commentId=${commentId}` : '';
+
       html = html.replace(href.replace(/&/g, '&amp;'), preferredUrl);
+
+      if (hasSearch) {
+        html = html.replace(`?${search}`, '');
+      }
     }
   });
 

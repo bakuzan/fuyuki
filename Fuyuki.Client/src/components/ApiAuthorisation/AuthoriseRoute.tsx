@@ -62,14 +62,13 @@ export default class AuthoriseRoute extends Component<
     } else {
       const { component, ...rest } = this.props;
       const PageComponent = component as React.ComponentClass;
-      const routeKey = rest.location?.key;
 
       return (
         <Route
           {...rest}
           render={(props) => {
             if (authenticated) {
-              return <PageComponent key={routeKey} {...props} />;
+              return <PageComponent {...props} />;
             } else {
               return <Redirect to={redirectUrl} />;
             }

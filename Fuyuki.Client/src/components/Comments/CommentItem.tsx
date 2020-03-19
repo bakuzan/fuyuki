@@ -87,6 +87,7 @@ const CommentItem = React.memo(function(props: CommentItemProps) {
 
   return (
     <li
+      id={x.id}
       className={classNames('comments__item', {
         'comments__item--stickied': x.stickied
       })}
