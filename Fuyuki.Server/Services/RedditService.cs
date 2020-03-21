@@ -222,7 +222,7 @@ namespace Fuyuki.Services
             var message = new Reddit.Inputs.PrivateMessages.PrivateMessagesComposeInput(
                 subject: "Reminder",
                 text: reminderMessage,
-                to: "kzreminderbot"
+                to: "remindditbot"
             );
 
             if (!response.ErrorMessages.Any())
