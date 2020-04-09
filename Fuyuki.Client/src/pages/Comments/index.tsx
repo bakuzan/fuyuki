@@ -43,7 +43,7 @@ function CommentsPage(props: PageProps<CommentsPageParams>) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      <Peekaboo>
+      <Peekaboo threshold={200}>
         <div>
           {post && (
             <PostItem

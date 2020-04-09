@@ -44,7 +44,10 @@ function PostsPage(props: PostsPageProps) {
           'posts--margin': shouldMargin
         })}
       >
-        <Peekaboo className={classNames({ 'peekaboo--margin': shouldMargin })}>
+        <Peekaboo
+          className={classNames({ 'peekaboo--margin': shouldMargin })}
+          threshold={200}
+        >
           <header className="page__header page__header--spaced">
             <h2 className="page__title">{props.pageTitle}</h2>
             {props.header}
