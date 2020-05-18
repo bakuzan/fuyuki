@@ -8,7 +8,7 @@ import { ContentMeta } from '../types/ContentMeta';
 import { ContentType } from '../types/ContentType';
 
 function match(post: Post) {
-  const embedDomains = ['gfycat'];
+  const embedDomains = ['gfycat', 'redgifs'];
   return (post.url && embedDomains.some((x) => post.url.includes(x))) || false;
 }
 
