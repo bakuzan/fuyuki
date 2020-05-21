@@ -14,15 +14,20 @@ function match(post: Post) {
 
 async function meta(post: Post): Promise<ContentMeta> {
   const id = post.url.replace(/^.*\/|-.*/g, '');
+  const content = post.url.includes('redgifs') ? 'Redgifs' : 'Gfycat';
 
-  const response = await sendRequest(`/Content/Gfycat/${id}`, {
+  const response = await sendRequest(`/Content/${content}/${id}`, {
     headers: {
       'Cache-Control': 'max-age=3600'
     }
   });
 
   if (!response.success) {
-    alertService.showError(`Gfycat request failed.`, response.errorMessages[0]);
+    alertService.showError(
+      `${content} request failed.`,
+      response.errorMessages[0]
+    );
+
     return { type: ContentType.isError };
   }
 

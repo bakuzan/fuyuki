@@ -22,6 +22,14 @@ namespace Fuyuki.Services
             return await ProcessResponse(response);
         }
 
+        public async Task<ContentResponse> GetRedgifsInfo(string contentId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.redgifs.com/v1/gfycats/{contentId}");
+            var response = await _httpClient.SendAsync(request);
+
+            return await ProcessResponse(response);
+        }
+
         public async Task<ContentResponse> GetVReddit(string contentId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"https://v.redd.it/{contentId}/DASHPlaylist.mpd");

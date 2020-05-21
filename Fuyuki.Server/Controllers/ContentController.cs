@@ -32,6 +32,13 @@ namespace Fuyuki.Controllers
 
         [HttpGet]
         [Route("[action]/{contentId}")]
+        public async Task<ContentResponse> Redgifs(string contentId)
+        {
+            return await _contentService.GetRedgifsInfo(contentId);
+        }
+
+        [HttpGet]
+        [Route("[action]/{contentId}")]
         public async Task<ContentResponse> Vreddit(string contentId)
         {
             return await _contentService.GetVReddit(contentId);
