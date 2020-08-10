@@ -141,6 +141,7 @@ export default function RemindMe() {
         actionText="Create"
         onAction={onSubmit}
         onCancel={closeDialog}
+        style={{ position: 'fixed', top: '50%' }}
         tabTrapProps={{
           firstId: 'message',
           lastId: 'reminderCancel',

@@ -1,5 +1,3 @@
-import typedKeys from 'src/utils/typedKeys';
-
 export enum TimePeriod {
   Minute = 1,
   Hour,
