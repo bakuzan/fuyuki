@@ -24,6 +24,13 @@ namespace Fuyuki.Controllers
         }
 
         [HttpGet]
+        [Route("[action]")]
+        public async Task<ContentResponse> Metadata(string permalink)
+        {
+            return await _contentService.GetMetadataInfo(permalink);
+        }
+
+        [HttpGet]
         [Route("[action]/{contentId}")]
         public async Task<ContentResponse> Gfycat(string contentId)
         {

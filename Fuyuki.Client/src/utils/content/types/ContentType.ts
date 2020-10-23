@@ -4,5 +4,6 @@ export enum ContentType {
   isText,
   isImage,
   isVideo,
-  isIframe
+  isIframe,
+  isImageGallery
 }

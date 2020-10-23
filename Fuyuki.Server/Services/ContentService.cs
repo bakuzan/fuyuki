@@ -14,6 +14,15 @@ namespace Fuyuki.Services
             _httpClient = httpClient;
         }
 
+        public async Task<ContentResponse> GetMetadataInfo(string permalink)
+        {
+            var muhURL = $"https://www.reddit.com/{permalink}.json";
+            var request = new HttpRequestMessage(HttpMethod.Get, muhURL);
+            var response = await _httpClient.SendAsync(request);
+
+            return await ProcessResponse(response);
+        }
+
         public async Task<ContentResponse> GetGfycatInfo(string contentId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.gfycat.com/v1/gfycats/{contentId}");

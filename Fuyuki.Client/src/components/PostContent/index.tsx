@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import LoadingBouncer from 'meiko/LoadingBouncer';
 import Iframe from './Iframe';
 import Image from './Image';
+import ImageGallery from './ImageGallery';
 import Video from './Video';
 
 import { useAsyncFn } from 'src/hooks/useAsyncFn';
@@ -52,6 +53,7 @@ function PostContent(props: PostContentProps) {
       )}
       <Video data={meta} />
       <Image data={meta} />
+      <ImageGallery data={meta} />
       <Iframe data={meta} />
     </div>
   );

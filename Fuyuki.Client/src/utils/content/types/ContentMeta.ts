@@ -5,6 +5,11 @@ export interface VideoSource {
   type: string;
 }
 
+export interface ImageSource {
+  src: string;
+  caption: string;
+}
+
 interface ContentBase {
   type: ContentType.isError | ContentType.isNone | ContentType.isText;
 }
@@ -12,6 +17,11 @@ interface ContentBase {
 interface ContentVideo {
   type: ContentType.isVideo;
   sources: VideoSource[];
+}
+
+interface ContentImageGallery {
+  type: ContentType.isImageGallery;
+  sources: ImageSource[];
 }
 
 interface ContentImage {
@@ -33,7 +43,8 @@ export type ContentMeta =
   | ContentBase
   | ContentVideo
   | ContentImage
-  | ContentIframe;
+  | ContentIframe
+  | ContentImageGallery;
 
 export function isContentBase(meta?: ContentMeta): meta is ContentBase {
   return [ContentType.isError, ContentType.isNone, ContentType.isText].includes(
@@ -47,6 +58,12 @@ export function isContentVideo(meta?: ContentMeta): meta is ContentVideo {
 
 export function isContentImage(meta?: ContentMeta): meta is ContentImage {
   return meta?.type === ContentType.isImage;
+}
+
+export function isContentImageGallery(
+  meta?: ContentMeta
+): meta is ContentImageGallery {
+  return meta?.type === ContentType.isImageGallery;
 }
 
 export function isContentIframe(meta?: ContentMeta): meta is ContentIframe {

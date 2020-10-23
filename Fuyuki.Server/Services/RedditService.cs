@@ -135,7 +135,7 @@ namespace Fuyuki.Services
             var message = new Reddit.Inputs.PrivateMessages.PrivateMessagesComposeInput(
                 subject: "Reddit video request",
                 text: $"https://www.reddit.com{url}",
-                to: "VredditDownloader"
+                to: "GetVideoBot"
             );
 
             try
