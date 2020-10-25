@@ -39,7 +39,7 @@ function CommentsPage(props: PageProps<CommentsPageParams>) {
   const queryUrl = `/reddit/post/${postId}/comments`;
   const post =
     value && value.hasOwnProperty('permalink') ? (value as Post) : null;
-  console.log('COMMETNS', queryParams);
+  console.log('Comments: ', queryParams);
   return (
     <div className="page">
       <Helmet title={pageTitle} />

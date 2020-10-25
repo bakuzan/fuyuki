@@ -45,7 +45,7 @@ function Groups(props: GroupsProps) {
   const noSubsMessage = hasFilter
     ? 'No subreddits for the current filter.'
     : undefined;
-  console.log('GROUPS', filteredItems);
+  console.log('Groups: ', filteredItems);
   return (
     <div className="groups-widget">
       {enableFilter && (

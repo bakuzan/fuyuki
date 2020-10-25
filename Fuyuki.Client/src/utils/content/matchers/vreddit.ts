@@ -36,7 +36,9 @@ async function meta(post: Post): Promise<ContentMeta> {
   const mpd = response.content;
   const manifest = new DOMParser().parseFromString(mpd, 'text/xml');
 
-  const reps = Array.from(manifest.querySelectorAll('Representation'));
+  const reps = Array.from(
+    manifest.querySelectorAll('Representation[frameRate]')
+  );
   const rawSources = sortBy(reps, (rep) =>
     parseInt(rep.getAttribute('bandwidth') || '', 10)
   );
