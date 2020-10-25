@@ -6,7 +6,9 @@ import { ContentMatcher } from '../types/ContentMatcher';
 import { ContentMeta, VideoSource } from '../types/ContentMeta';
 import { ContentType } from '../types/ContentType';
 
-function sortBy(arr: any[], fn: (item: any) => any) {
+const minBandwidth = 3000 * 1000;
+
+function sortBy<T>(arr: T[], fn: (item: T) => any) {
   return arr.sort((a, b) => {
     const bv = fn(b);
     const av = fn(a);
@@ -35,35 +37,58 @@ async function meta(post: Post): Promise<ContentMeta> {
   const manifest = new DOMParser().parseFromString(mpd, 'text/xml');
 
   const reps = Array.from(manifest.querySelectorAll('Representation'));
-  const rawSources = sortBy(reps, (rep: Element) =>
+  const rawSources = sortBy(reps, (rep) =>
     parseInt(rep.getAttribute('bandwidth') || '', 10)
   );
 
-  // Audio is in a seperate stream, and requires a heavy dash dependency to add to the video
-  if (manifest.querySelector('AudioChannelConfiguration')) {
-    const frameSource = rawSources[0] as Element;
-    const height = Number(frameSource.getAttribute('height'));
-    const width = Number(frameSource.getAttribute('width'));
+  const filteredSources: Element[] = [];
 
-    return {
-      type: ContentType.isIframe,
-      src: `//www.redditmedia.com/mediaembed/${post.id}`,
-      vreddit: post.permalink,
-      height: height || undefined,
-      width: width || undefined
-    };
+  for (const item of rawSources) {
+    const bandwidth = parseInt(item.getAttribute('bandwidth') || '', 10);
+
+    if (item === rawSources[0] || bandwidth >= minBandwidth) {
+      filteredSources.push(item);
+    } else {
+      item.remove();
+    }
   }
 
-  const sources: VideoSource[] = rawSources
-    .map((rep: Element) => rep.querySelector('BaseURL'))
-    .map((baseUrl: Element | null) => ({
-      src: `https://v.redd.it/${id}/${baseUrl?.textContent ?? ''}`,
-      type: 'video/mp4'
-    }));
+  const muted = !manifest.querySelector('AudioChannelConfiguration');
+  const sources: VideoSource[] = [];
+
+  if (muted && id) {
+    sources.push(
+      ...filteredSources
+        .map((rep: Element) => rep.querySelector('BaseURL'))
+        .map((baseUrl: Element | null) => ({
+          src: `https://v.redd.it/${id}/${baseUrl?.textContent ?? ''}`,
+          type: 'video/mp4'
+        }))
+    );
+  } else {
+    sources.push({
+      src: URL.createObjectURL(
+        new Blob([new XMLSerializer().serializeToString(manifest)], {
+          type: 'application/dash+xml'
+        })
+      ),
+      type: 'application/dash+xml'
+    });
+  }
+
+  if (sources.length === 0) {
+    alertService.showError(
+      `vreddit request failed.`,
+      'No valid sources found.'
+    );
+
+    return { type: ContentType.isError };
+  }
 
   return {
     type: ContentType.isVideo,
-    sources
+    sources,
+    muted
   };
 }
 

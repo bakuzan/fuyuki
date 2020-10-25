@@ -17,6 +17,7 @@ interface ContentBase {
 interface ContentVideo {
   type: ContentType.isVideo;
   sources: VideoSource[];
+  muted: boolean;
 }
 
 interface ContentImageGallery {

@@ -19,6 +19,7 @@ function ContentVideo({ data }: ContentProps) {
         controls
         loop
         height={500}
+        muted={data.muted}
       >
         {data.sources.map((x: VideoSource) => (
           <source key={x.src} {...x}></source>
