@@ -22,6 +22,7 @@ function match(post: Post) {
 
 async function meta(post: Post): Promise<ContentMeta> {
   const id = post.url.split('/').slice(-1)[0];
+  const originalPlaylistUrl = `https://v.redd.it/${id}/DASHPlaylist.mpd`;
   const response = await sendRequest(`/Content/Vreddit/${id}`);
 
   if (!response.success) {
@@ -55,6 +56,20 @@ async function meta(post: Post): Promise<ContentMeta> {
     }
   }
 
+  // Fix relative urls...
+  for (const rep of Array.from(manifest.querySelectorAll('Representation'))) {
+    const baseURLElement = rep.querySelector('BaseURL');
+
+    if (baseURLElement === null) {
+      continue; // Shouldn't happen...
+    }
+
+    baseURLElement.textContent = new URL(
+      baseURLElement.textContent ?? '',
+      originalPlaylistUrl
+    ).href;
+  }
+
   const muted = !manifest.querySelector('AudioChannelConfiguration');
   const sources: VideoSource[] = [];
 
@@ -63,7 +78,7 @@ async function meta(post: Post): Promise<ContentMeta> {
       ...filteredSources
         .map((rep: Element) => rep.querySelector('BaseURL'))
         .map((baseUrl: Element | null) => ({
-          src: `https://v.redd.it/${id}/${baseUrl?.textContent ?? ''}`,
+          src: baseUrl?.textContent ?? '',
           type: 'video/mp4'
         }))
     );
