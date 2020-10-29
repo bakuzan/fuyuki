@@ -18,6 +18,7 @@ interface ContentVideo {
   type: ContentType.isVideo;
   sources: VideoSource[];
   muted?: boolean;
+  vreddit?: string;
 }
 
 interface ContentImageGallery {
@@ -33,7 +34,6 @@ interface ContentImage {
 interface ContentIframe {
   type: ContentType.isIframe;
   src: string;
-  vreddit?: string;
   width?: number;
   height?: number;
   scrollable?: string;

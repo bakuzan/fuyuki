@@ -105,7 +105,8 @@ async function meta(post: Post): Promise<ContentMeta> {
   return {
     type: ContentType.isVideo,
     sources,
-    muted
+    muted,
+    vreddit: post.permalink
   };
 }
 
