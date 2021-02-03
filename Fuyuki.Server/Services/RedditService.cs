@@ -135,7 +135,7 @@ namespace Fuyuki.Services
             var message = new Reddit.Inputs.PrivateMessages.PrivateMessagesComposeInput(
                 subject: "Reddit video request",
                 text: $"https://www.reddit.com{url}",
-                to: "GetVideoBot"
+                to: _redditManager.GetAccountUsername(RedditAccountName.RedditVideo)
             );
 
             try
@@ -222,7 +222,7 @@ namespace Fuyuki.Services
             var message = new Reddit.Inputs.PrivateMessages.PrivateMessagesComposeInput(
                 subject: "Reminder",
                 text: reminderMessage,
-                to: "remindditbot"
+                to: _redditManager.GetAccountUsername(RedditAccountName.RedditReminder)
             );
 
             if (!response.ErrorMessages.Any())

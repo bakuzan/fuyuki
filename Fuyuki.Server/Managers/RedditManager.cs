@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using Fuyuki.Data;
+using Fuyuki.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Reddit;
+using WS.Newquay.Core.Extensions;
 
 namespace Fuyuki.Managers
 {
@@ -28,5 +30,14 @@ namespace Fuyuki.Managers
 
             return Task.FromResult(reddit);
         }
+
+        public string GetAccountUsername(RedditAccountName redditAccountName)
+        {
+            var key = redditAccountName.GetEnumStringValue();
+            var accounts = _configuration.GetSection("RedditAccounts");
+
+            return accounts[key] ?? string.Empty;
+        }
+
     }
 }
