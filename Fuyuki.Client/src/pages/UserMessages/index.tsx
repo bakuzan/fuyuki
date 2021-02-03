@@ -49,35 +49,35 @@ function UserMessages(props: PageProps<UserMessagesParams>) {
   return (
     <div className="page">
       <Helmet title={pageTitle} />
-      {loading && <LoadingBouncer />}
-      {value && (
-        <section className="mailbox">
-          <header className="mailbox__header">
-            <h2 className="mailbox__title">{capitalise(mailbox)}</h2>
-            <div className="mailbox__links">
-              {mailboxes.map((box) => (
-                <FYKLink
-                  key={box}
-                  className="mailbox__link"
-                  to={`/messages/${box}`}
-                >
-                  {box}
-                </FYKLink>
-              ))}
-            </div>
-          </header>
-          <div className="mailbox-reddit-link">
-            <NewTabLink href={`https://www.reddit.com/message/${mailbox}/`}>
-              View on reddit
-            </NewTabLink>
+      <section className="mailbox">
+        <header className="mailbox__header">
+          <h2 className="mailbox__title">{capitalise(mailbox)}</h2>
+          <div className="mailbox__links">
+            {mailboxes.map((box) => (
+              <FYKLink
+                key={box}
+                className="mailbox__link"
+                to={`/messages/${box}`}
+              >
+                {box}
+              </FYKLink>
+            ))}
           </div>
+        </header>
+        <div className="mailbox-reddit-link">
+          <NewTabLink href={`https://www.reddit.com/message/${mailbox}/`}>
+            View on reddit
+          </NewTabLink>
+        </div>
+        {loading && <LoadingBouncer />}
+        {!loading && value && (
           <List columns={1}>
             {value.map((x) => (
               <UserMessageItem key={x.id} data={x} />
             ))}
           </List>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 }
