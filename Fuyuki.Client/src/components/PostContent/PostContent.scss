@@ -45,3 +45,13 @@ $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
     }
   }
 }
+
+// Conent type specific
+
+.image-gallery {
+  display: flex;
+
+  &__button {
+    min-width: 40px !important;
+  }
+}

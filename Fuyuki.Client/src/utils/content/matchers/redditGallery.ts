@@ -41,11 +41,21 @@ async function meta(post: Post): Promise<ContentMeta> {
 
   const part = JSON.parse(response.content)[0];
   const data = part.data.children.map((c: MetaBlock) => c.data)[0];
-  const { media_metadata = {}, gallery_data: { items = {} } = {} } = data;
+
+  const crosspostParentList = data.crosspost_parent_list ?? [];
+  const { gallery_data: galleryData = {} } = data;
+  let { media_metadata: mediaMetadata = {} } = data;
+  let items = galleryData.items ?? [];
+
+  if (items.length === 0 && crosspostParentList.length) {
+    const crosspostData = crosspostParentList[0];
+    mediaMetadata = crosspostData.media_metadata ?? {};
+    items = crosspostData.gallery_data?.items ?? [];
+  }
 
   const sources = (items as MediaItem[]).map(({ media_id, caption }) => {
     // `m` is something like `image/png`
-    const { m } = media_metadata[media_id] || {};
+    const { m } = mediaMetadata[media_id] || {};
     const type = m.startsWith('image') ? 'IMAGE' : 'Unknown';
     return type === 'IMAGE'
       ? ({
@@ -54,6 +64,18 @@ async function meta(post: Post): Promise<ContentMeta> {
         } as ImageSource)
       : undefined;
   });
+
+  if (items.length === 0) {
+    const baseItemCount = galleryData.items?.length ?? 0;
+    const hasCrosspost = !!crosspostParentList.length;
+
+    alertService.showError(
+      `Reddit gallery had no image sources.`,
+      `Base post gallery items: ${baseItemCount}, Has crosspost data: ${hasCrosspost}`
+    );
+
+    return { type: ContentType.isError };
+  }
 
   return {
     type: ContentType.isImageGallery,
