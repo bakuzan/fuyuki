@@ -22,7 +22,7 @@ function ContentIframe({ data }: ContentProps) {
       const eData = event.data;
       // Responsive third-party iframe (note: imgur albums trigger this, others may too who knows.)
       // This is a crude solution to an "impossible" problem.
-      if (eData.includes('height') || eData.includes('width')) {
+      if (eData && (eData.includes('height') || eData.includes('width'))) {
         setIframeSizes(JSON.parse(eData));
       }
     }

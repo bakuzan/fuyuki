@@ -46,15 +46,19 @@ function ContentImageGallery({ data }: ContentProps) {
             onClick={() => setIndex((p) => p - 1)}
           ></Button>
         )}
-        {images.map((x, i) => (
-          <Image
-            key={i}
-            className="post-content__image"
-            src={x.src}
-            alt={x.caption ? x.caption : `gallery entry ${index + 1}`}
-            style={{ maxHeight: `800px` }}
-          />
-        ))}
+        {images.map((x, i) => {
+          const imageNumber = showAll ? i + 1 : index + 1;
+
+          return (
+            <Image
+              key={i}
+              className="post-content__image"
+              src={x.src}
+              alt={x.caption ? x.caption : `gallery entry ${imageNumber}`}
+              style={{ maxHeight: `800px` }}
+            />
+          );
+        })}
         {!showAll && (
           <Button
             id="imageGalleryNext"

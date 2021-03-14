@@ -50,6 +50,7 @@ $post-left-spacing: $post--score-width + ($post--score-spacing * 2) +
 
 .image-gallery {
   display: flex;
+  flex-flow: wrap;
 
   &__button {
     min-width: 40px !important;
