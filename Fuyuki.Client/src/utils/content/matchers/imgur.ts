@@ -5,21 +5,28 @@ import { ContentMatcher } from '../types/ContentMatcher';
 import { ContentMeta } from '../types/ContentMeta';
 import { ContentType } from '../types/ContentType';
 
+// Guya proxy format: https://guya.moe/proxy/imgur/<albumId>/1/1/
+
 function match(post: Post) {
   return post.url.includes('imgur');
 }
 
 async function meta(post: Post): Promise<ContentMeta> {
-  const isAlbum = post.url.includes('/a/');
+  const isProxy = post.url.includes('guya.moe');
+  const isAlbum = post.url.includes('/a/') || isProxy;
   const isGifv = post.url.includes('.gifv');
 
   if (isAlbum) {
-    const id = post.url.split('/a/').slice(-1)[0];
-    const src = `https://imgur.com/a/${id}/embed?pub=true&ref=https://imgur.com/a/${id}&analytics=false`;
+    const id = isProxy
+      ? post.url
+          .replace(/^.*imgur/, '')
+          .slice(1)
+          .split('/')[0]
+      : post.url.split('/a/').slice(-1)[0];
 
     return {
       type: ContentType.isIframe,
-      src,
+      src: `https://imgur.com/a/${id}/embed?pub=true&ref=https://imgur.com/a/${id}&analytics=false`,
       defaultHeight: 700
     };
   } else if (isGifv) {
