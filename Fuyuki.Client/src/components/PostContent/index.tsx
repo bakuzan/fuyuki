@@ -38,7 +38,7 @@ function PostContent(props: PostContentProps) {
   if (!isExpanded) {
     return null;
   }
-  console.log('PostContent: ', meta);
+  console.log('PostContent: ', x, state);
   return (
     <div className="post-content">
       {state.loading && <LoadingBouncer />}

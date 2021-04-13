@@ -44,20 +44,24 @@ async function meta(post: Post): Promise<ContentMeta> {
 
   const crosspostParentList = data.crosspost_parent_list ?? [];
   const { gallery_data: galleryData = {} } = data;
+  let items = galleryData?.items ?? [];
+
   let { media_metadata: mediaMetadata = {} } = data;
-  let items = galleryData.items ?? [];
+  const mediaMetaKeys = Object.keys(mediaMetadata);
 
   if (items.length === 0 && crosspostParentList.length) {
     const crosspostData = crosspostParentList[0];
     mediaMetadata = crosspostData.media_metadata ?? {};
     items = crosspostData.gallery_data?.items ?? [];
+  } else if (items.length === 0 && mediaMetaKeys.length) {
+    items = mediaMetaKeys.map((media_id) => ({ media_id }));
   }
 
   const sources = (items as MediaItem[]).map(({ media_id, caption }) => {
     // `m` is something like `image/png`
     const { m } = mediaMetadata[media_id] || {};
-    const type = m.startsWith('image') ? 'IMAGE' : 'Unknown';
-    return type === 'IMAGE'
+
+    return m.startsWith('image')
       ? ({
           src: `https://i.redd.it/${media_id}.${m.substr(6)}`,
           caption: caption ?? ''
@@ -66,7 +70,7 @@ async function meta(post: Post): Promise<ContentMeta> {
   });
 
   if (items.length === 0) {
-    const baseItemCount = galleryData.items?.length ?? 0;
+    const baseItemCount = galleryData?.items?.length ?? 0;
     const hasCrosspost = !!crosspostParentList.length;
 
     alertService.showError(
